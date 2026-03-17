@@ -1,11 +1,10 @@
-use crate::models::{NewSong, Song};
-use crate::schema;
+use crate::models::{NewSong, SimplifiedSong, Song};
+use crate::schema::songs;
 use diesel::prelude::*;
 
-pub fn all_songs(connection: &mut SqliteConnection) -> Vec<Song> {
-    use self::schema::songs::dsl::*;
-    songs
-        .select(Song::as_select())
+pub fn all_songs(connection: &mut SqliteConnection) -> Vec<SimplifiedSong> {
+    SimplifiedSong::query()
+        .order_by(crate::schema::songs::title.asc())
         .load(connection)
         .expect("Error loading songs")
 }

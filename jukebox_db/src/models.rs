@@ -12,6 +12,15 @@ pub struct Song {
     pub lyrics_as_chordpro: Option<String>,
 }
 
+#[derive(Debug, Clone, Serialize, HasQuery)]
+#[diesel(table_name = crate::schema::songs)]
+#[diesel(check_for_backend(diesel::sqlite::Sqlite))]
+pub struct SimplifiedSong {
+    pub id: i32,
+    pub title: String,
+    pub artist: Option<String>,
+}
+
 #[derive(Insertable)]
 #[diesel(table_name = songs)]
 pub struct NewSong<'a> {
