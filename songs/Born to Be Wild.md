@@ -1,0 +1,48 @@
+{title:Born to Be Wild}
+{artist:Steppenwolf}
+
+Get your motor runnin'
+Head out on the highway
+Lookin' for adventure
+And whatever comes our way
+
+Yeah, darlin', go make it happen
+Take the world in a love embrace
+Fire all of your guns at once and
+Explode into space
+
+I like smoke and lightnin'
+Heavy metal thunder
+Racin' with the wind
+And the feelin' that I'm under
+
+Yeah, darlin', go make it happen
+Take the world in a love embrace
+Fire all of your guns at once and
+Explode into space
+
+Like a true nature's child
+We were born, born to be wild
+We can climb so high
+I never wanna die
+
+Born to be wild
+Born to be wild
+
+Get your motor runnin'
+Head out on the highway
+We're lookin' for adventure
+And whatever comes our way
+
+Yeah, darlin' go make it happen
+Take the world in a love embrace
+Fire all of your guns at once and
+Explode into space
+
+Like a true nature's child
+We were born, born to be wild
+We can climb so high
+I never wanna die
+
+Born to be wild
+Born to be wild

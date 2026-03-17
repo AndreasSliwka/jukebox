@@ -1,0 +1,37 @@
+{title:Heart Of Gold}
+{artist:Neil Young}
+
+I want to live
+I want to give
+I've been a miner
+For a heart of gold
+It's these expressions
+I never give
+That keep me searching
+For a heart of gold
+And I'm getting old
+Keep me searching
+For a heart of gold
+And I'm getting old
+
+I've been to Hollywood
+I've been to Redwood
+I crossed the ocean
+For a heart of gold
+I've been in my mind
+It's such a fine line
+That keeps me searching
+For a heart of gold
+And I'm getting old
+Keeps me searching
+For a heart of gold
+And I'm getting old
+
+Keep me searching
+For a heart of gold
+You keep me searching
+And I'm growing old
+Keep me searching
+For a heart of gold
+I've been a miner
+For a heart of gold

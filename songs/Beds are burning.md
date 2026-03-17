@@ -1,0 +1,76 @@
+{title:Beds are burning}
+{artist:Midnight Oil}
+
+E|-0-0-6-7---0-0-5-7---0-0-4-5---0-0-3-2---0-0-6-7--
+
+Out where the river broke
+The bloodwood and the desert oak
+Holden wrecks and boiling diesels
+Steam in forty five degrees
+
+The time has come
+To say fair′s fair
+To pay the rent
+To pay our share
+
+The time has come
+A fact's a fact
+It belongs to them
+Let′s give it back
+
+How can we dance
+When our earth is turning?
+How do we sleep
+While our beds are burning?
+
+How can we dance
+When our earth is turning?
+How do we sleep
+While our beds are burning?
+
+The time has come
+To say fair's fair
+To pay the rent now
+To pay our share
+
+Four wheels scare the cockatoos
+From Kintore East to Yuendumu
+The Western Desert lives and breathes
+In forty five degrees
+
+The time has come
+To say fair's fair
+To pay the rent
+To pay our share
+
+The time has come
+A fact′s a fact
+It belongs to them
+Let′s give it back
+
+
+
+How can we dance
+When our earth is turning?
+How do we sleep
+While our beds are burning?
+
+How can we dance
+When our earth is turning?
+How do we sleep
+While our beds are burning?
+
+The time has come
+To say fair's fair
+To pay the rent now
+To pay our share
+
+The time has come
+A fact′s a fact
+It belongs to them
+We're gonna give it back
+
+How can we dance
+When our earth is turning?
+How do we sleep
+While our beds are burning?

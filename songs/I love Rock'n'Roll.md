@@ -1,0 +1,48 @@
+{title: I love Rock'n'Roll}
+{artist:Joan Jett & the Blackhearts}
+
+[Verse]
+I saw him dancin' there by the record machine
+I knew he must a been about seventeen
+The beat was goin' strong
+Playin' my favorite song
+And I could tell it wouldn't be long
+[Prechorus]
+'Til he was with me, yeah, me
+And I could tell it wouldn't be long
+'Til he was with me, yeah, me, singin'
+[Chorus]I love rock n' roll
+So put another dime in the jukebox, baby
+I love rock n' roll
+So come and take your time and dance with me
+Ow
+[Verse]
+He smiled, so I got up and asked for his name
+"That don't matter", he said, "'cause it's all the same"
+I said, "Can I take you home where we can be alone?"
+And next we were movin' on
+
+[Prechorus]
+He was with me, yeah, me
+Next we were movin' on
+He was with me, yeah, me singin'
+[Chorus]
+I love rock n' roll
+So put another dime in the jukebox, baby
+I love rock n' roll
+So come and take your time and dance with me
+Ow
+
+[Prechorus]
+Said, "Can I take you home where we can be alone?"
+Next we were movin' on
+He was with me, yeah, me
+And we'll be movin' on
+And singin' that same old song
+Yeah, with me, singin'
+[Chorus]
+I love rock n' roll
+So put another dime in the jukebox, baby
+I love rock n' roll
+So come and take your time and dance with me
+I love rock n' roll
