@@ -16,8 +16,17 @@ async fn songs(pool: web::Data<DbPool>) -> impl Responder {
     HttpResponse::Ok().json(songs)
 }
 
-async fn manual_hello() -> impl Responder {
-    HttpResponse::Ok().body("Hey there ...")
+#[get("/songs/{song_id}")]
+async fn single_song(path: web::Path<i32>, pool: web::Data<DbPool>) -> impl Responder {
+    let mut connection = pool.get().expect("could not get connection");
+    let song_id = path.into_inner();
+    match jukebox_db::song_by_id(&mut connection, song_id) {
+        None => HttpResponse::NotFound().body("nope"),
+        Some(song) => HttpResponse::Ok().content_type("text/plain").body(
+            song.lyrics_as_chordpro
+                .unwrap_or(String::from(" nothing here ")),
+        ),
+    }
 }
 
 #[actix_web::main]
@@ -27,9 +36,8 @@ async fn main() -> Result<(), std::io::Error> {
     HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(connection_pool.clone()))
-            .service(hello)
+            .service(single_song)
             .route("/songs", web::get().to(songs))
-            .route("/hey", web::get().to(manual_hello))
     })
     .bind(("127.0.0.1", 8080))?
     .run()

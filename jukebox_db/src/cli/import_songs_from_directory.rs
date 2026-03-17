@@ -65,7 +65,7 @@ fn main() {
             let title: &str = get_title(song_file.as_str(), &content);
 
             let artist: Option<&str> = get_artist(&content);
-            let _song = create_song(&mut connection, title, artist);
+            let _song = create_song(&mut connection, title, artist, Some(content.as_str()));
         }
     }
 }

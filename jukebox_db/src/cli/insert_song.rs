@@ -23,6 +23,6 @@ fn main() {
     let (a_title, an_artist) = get_title_and_artist_from_command_line();
     let connection = &mut establish_single_connection();
 
-    let song = create_song(connection, a_title.as_str(), an_artist.as_deref());
+    let song = create_song(connection, a_title.as_str(), an_artist.as_deref(), None);
     println!("\nSaved draft {a_title} with id {}", song.id);
 }

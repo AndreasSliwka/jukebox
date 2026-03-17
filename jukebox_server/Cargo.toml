@@ -10,3 +10,4 @@ diesel = { version = "2.3.7", features = ["sqlite", "returning_clauses_for_sqlit
 r2d2 = "0.8.10"
 tokio = { version = "1.50.0", features = ["macros", "rt-multi-thread"] }
 regex = "1.12.3"
+chordpro = "0.3.1"

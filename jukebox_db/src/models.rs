@@ -26,6 +26,7 @@ pub struct SimplifiedSong {
 pub struct NewSong<'a> {
     pub title: &'a str,
     pub artist: Option<&'a str>,
+    pub lyrics_as_chordpro: Option<&'a str>,
 }
 
 #[derive(Insertable)]
