@@ -1,0 +1,8 @@
+-- Your SQL goes here
+CREATE TABLE setlists (
+  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  name VARCHAR NOT NULL,
+  location VARCHAR NOT NULL,
+  date TEXT NOT NULL,
+  notes TEXT DEFAULT ''
+)
