@@ -1,0 +1,15 @@
+<div class="listcontainer">
+    {% for song in songs %}
+    <div class="song">
+        <a href="{{song.link}} ">
+            <span class="song_id">{{ song.id }}</span>
+            <span class="title">{{song.title}}</span>
+            {% match song.artist %} {% when Some with (artist) %}
+            <span class="artist">{{ artist }}</span>
+            {% when _ %}
+            <span />
+            {% endmatch %}
+        </a>
+    </div>
+    {% endfor %}
+</div>

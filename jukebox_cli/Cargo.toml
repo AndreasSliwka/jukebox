@@ -1,0 +1,20 @@
+[package]
+name = "jukebox_cli"
+version = "0.1.0"
+edition = "2024"
+
+[[bin]]
+name = "show_songs"
+path = "src/cli/show_songs.rs"
+
+[[bin]]
+name = "insert_song"
+path = "src/cli/insert_song.rs"
+
+[[bin]]
+name = "import_songs_from_directory"
+path = "src/cli/import_songs_from_directory.rs"
+
+[dependencies]
+jukebox_db = { path = "../jukebox_db" }
+regex = "1.12.3"

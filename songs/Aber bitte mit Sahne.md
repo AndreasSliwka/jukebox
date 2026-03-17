@@ -1,12 +1,13 @@
 {t:Aber bitte mit Sahne}
 {artist:Udo Jürgens}
 
-Sie treffen sich täglich um viertel nach drei,
+[Intro]
+Sie [F]treffen sich täglich um viertel nach drei, oh oh [Bb]oh, oh [F]yeah
 Am Stammtisch im Eck in der Konditorei,
-Und blasen zum Sturm auf das Kuchenbuffet
-Auf Schwarzwälder Kirsch und auf Sahne-Baiser
-Auf Früchteeis, Ananas, Kirsch und Banane
-Aber bitte mit Sahne (aber bitte mit Sahne)
+Und [Bb]blasen zum Sturm auf das [F]Kuchenbuffet
+Auf [Bb]Schwarzwälder Kirsch und auf [C]Sahne-Baiser
+Auf [F]Früchteeis, [F/A]Ananas, [Bb]Kirsch und Banane [Bb] [B] [C]
+Aber bitte mit [F]Sahne (aber bitte mit Sahne)
 
 Sie schwatzen und schmatzen, dann holen sie sich,
 Noch Buttercremetorte und Bienenstich,
@@ -32,7 +33,3 @@ Aber bitte mit Sahne (aber bitte mit Sahne)
 Noch ein Tässchen Kaffee? (Aber bitte mit Sahne)
 Noch ein kleines Baiser? (Aber bitte mit Sahne)
 Oder soll's vielleicht doch ein Keks sein? (Aber bitte mit Sahne)
-
-{tempo:120}
-
-{scrollspeed:6}

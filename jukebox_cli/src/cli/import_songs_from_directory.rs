@@ -4,7 +4,7 @@ use std::env;
 use std::fs;
 use std::process::exit;
 
-fn get_director_from_command_line() -> String {
+fn get_directory_from_command_line() -> String {
     let args: Vec<String> = env::args().collect();
     println!("args.len() = {}", args.len());
     if args.len() < 2 {
@@ -56,16 +56,19 @@ fn get_artist<'a>(content: &'a String) -> Option<&'a str> {
 }
 fn main() {
     let mut connection = jukebox_db::establish_single_connection();
-    let source_dir = get_director_from_command_line();
+    let source_dir = get_directory_from_command_line();
     let song_files = get_songs_files_from_directory(source_dir);
-    for song_file in song_files {
-        let maybe_content = fs::read_to_string(song_file.clone());
+    if song_files.len() > 0 {
+        delete_all_songs(&mut connection);
+        for song_file in song_files {
+            let maybe_content = fs::read_to_string(song_file.clone());
 
-        if let Ok(content) = maybe_content {
-            let title: &str = get_title(song_file.as_str(), &content);
+            if let Ok(content) = maybe_content {
+                let title: &str = get_title(song_file.as_str(), &content);
 
-            let artist: Option<&str> = get_artist(&content);
-            let _song = create_song(&mut connection, title, artist, Some(content.as_str()));
+                let artist: Option<&str> = get_artist(&content);
+                let _song = create_song(&mut connection, title, artist, Some(content.as_str()));
+            }
         }
     }
 }

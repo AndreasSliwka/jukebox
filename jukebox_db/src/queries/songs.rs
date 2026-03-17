@@ -39,3 +39,9 @@ pub fn create_song(
         .get_result(conn)
         .expect("Error saving new post")
 }
+
+pub fn delete_all_songs(conn: &mut SqliteConnection) -> () {
+    use crate::schema::songs::dsl::*;
+
+    let _ = diesel::delete(songs).execute(conn);
+}

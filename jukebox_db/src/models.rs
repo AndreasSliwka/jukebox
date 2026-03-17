@@ -20,6 +20,27 @@ pub struct SimplifiedSong {
     pub title: String,
     pub artist: Option<String>,
 }
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SongWithLink {
+    pub id: i32,
+    pub title: String,
+    pub artist: Option<String>,
+    pub link: String,
+}
+fn link_to_song(song_id: i32) -> String {
+    format!("/songs/{}", song_id)
+}
+
+impl SongWithLink {
+    pub fn from(simplified: &SimplifiedSong) -> Self {
+        Self {
+            id: simplified.id,
+            title: simplified.title.clone(),
+            artist: simplified.artist.clone(),
+            link: link_to_song(simplified.id),
+        }
+    }
+}
 
 #[derive(Insertable)]
 #[diesel(table_name = songs)]
