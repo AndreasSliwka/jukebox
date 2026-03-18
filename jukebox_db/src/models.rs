@@ -20,6 +20,7 @@ pub struct SimplifiedSong {
     pub title: String,
     pub artist: Option<String>,
 }
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SongWithLink {
     pub id: i32,

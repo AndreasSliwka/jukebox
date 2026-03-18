@@ -3,8 +3,10 @@ mod templates;
 use actix_web::http::header::ContentType;
 use actix_web::{App, HttpResponse, HttpServer, Responder, get, web};
 use askama::Template;
+use chord_down;
 use diesel::{prelude::*, r2d2};
 use jukebox_db::{self, models::SongWithLink};
+use ron;
 
 type DbPool = r2d2::Pool<r2d2::ConnectionManager<SqliteConnection>>;
 
@@ -39,12 +41,22 @@ async fn single_song(path: web::Path<i32>, pool: web::Data<DbPool>) -> impl Resp
     let song_id = path.into_inner();
     match jukebox_db::song_by_id(&mut connection, song_id) {
         None => HttpResponse::NotFound().body("nope"),
-        Some(song) => HttpResponse::Ok()
-            .content_type(ContentType::plaintext())
-            .body(
-                song.lyrics_as_chordpro
-                    .unwrap_or(String::from(" nothing here ")),
-            ),
+        Some(song) => {
+            if let Some(lyrics) = song.lyrics_as_chordpro {
+                use ron::ser::{PrettyConfig, to_string_pretty};
+
+                let structured_lyrics = chord_down::Song::parse(lyrics.clone());
+                let ron_lyrics =
+                    to_string_pretty(&structured_lyrics, PrettyConfig::default()).unwrap();
+
+                println!("ron says: {}", ron_lyrics);
+                HttpResponse::Ok()
+                    .content_type(ContentType::plaintext())
+                    .body(lyrics)
+            } else {
+                HttpResponse::FailedDependency().body("No lyrics found")
+            }
+        }
     }
 }
 
