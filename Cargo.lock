@@ -912,8 +912,10 @@ dependencies = [
 name = "jukebox_db"
 version = "0.1.0"
 dependencies = [
+ "chord_down",
  "diesel",
  "dotenvy",
+ "ron",
  "serde",
 ]
 

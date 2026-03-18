@@ -1,0 +1,29 @@
+<div class="Song">
+    <h1>{{song.title}}</h1>
+    <h3>{{song.artist}}</h3>
+    {% for block in song.document.blocks %}
+        {% let newline = "\n" %}
+        {% match block %}
+            {% when Block::Part(song_part) %}
+                <h4>{{song_part.name}}</h4>
+                    {% for line in song_part.lines %}
+                        <div>
+                            {% for element in line.elements %}
+                                {% match element %}
+                                    {% when LineElement::Text(text) %}
+                                        <span>{{text}}</text>
+                                    {% when LineElement::Chord(text) %}
+                                        <sup class="chord">{{text}}</sup>
+                                {% endmatch %}
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+            {% when Block::Tabulatur(lines) %}
+                <pre class="tabulatur">{%- for line in lines %}{{- line }}{{ newline }}{% endfor %}</pre>
+            {% when Block::Grid(lines) %}
+                <pre class="grid">{%- for line in lines %}{{- line }}{{ "\n" }}{% endfor %}</pre>
+            {% when Block::Unknown(lines) %}
+                <pre class="unknown">{%- for line in lines %}{{- line }}{{ "\n" }}{% endfor %}</pre>
+        {% endmatch %}
+    {% endfor %}
+</div>

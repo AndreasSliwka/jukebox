@@ -1,6 +1,7 @@
 use crate::models::{NewSong, SimplifiedSong, Song};
+use chord_down;
 use diesel::prelude::*;
-
+use ron;
 pub fn all_songs(connection: &mut SqliteConnection) -> Vec<SimplifiedSong> {
     SimplifiedSong::query()
         .order_by(crate::schema::songs::title.asc())
@@ -24,13 +25,18 @@ pub fn create_song(
     conn: &mut SqliteConnection,
     title: &str,
     artist: Option<&str>,
-    lyrics_as_chordpro: Option<&str>,
+    markdown: &str,
 ) -> Song {
     use crate::schema::songs;
+
+    let song = chord_down::Song::parse(&(markdown.to_string()));
+    let chord_pro = ron::ser::to_string(&song).unwrap();
+    let serialized_chord_pro = chord_pro.as_str();
     let new_song = NewSong {
         title,
         artist,
-        lyrics_as_chordpro,
+        markdown,
+        serialized_chord_pro,
     };
 
     diesel::insert_into(songs::table)

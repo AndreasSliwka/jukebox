@@ -9,7 +9,8 @@ pub struct Song {
     pub id: i32,
     pub title: String,
     pub artist: Option<String>,
-    pub lyrics_as_chordpro: Option<String>,
+    pub markdown: String,
+    pub serialized_chord_pro: String,
 }
 
 #[derive(Debug, Clone, Serialize, HasQuery)]
@@ -48,7 +49,8 @@ impl SongWithLink {
 pub struct NewSong<'a> {
     pub title: &'a str,
     pub artist: Option<&'a str>,
-    pub lyrics_as_chordpro: Option<&'a str>,
+    pub markdown: &'a str,
+    pub serialized_chord_pro: &'a str,
 }
 
 #[derive(Insertable)]

@@ -1,6 +1,5 @@
 use regex::Regex;
 use ron;
-use ron::value::Value;
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, sync::LazyLock};
 
@@ -51,10 +50,10 @@ pub struct Document {
     pub blocks: Vec<Block>,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct Song {
-    pub title: Option<String>,
-    pub artist: Option<String>,
+    pub title: String,
+    pub artist: String,
     pub manual_meta: HashMap<String, String>,
     pub document: Document,
 }
@@ -66,6 +65,8 @@ struct ParsingState {
     in_grid: bool,
     last_part_name: Option<String>,
     last_line_blank: bool,
+    title_found: bool,
+    artist_found: bool,
 }
 
 impl ParsingState {
@@ -76,6 +77,8 @@ impl ParsingState {
             in_grid: false,
             last_part_name: None,
             last_line_blank: false,
+            title_found: false,
+            artist_found: false,
         }
     }
 }
@@ -114,7 +117,8 @@ fn should_set_part_name(line: &str) -> Option<String> {
 
     // Outros, Intros, everything written as
     // [Blockname]
-    static RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^\[(\w{5,})\]*$").unwrap());
+    static RE: LazyLock<Regex> =
+        LazyLock::new(|| Regex::new(r"^\{comment:\s*(\w+)\}\s*$").unwrap());
     if let Some(captures) = RE.captures(line) {
         return Some(captures[1].to_string());
     };
@@ -123,8 +127,8 @@ fn should_set_part_name(line: &str) -> Option<String> {
 impl Song {
     fn empty() -> Self {
         Song {
-            title: None,
-            artist: None,
+            title: String::from("undef"),
+            artist: String::from("undef"),
             manual_meta: HashMap::new(),
             document: Document { blocks: vec![] },
         }
@@ -178,7 +182,7 @@ impl Song {
             lines: vec![],
         }));
         state.last_part_name = Some(part_name);
-        state.in_a_block = false;
+        state.in_a_block = true;
         state.last_line_blank = false;
     }
 
@@ -186,10 +190,16 @@ impl Song {
         self.start_part(String::from("(undef)"), state)
     }
 
-    fn set_meta_key_value(&mut self, key: String, value: String) -> () {
+    fn set_meta_key_value(&mut self, key: String, value: String, state: &mut ParsingState) -> () {
         match key.as_str() {
-            "t" | "tit" | "title" => self.title = Some(value),
-            "a" | "art" | "artist" | "st" | "subtitle" => self.artist = Some(value),
+            "t" | "tit" | "title" => {
+                state.title_found = true;
+                self.title = value;
+            }
+            "a" | "art" | "artist" | "st" | "subtitle" => {
+                state.artist_found = true;
+                self.artist = value;
+            }
             _ => {
                 self.manual_meta.insert(key, value);
                 ()
@@ -230,13 +240,13 @@ impl Song {
         } else if should_start_grid(line) {
             self.start_grid(state);
         }
-
-        if let Some((key, value)) = should_set_meta_key_value(line) {
-            return self.set_meta_key_value(key, value);
-        }
         if let Some(part_name) = should_set_part_name(line) {
             return self.start_part(part_name, state);
         }
+        if let Some((key, value)) = should_set_meta_key_value(line) {
+            return self.set_meta_key_value(key, value, state);
+        }
+
         if line == "" {
             return self.handle_empty_line(state);
         }
@@ -245,7 +255,7 @@ impl Song {
         }
         self.add_line_to_latest_part(line, state);
     }
-    pub fn parse(source: String) -> Self {
+    pub fn parse(source: &String) -> Self {
         let mut song = Song::empty();
         let mut state = ParsingState::new();
         for line in source.lines() {
@@ -254,7 +264,7 @@ impl Song {
         song
     }
 
-    pub fn as_ron(&self) -> Value {
-        Value::Unit
+    pub fn from_ron(stuff: String) -> Self {
+        ron::from_str(&stuff).unwrap()
     }
 }

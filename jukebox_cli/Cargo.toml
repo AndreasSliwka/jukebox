@@ -8,10 +8,6 @@ name = "show_songs"
 path = "src/cli/show_songs.rs"
 
 [[bin]]
-name = "insert_song"
-path = "src/cli/insert_song.rs"
-
-[[bin]]
 name = "import_songs_from_directory"
 path = "src/cli/import_songs_from_directory.rs"
 
