@@ -4,9 +4,9 @@ use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, sync::LazyLock};
 
 #[derive(Deserialize, Serialize, Debug)]
-pub enum LineElement {
-    Text(String),
-    Chord(String),
+pub struct LineElement {
+    pub lyrics: String,
+    pub chord: Option<String>,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
@@ -22,13 +22,32 @@ impl Line {
                 continue;
             }
             if let Some(captures) = RE.captures(part) {
-                elements.push(LineElement::Chord(captures[1].to_string()));
-                elements.push(LineElement::Text(captures[2].to_string()));
+                elements.push(LineElement {
+                    lyrics: captures[2].to_string(),
+                    chord: Some(captures[1].to_string()),
+                });
             } else {
-                elements.push(LineElement::Text(part.to_string()));
+                elements.push(LineElement {
+                    lyrics: part.to_string(),
+                    chord: None,
+                });
             }
         }
         Line { elements }
+    }
+    pub fn has_both_lyrics_and_chords(&self) -> bool {
+        let mut has_lyrics = false;
+        let mut has_chords = false;
+        for element in self.elements.iter() {
+            if "" != element.lyrics {
+                has_lyrics = true
+            }
+            match element.chord {
+                Some(_) => has_chords = true,
+                _ => (),
+            }
+        }
+        has_lyrics && has_chords
     }
 }
 #[derive(Deserialize, Serialize, Debug)]

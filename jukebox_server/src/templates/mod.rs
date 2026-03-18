@@ -1,5 +1,5 @@
 use askama::Template;
-use chord_down::{Block, LineElement, Song};
+use chord_down::{Block, Song};
 use jukebox_db::models::SongWithLink;
 
 #[derive(Template)]
