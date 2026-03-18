@@ -11,11 +11,12 @@
   * parse chordpro file as JSON
     * !!! rust package chordpro reformates [Bb] to [Asharp], nope.
     * 
+* find simple method to make chords be floating superscription, e.g. as guitartab.com does
+* convert MD files to HTML
+* serve Songs in MD files as HTTP files
 ------>&-------------------------------------
 
-* find simple method to make chords be floating superscription, e.g. as guitartab.com does
-* convert MD files to HTTP 
-* serve Songs in MD files as HTTP files ?? from JSON?
+
 * add basic auth
 
 
