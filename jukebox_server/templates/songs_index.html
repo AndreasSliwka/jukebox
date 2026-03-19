@@ -1,15 +1,20 @@
-<div class="listcontainer">
+{% extends "base.html" %} {% block content %}
+<table class="listcontainer">
+    <tr>
+        <th>Name</th>
+        <th>Artist</th>
+    </tr>
     {% for song in songs %}
-    <div class="song">
-        <a href="{{song.link}} ">
-            <span class="song_id">{{ song.id }}</span>
-            <span class="title">{{song.title}}</span>
+    <tr class="align-top" href="{{song.link}} ">
+
+            <td class="align-top"><a href="{{song.link}} ">{{song.title}}</a></td>
             {% match song.artist %} {% when Some with (artist) %}
-            <span class="artist">{{ artist }}</span>
-            {% when _ %}
-            <span />
+            <td class="align-top">{{ artist }}</td>
+            {% else %}
+            <td />
             {% endmatch %}
         </a>
-    </div>
+    </tr>
     {% endfor %}
-</div>
+</table>
+{% endblock content %}

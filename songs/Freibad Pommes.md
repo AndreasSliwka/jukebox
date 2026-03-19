@@ -1,5 +1,5 @@
 {title:Freibad Pommes}
-{artist:Lied von Kapelle Petra}
+{artist:Kapelle Petra}
 {key:G}
 
 [G]Komm wir fahren heut' mit dem Rad

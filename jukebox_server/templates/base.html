@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link href="/static/jukebox.css" rel="stylesheet" />
+        <link rel="icon" type="image/x-icon" href="/static/favicon_64x64.ico" />
+        <script defer src="/static/alpine_3.15.8.js"></script>
+    </head>
+    <body>
+        <header
+            class="z-10 h-10 text-[1.7em] text-center align-middle bg-amber-200 flex flex-row fixed top-0 right-0 left-0"
+        >
+            <div class="h-fit w-14 flex-none">
+                {% block upper_right_button %} 🔥 {% endblock %}
+            </div>
+            <div id="apptitle" class="flex-auto">Jukebox</div>
+            <div id="menu_trigger" class="w-14 flex-none">🎙</div>
+        </header>
+        <div id="placeholder_under_header" class="h-11"></div>
+        <main class="">{% block content %}{% endblock content %}</main>
+        <div id="placeholder_under_footer" class="h-11"></div>
+    </body>
+</html>

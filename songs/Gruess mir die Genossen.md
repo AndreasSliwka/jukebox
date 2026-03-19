@@ -1,5 +1,5 @@
 {title:Grüß mir die Genossen}
-{artist:Lied von Marius Müller-Westernhagen}
+{artist:Marius Müller-Westernhagen}
 [Intro] 
 [E] [C] [A] 
 

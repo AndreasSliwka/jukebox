@@ -1,31 +1,48 @@
+{% extends "base.html" %} {% block upper_right_button %}
+<a href="/songs" class="button"> ↩ </a>
+{% endblock %} {% block content %}
 <div class="Song">
     <h1>{{song.title}}</h1>
     <h3>{{song.artist}}</h3>
-    {% for block in song.document.blocks %}
-        {% let newline = "\n" %}
-        {% match block %}
-            {% when Block::Part(song_part) %}
-                <h4>{{song_part.name}}</h4>
-                    {% for line in song_part.lines %}
-                        {% let has_both_lyrics_and_chords = line.has_both_lyrics_and_chords() %}
-                        <div class="line" style="{% if has_both_lyrics_and_chords %}line-height: 2.3{% endif %}" >
-                        {% for element in line.elements %}
+    {% for block in song.document.blocks %} {% let newline = "\n" %} {% match
+    block %} {% when Block::Part(song_part) %}
+    <h4>{{song_part.name}}</h4>
+    {% for line in song_part.lines %} {% let has_both_lyrics_and_chords =
+    line.has_both_lyrics_and_chords() %}
+    <div
+        class="line"
+        style="{% if has_both_lyrics_and_chords %}line-height: 2.3{% endif %}"
+    >
+        {% for element in line.elements %}
 
-                            <span class="lyrics" style="display: inline-block; position: relative">
-                                {% if let Some(chord) = element.chord %}
-                                    <span style="position: absolute; display: inline-block; width: 120px;  top: -2ex ; font-weight: bold">{{chord}}</span>
-                                {% endif%}
-                                {{element.lyrics}}
-                            </span>
-                        {% endfor %}
-                        </div>
-                    {% endfor %}
-            {% when Block::Tabulatur(lines) %}
-                <pre class="tabulatur">{%- for line in lines %}{{- line }}{{ newline }}{% endfor %}</pre>
-            {% when Block::Grid(lines) %}
-                <pre class="grid">{%- for line in lines %}{{- line }}{{ "\n" }}{% endfor %}</pre>
-            {% when Block::Unknown(lines) %}
-                <pre class="unknown">{%- for line in lines %}{{- line }}{{ "\n" }}{% endfor %}</pre>
-        {% endmatch %}
-    {% endfor %}
+        <span class="lyrics" style="display: inline-block; position: relative">
+            {% if let Some(chord) = element.chord %}
+            <span
+                style="
+                    position: absolute;
+                    display: inline-block;
+                    width: 120px;
+                    top: -2ex;
+                    font-weight: bold;
+                "
+                >{{chord}}</span
+            >
+            {% endif%} {{element.lyrics}}
+        </span>
+        {% endfor %}
+    </div>
+    {% endfor %} {% when Block::Tabulatur(lines) %}
+    <pre class="tabulatur">
+{%- for line in lines %}{{- line }}{{ newline }}{% endfor %}</pre
+    >
+    {% when Block::Grid(lines) %}
+    <pre class="grid">
+{%- for line in lines %}{{- line }}{{ "\n" }}{% endfor %}</pre
+    >
+    {% when Block::Unknown(lines) %}
+    <pre class="unknown">
+{%- for line in lines %}{{- line }}{{ "\n" }}{% endfor %}</pre
+    >
+    {% endmatch %} {% endfor %}
 </div>
+{% endblock content %}

@@ -23,3 +23,35 @@
 
 
 # PWA - Progressive Web App
+
+
+
+# sketches
+
+## songlist
+```verbatim
+#-------------------------------#
+| Logo  TJGSE Jukebox       |...|
+|-------------------------------|
+| Name v           Artist       |
+| Song1            Artist1      |
+| Song2            Artist2      |
+| Song3            Artist1      |
+| Song4            Artist3      |
+| Song5            Artist4      |
+| Song6            Artist1      |
+|                               |
+|------|---------|-------|------|
+| Find | Contact | Whats |            |
+| Song | Andreas | This? |      |
+#------|---------|-------|------#
+```
+
+```verbatim
+...
+|------|---------|-------|---(X)|
+| ┌──────────────────────╦════╗ |
+| │ statue high          ║ Go ║ |
+| └──────────────────────╩════╝ |
+#------|---------|-------|------#
+```

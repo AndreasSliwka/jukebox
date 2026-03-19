@@ -1,6 +1,6 @@
 {key:D}
 {title:Besuchen Sie Europa (solange es noch steht)}
-{artist:Lied von Geier Sturzflug}
+{artist:Geier Sturzflug}
 
 Wenn im Canale Grande U-Boote vor Anker gehen
 Und auf dem Petersplatz in Rom Raketenabschussrampen stehen
