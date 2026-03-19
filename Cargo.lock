@@ -573,6 +573,7 @@ dependencies = [
  "downcast-rs",
  "libsqlite3-sys",
  "r2d2",
+ "serde_json",
  "sqlite-wasm-rs",
  "time",
 ]
@@ -1055,6 +1056,7 @@ dependencies = [
  "dotenvy",
  "ron",
  "serde",
+ "serde_json",
 ]
 
 [[package]]
@@ -1068,6 +1070,7 @@ dependencies = [
  "diesel",
  "env_logger",
  "jukebox_db",
+ "querystring",
  "r2d2",
  "regex",
  "ron",
@@ -1284,6 +1287,12 @@ checksum = "8fd00f0bb2e90d81d1044c2b32617f68fcb9fa3bb7640c23e9c748e53fb30934"
 dependencies = [
  "unicode-ident",
 ]
+
+[[package]]
+name = "querystring"
+version = "1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9318ead08c799aad12a55a3e78b82e0b6167271ffd1f627b758891282f739187"
 
 [[package]]
 name = "quote"

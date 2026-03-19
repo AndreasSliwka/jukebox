@@ -73,6 +73,7 @@ pub struct Document {
 pub struct Song {
     pub title: String,
     pub artist: String,
+    pub tags: Vec<String>,
     pub manual_meta: HashMap<String, String>,
     pub document: Document,
 }
@@ -148,6 +149,7 @@ impl Song {
         Song {
             title: String::from("undef"),
             artist: String::from("undef"),
+            tags: vec![],
             manual_meta: HashMap::new(),
             document: Document { blocks: vec![] },
         }
@@ -218,6 +220,16 @@ impl Song {
             "a" | "art" | "artist" | "st" | "subtitle" => {
                 state.artist_found = true;
                 self.artist = value;
+            }
+            "tags" => {
+                let mut new_tags: Vec<String> = value
+                    .as_str()
+                    .to_lowercase()
+                    .split(',')
+                    .map(str::trim)
+                    .map(|str| String::from(str))
+                    .collect();
+                self.tags.append(&mut new_tags);
             }
             _ => {
                 self.manual_meta.insert(key, value);

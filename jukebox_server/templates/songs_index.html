@@ -1,8 +1,21 @@
 {% extends "base.html" %} {% block content %}
 <table class="listcontainer">
     <tr>
-        <th>Name</th>
-        <th>Artist</th>
+        <th>
+            {% match song_list_order %}
+
+            {% when SongListOrder::TitleAsc %} <a href="?sort=title_desc">Title ⌄</a>
+            {% when SongListOrder::TitleDesc %} <a href="?sort=title_asc">Title ˄</a>
+            {% else %} <a href="?sort=title_asc">Title &nbsp;</a>
+            {% endmatch %}
+        </th>
+        <th>
+            {% match song_list_order %}
+            {% when SongListOrder::ArtistAsc %} <a href="?sort=artist_desc"> Artist ⌄</a>
+            {% when SongListOrder::ArtistDesc %} <a href="?sort=artist_asc"> Artist ˄</a>
+            {% else %} <a href="?sort=artist_asc">Artist &nbsp;</a>
+            {% endmatch %}
+        </th>
     </tr>
     {% for song in songs %}
     <tr class="align-top" href="{{song.link}} ">

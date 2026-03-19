@@ -1,5 +1,6 @@
 {t:Re-A-Li-Tät}
 {artist:Andreas Sliwka/YMCA}
+{tags: private}
 
 [C]Du da, mit dem glitzernden Hut
 genau [a]Du da, ja der steht dir sehr gut

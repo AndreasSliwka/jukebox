@@ -2,11 +2,43 @@ use crate::models::{NewSong, SimplifiedSong, Song};
 use chord_down;
 use diesel::prelude::*;
 use ron;
-pub fn all_songs(connection: &mut SqliteConnection) -> Vec<SimplifiedSong> {
-    SimplifiedSong::query()
-        .order_by(crate::schema::songs::title.asc())
-        .load(connection)
-        .expect("Error loading songs")
+use serde::{Deserialize, Serialize};
+
+#[derive(Clone, Copy, Serialize, Deserialize)]
+pub enum SongListOrder {
+    TitleAsc,
+    TitleDesc,
+    ArtistAsc,
+    ArtistDesc,
+}
+
+pub fn all_songs(
+    connection: &mut SqliteConnection,
+    order: SongListOrder,
+    search: Option<String>,
+) -> Vec<SimplifiedSong> {
+    use crate::schema::songs::dsl::*;
+    let query = SimplifiedSong::query().filter(tags.not_like("%\"private\"%"));
+    let query = if let Some(term) = search {
+        query.filter(title.like(format!("%{}%", term)))
+    } else {
+        query.filter(title.like(String::from("%")))
+    };
+    match order {
+        SongListOrder::TitleDesc => query
+            .order(crate::schema::songs::title.desc())
+            .load(connection),
+        SongListOrder::TitleAsc => query
+            .order(crate::schema::songs::title.asc())
+            .load(connection),
+        SongListOrder::ArtistAsc => query
+            .order(crate::schema::songs::artist.asc())
+            .load(connection),
+        SongListOrder::ArtistDesc => query
+            .order(crate::schema::songs::artist.desc())
+            .load(connection),
+    }
+    .expect("Error loading songs")
 }
 
 pub fn song_by_id(connection: &mut SqliteConnection, song_id: i32) -> Option<Song> {
@@ -30,11 +62,13 @@ pub fn create_song(
     use crate::schema::songs;
 
     let song = chord_down::Song::parse(&(markdown.to_string()));
+    let tags = serde_json::to_string(&song.tags).unwrap_or(String::from("[]"));
     let chord_pro = ron::ser::to_string(&song).unwrap();
     let serialized_chord_pro = chord_pro.as_str();
     let new_song = NewSong {
         title,
         artist,
+        tags,
         markdown,
         serialized_chord_pro,
     };

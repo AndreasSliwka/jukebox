@@ -14,9 +14,12 @@
 * find simple method to make chords be floating superscription, e.g. as guitartab.com does
 * convert MD files to HTML
 * serve Songs in MD files as HTTP files
+* include static files in binary
+  * !!!may be possible, but relies on build.rs an somehow breaks the language-server
 ------>&-------------------------------------
-
-
+* add tags to persisted Songs
+  * add dedicated field for tags so songs can be filtered
+  * remove my own songs from the normal listing
 * add basic auth
 
 

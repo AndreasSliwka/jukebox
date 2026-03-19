@@ -1,5 +1,5 @@
 {title: Guten Morgen liebe Sorgen}
-{artist:Andreas Sliwka}
+{artist: Jürgen von der Lippe}
 
 Guten Morgen
 Liebe Sorgen

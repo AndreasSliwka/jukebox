@@ -1,5 +1,7 @@
 {t:Winter ohne Schubidu}
 {artist:Andreas Sliwka / Mariah Carey}
+{tags: private, weihnachten}
+
 [G]Jedes jahr die gleiche Leier
 [G/B]Sommer, Wasser, Sonnenmilch
 [C]Eine Arschbombe vom Dreier

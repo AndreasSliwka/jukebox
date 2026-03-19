@@ -1,5 +1,6 @@
 {t:Letzte Strassenbahn}
 {artist:Andreas Sliwka}
+{tags: private}
 
 [Instrumental (wie Strophe)]
 Ich sitze [C]nachts in der [h]leeren [F]Straßen-[C]bahn

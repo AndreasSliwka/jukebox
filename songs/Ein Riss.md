@@ -1,5 +1,6 @@
 {t:Ein Riss}
 {artist:Andreas Sliwka}
+{tags: private}
 
   Durch [C]Deutschland geht ein [F]Riss, 	/	keiner [G]weiss mehr was ge-[C]schieht,
     denn die [C]Einen haben [F]iPhones 	/	und die [G]And'ren Andro-[C]id

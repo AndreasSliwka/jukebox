@@ -1,5 +1,6 @@
 {t:Nobles Schweigen}
 {artist:Andreas Sliwka}
+{tags: private}
 
 [G]Immer [D/F#]wenn ich an dich [e]denke,
 [G]und dir [D/F#]eine Nachricht [e]schreib’,

@@ -1,5 +1,6 @@
 {t:Eigentlich}
 {artist:Andreas Sliwka}
+{tags: private}
 
 Du hast ein [C]Lächeln wie ein [e7]Gänse-[F]blümchen,
 Und eine [C]Lache wie ein [e7]Banküber[F]fall,

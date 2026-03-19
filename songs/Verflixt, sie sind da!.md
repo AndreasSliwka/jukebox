@@ -1,5 +1,7 @@
 {t:Verflixt, sie sind da!}
 {artist:Andreas Sliwka / José Feliciano}
+{tags: private, weihnachten}
+
 [Akkorde: am D G em / am D G G ]
 
 Verflixt, Sie sind da! Verflixt, Sie sind da!

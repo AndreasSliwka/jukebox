@@ -1,5 +1,6 @@
 {t:Schwerkraft}
 {artist:Andreas Sliwka}
+{tags: private}
 
 [Intro]
 Du hast mir gesagt / Fliegen ist gar nicht so schwer

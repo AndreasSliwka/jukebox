@@ -1,19 +1,39 @@
 mod templates;
 
 use actix_files::Files;
-use actix_web::error;
 use actix_web::http::header::ContentType;
 use actix_web::{App, HttpResponse, HttpServer, Responder, get, web};
+use actix_web::{HttpRequest, error};
 use askama::Template;
 use diesel::{prelude::*, r2d2};
-use jukebox_db::{self, models::SongWithLink};
+use jukebox_db::{self, SongListOrder, models::SongWithLink};
+use querystring;
 
 type DbPool = r2d2::Pool<r2d2::ConnectionManager<SqliteConnection>>;
 
+fn parse_query(query: &str) -> SongListOrder {
+    for (key, value) in querystring::querify(query) {
+        if key == "sort" {
+            return match value {
+                "title_desc" => SongListOrder::TitleDesc,
+                "artist_asc" => SongListOrder::ArtistAsc,
+                "artist_desc" => SongListOrder::ArtistDesc,
+                _ => SongListOrder::TitleAsc,
+            };
+        }
+    }
+    SongListOrder::TitleAsc
+}
+
 #[get("/songs{tail:.*}")]
-async fn songs(path: web::Path<String>, pool: web::Data<DbPool>) -> impl Responder {
+async fn songs(
+    path: web::Path<String>,
+    request: HttpRequest,
+    pool: web::Data<DbPool>,
+) -> impl Responder {
+    let song_list_order = parse_query(request.query_string());
     let mut connection = pool.get().expect("could not get connection");
-    let songs_without_links = jukebox_db::all_songs(&mut connection);
+    let songs_without_links = jukebox_db::all_songs(&mut connection, song_list_order, None);
     let songs_with_links: Vec<SongWithLink> = songs_without_links
         .iter()
         .map(|song| SongWithLink::from(song))
@@ -24,6 +44,7 @@ async fn songs(path: web::Path<String>, pool: web::Data<DbPool>) -> impl Respond
         "" => {
             let template = templates::SongsIndexTemplate {
                 songs: songs_with_links,
+                song_list_order,
             };
             let html = template.render().unwrap();
             HttpResponse::Ok()

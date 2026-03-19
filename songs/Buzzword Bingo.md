@@ -1,5 +1,6 @@
 {t:Buzzword Bingo}
 {artist:Andreas Sliwka}
+{tags: private}
 
 [Intro]
 {sot}

@@ -1,5 +1,6 @@
 {title:Winters dance}
 {artist:Andreas Sliwka}
+{tags: private}
 
 [Verse One]
 It [a]started so [C]easy as [d]light as a [F]breeze
