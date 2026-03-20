@@ -1,0 +1,39 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link href="/static/jukebox.css" rel="stylesheet" />
+        <link rel="icon" type="image/x-icon" href="/static/favicon_64x64.ico" />
+        <script defer src="/static/alpine_3.15.8.js"></script>
+        <script>
+            window.setTimeout(() => {
+                window.document.getElementById("blackout").click();
+            }, 500);
+        </script>
+    </head>
+    <body x-data="{ open: true }">
+        <div
+            class="fixed top-0 right-0 left-0 bottom-0 bg-amber-300 text-center"
+            x-on:click="window.document.getElementById('goto_songs').click()"
+        >
+            <div class="text-1x1">
+                THE JOHN GRÜN SLIWKA EXPERIENCE PRESENTS:
+            </div>
+            <a href="/songs" id="goto_songs"
+                ><img
+                    style="width: 100%; object-fit: contain"
+                    src="/static/icon.png"
+            /></a>
+            <div class="text-2xl">THE LAGERFEUER EXTREME</div>
+            <div class="text-3xl">JUKEBOX</div>
+        </div>
+        <div
+            id="blackout"
+            @click="open = ! open"
+            x-show="open"
+            x-transition.duration.500ms
+            class="fixed top-0 right-0 left-0 bottom-0 bg-black"
+        >
+            &nbsp;
+        </div>
+    </body>
+</html>
