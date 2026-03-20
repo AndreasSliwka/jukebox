@@ -1,25 +1,23 @@
 {% extends "base.html" %} {% block content %}
-<table class="listcontainer">
+<table id="songlist">
     <tr>
         <th>
             {% match song_list_order %}
-
-            {% when SongListOrder::TitleAsc %} <a href="?sort=title_desc">Title ⌄</a>
-            {% when SongListOrder::TitleDesc %} <a href="?sort=title_asc">Title ˄</a>
-            {% else %} <a href="?sort=title_asc">Title &nbsp;</a>
+            {% when SongListOrder::TitleAsc %} <a href="?sort=title_desc">Title ↓</a>
+            {% when SongListOrder::TitleDesc %} <a href="?sort=title_asc">Title ↑</a>
+            {% else %} <a href="?sort=title_asc">Title &nbsp;&nbsp;</a>
             {% endmatch %}
         </th>
         <th>
             {% match song_list_order %}
-            {% when SongListOrder::ArtistAsc %} <a href="?sort=artist_desc"> Artist ⌄</a>
-            {% when SongListOrder::ArtistDesc %} <a href="?sort=artist_asc"> Artist ˄</a>
-            {% else %} <a href="?sort=artist_asc">Artist &nbsp;</a>
+            {% when SongListOrder::ArtistAsc %} <a href="?sort=artist_desc"> Artist ↓</a>
+            {% when SongListOrder::ArtistDesc %} <a href="?sort=artist_asc"> Artist ↑</a>
+            {% else %} <a href="?sort=artist_asc">Artist &nbsp;&nbsp;</a>
             {% endmatch %}
         </th>
     </tr>
     {% for song in songs %}
-    <tr class="align-top" href="{{song.link}} ">
-
+    <tr id="song-{{song.id}}" class="align-top" href="{{song.link}}" data-name="{{song.title.to_lowercase()}}">
             <td class="align-top"><a href="{{song.link}} ">{{song.title}}</a></td>
             {% match song.artist %} {% when Some with (artist) %}
             <td class="align-top">{{ artist }}</td>
@@ -30,4 +28,15 @@
     </tr>
     {% endfor %}
 </table>
+<div class="bg-amber-200 flex flex-row p-1" x-data="{ search: ''}">
+    <input
+        type="text"
+        name="search "
+        enterkeyhint="search"
+        placeholder="Finde Lieder!"
+        x-model="search"
+        @change="filterTable($event.target.value)"
+        class="flex-auto p-0.5 border-amber-900 border-2"
+    />
+</div>
 {% endblock content %}

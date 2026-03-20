@@ -4,19 +4,45 @@
         <link href="/static/jukebox.css" rel="stylesheet" />
         <link rel="icon" type="image/x-icon" href="/static/favicon_64x64.ico" />
         <script defer src="/static/alpine_3.15.8.js"></script>
+        <script defer src="/static/jukebox.js"></script>
     </head>
     <body>
         <header
-            class="z-10 h-10 text-[1.7em] text-center align-middle bg-amber-200 flex flex-row fixed top-0 right-0 left-0"
+            x-data="{ menu: false }"
+            class="z-10 h-10 text-[1.7em] align-middle bg-amber-200 fixed top-0 right-0 left-0"
         >
-            <div class="h-fit w-14 flex-none">
-                {% block upper_right_button %} 🔥 {% endblock %}
+            <div class="h-10 text-center relative bg-amber-200 left-0">
+                <span class="absolute left-0">
+                    {% block upper_right_button %} 🔥 {% endblock %}
+                </span>
+                Jukebox
+                <span
+                    id="menu_trigger"
+                    class="absolute right-0"
+                    @click="menu = ! menu"
+                >
+                    &nbsp;≡&nbsp;
+                </span>
             </div>
-            <div id="apptitle" class="flex-auto">Jukebox</div>
-            <div id="menu_trigger" class="w-14 flex-none">🎙</div>
+            <div
+                x-show="menu"
+                x-transition.duration.500ms
+                class="bg-amber-200 pl-2 pr-2 border-l-2 border-b-2 float-right"
+            >
+                <label x-data="{ show_chords: true}"
+                    ><input
+                        type="checkbox"
+                        name="chords"
+                        x-model="show_chords"
+                        class="hidden"
+                        x-on:change="document.cookie='showChords='+$event.target.checked.toString()+';SameSite=strict'"
+                    />Akkorde anzeigen
+                    <span x-show="show_chords">✅</span>
+                    <span x-show="!show_chords">🚫</span>
+                </label>
+            </div>
         </header>
         <div id="placeholder_under_header" class="h-11"></div>
         <main class="">{% block content %}{% endblock content %}</main>
-        <div id="placeholder_under_footer" class="h-11"></div>
     </body>
 </html>

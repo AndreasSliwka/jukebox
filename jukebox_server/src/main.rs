@@ -25,33 +25,51 @@ fn parse_query(query: &str) -> SongListOrder {
     SongListOrder::TitleAsc
 }
 
+enum RequestedMimeType {
+    Html,
+    Json,
+    Other,
+}
+
+fn requested_mime_type(path_tail: String) -> RequestedMimeType {
+    match path_tail.as_str() {
+        "" | ".html" => RequestedMimeType::Html,
+
+        ".json" => RequestedMimeType::Json,
+        _ => RequestedMimeType::Other,
+    }
+}
+
 #[get("/songs{tail:.*}")]
 async fn songs(
     path: web::Path<String>,
     request: HttpRequest,
     pool: web::Data<DbPool>,
-) -> impl Responder {
+) -> actix_web::Result<impl Responder> {
     let song_list_order = parse_query(request.query_string());
-    let mut connection = pool.get().expect("could not get connection");
-    let songs_without_links = jukebox_db::all_songs(&mut connection, song_list_order, None);
+    let songs_without_links = web::block(move || {
+        let mut connection = pool.get().expect("could not get connection");
+        jukebox_db::all_songs(&mut connection, song_list_order, None)
+    })
+    .await
+    .map_err(error::ErrorInternalServerError)?;
     let songs_with_links: Vec<SongWithLink> = songs_without_links
         .iter()
         .map(|song| SongWithLink::from(song))
         .collect();
-    let path_tail = path.into_inner();
-    match path_tail.as_str() {
-        ".json" => HttpResponse::Ok().json(songs_with_links),
-        "" => {
+    match requested_mime_type(path.into_inner()) {
+        RequestedMimeType::Json => Ok(HttpResponse::Ok().json(songs_with_links)),
+        RequestedMimeType::Html => {
             let template = templates::SongsIndexTemplate {
                 songs: songs_with_links,
                 song_list_order,
             };
             let html = template.render().unwrap();
-            HttpResponse::Ok()
+            Ok(HttpResponse::Ok()
                 .content_type(ContentType::html())
-                .body(html)
+                .body(html))
         }
-        _ => HttpResponse::ImATeapot().body(".. and so are you!"),
+        _ => Ok(HttpResponse::ImATeapot().body(".. and so are you!")),
     }
 }
 
@@ -85,6 +103,14 @@ async fn single_song(
     }
 }
 
+#[get("/")]
+async fn welcome() -> actix_web::Result<impl Responder> {
+    let html = templates::WelcomeTemplate {}.render().unwrap();
+    Ok(HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(html))
+}
+
 fn service_serving_static_files() -> actix_files::Files {
     Files::new("/static", "static")
         .use_last_modified(true)
@@ -105,6 +131,7 @@ async fn main() -> Result<(), std::io::Error> {
             .wrap(Logger::new("%s \"%r\" %b %T"))
             .app_data(web::Data::new(connection_pool.clone()))
             .service(service_serving_static_files())
+            .service(welcome)
             .service(single_song)
             .service(songs)
     })

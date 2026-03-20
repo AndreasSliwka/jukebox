@@ -15,3 +15,7 @@ pub struct SongsIndexTemplate {
 pub struct SongsTemplate {
     pub song: Song,
 }
+
+#[derive(Template)]
+#[template(path = "welcome.html")]
+pub struct WelcomeTemplate {}

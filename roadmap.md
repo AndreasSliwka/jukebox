@@ -16,45 +16,10 @@
 * serve Songs in MD files as HTTP files
 * include static files in binary
   * !!!may be possible, but relies on build.rs an somehow breaks the language-server
------->&-------------------------------------
 * add tags to persisted Songs
   * add dedicated field for tags so songs can be filtered
   * remove my own songs from the normal listing
+* add splash screen
+* 
+------>&-------------------------------------
 * add basic auth
-
-
-
-
-# PWA - Progressive Web App
-
-
-
-# sketches
-
-## songlist
-```verbatim
-#-------------------------------#
-| Logo  TJGSE Jukebox       |...|
-|-------------------------------|
-| Name v           Artist       |
-| Song1            Artist1      |
-| Song2            Artist2      |
-| Song3            Artist1      |
-| Song4            Artist3      |
-| Song5            Artist4      |
-| Song6            Artist1      |
-|                               |
-|------|---------|-------|------|
-| Find | Contact | Whats |            |
-| Song | Andreas | This? |      |
-#------|---------|-------|------#
-```
-
-```verbatim
-...
-|------|---------|-------|---(X)|
-| ┌──────────────────────╦════╗ |
-| │ statue high          ║ Go ║ |
-| └──────────────────────╩════╝ |
-#------|---------|-------|------#
-```
