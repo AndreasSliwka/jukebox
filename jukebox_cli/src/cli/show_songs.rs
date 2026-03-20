@@ -9,9 +9,6 @@ fn main() {
     for simplified_song in results {
         println!("Song #{}:", simplified_song.id);
         println!("  Title: {}", simplified_song.title);
-        println!(
-            "  Artist: {}",
-            simplified_song.artist.unwrap_or("(n/a)".to_string())
-        );
+        println!("  Artist: {}", simplified_song.artist);
     }
 }

@@ -3,8 +3,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link href="/static/jukebox.css" rel="stylesheet" />
         <link rel="icon" type="image/x-icon" href="/static/favicon_64x64.ico" />
-        <script defer src="/static/alpine_3.15.8.js"></script>
         <script defer src="/static/jukebox.js"></script>
+        <script defer src="/static/alpine_3.15.8.js"></script>
     </head>
     <body>
         <header
@@ -29,13 +29,15 @@
                 x-transition.duration.500ms
                 class="bg-amber-200 pl-2 pr-2 border-l-2 border-b-2 float-right"
             >
-                <label x-data="{ show_chords: true}"
+                <label
+                    x-data="{ show_chords: getCookieValue('showChords') == 'true'}"
+                    x-init="console.log('showChords = ' + getCookieValue('showChords') + ', parsed as ' + (getCookieValue('showChords')== 'true'))"
                     ><input
                         type="checkbox"
                         name="chords"
                         x-model="show_chords"
                         class="hidden"
-                        x-on:change="document.cookie='showChords='+$event.target.checked.toString()+';SameSite=strict'"
+                        x-on:change="setCookieValue('showChords', $event.target.checked.toString())"
                     />Akkorde anzeigen
                     <span x-show="show_chords">✅</span>
                     <span x-show="!show_chords">🚫</span>

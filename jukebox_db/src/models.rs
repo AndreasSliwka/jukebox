@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 pub struct Song {
     pub id: i32,
     pub title: String,
-    pub artist: Option<String>,
+    pub artist: String,
     pub tags: String,
     pub markdown: String,
     pub serialized_chord_pro: String,
@@ -20,7 +20,7 @@ pub struct Song {
 pub struct SimplifiedSong {
     pub id: i32,
     pub title: String,
-    pub artist: Option<String>,
+    pub artist: String,
     pub tags: String,
 }
 
@@ -28,7 +28,7 @@ pub struct SimplifiedSong {
 pub struct SongWithLink {
     pub id: i32,
     pub title: String,
-    pub artist: Option<String>,
+    pub artist: String,
     pub link: String,
 }
 fn link_to_song(song_id: i32) -> String {
@@ -50,7 +50,7 @@ impl SongWithLink {
 #[diesel(table_name = songs)]
 pub struct NewSong<'a> {
     pub title: &'a str,
-    pub artist: Option<&'a str>,
+    pub artist: &'a str,
     pub tags: String,
     pub markdown: &'a str,
     pub serialized_chord_pro: &'a str,

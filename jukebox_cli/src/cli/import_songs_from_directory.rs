@@ -46,12 +46,12 @@ fn get_title<'a>(file_name: &'a str, content: &'a String) -> &'a str {
     }
 }
 
-fn get_artist<'a>(content: &'a String) -> Option<&'a str> {
+fn get_artist<'a>(content: &'a String) -> &'a str {
     let artist_from_content = Regex::new(r"\{artist: *(.*?) *\}").unwrap();
     if let Some(content_captures) = artist_from_content.captures(content) {
-        Some(content_captures.get(1).unwrap().as_str())
+        content_captures.get(1).unwrap().as_str()
     } else {
-        None
+        ""
     }
 }
 fn main() {
@@ -65,7 +65,7 @@ fn main() {
 
             if let Ok(content) = maybe_content {
                 let title: &str = get_title(song_file.as_str(), &content);
-                let artist: Option<&str> = get_artist(&content);
+                let artist: &str = get_artist(&content);
                 let _song = create_song(&mut connection, title, artist, content.as_str());
             }
         }

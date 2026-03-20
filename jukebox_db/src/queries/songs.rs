@@ -53,12 +53,7 @@ pub fn song_by_id(connection: &mut SqliteConnection, song_id: i32) -> Option<Son
     }
 }
 
-pub fn create_song(
-    conn: &mut SqliteConnection,
-    title: &str,
-    artist: Option<&str>,
-    markdown: &str,
-) -> Song {
+pub fn create_song(conn: &mut SqliteConnection, title: &str, artist: &str, markdown: &str) -> Song {
     use crate::schema::songs;
 
     let song = chord_down::Song::parse(&(markdown.to_string()));

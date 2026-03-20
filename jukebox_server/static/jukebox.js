@@ -9,7 +9,6 @@ function filterTable(raw_term) {
   for (const song_tr of song_trs) {
     if (song_tr.hasAttribute("data-name")) {
       const title = song_tr.getAttribute("data-name");
-      console.log("title = " + title);
       if (title.includes(term)) {
         song_tr.classList.remove("hidden");
       } else {
@@ -17,4 +16,21 @@ function filterTable(raw_term) {
       }
     }
   }
+}
+
+function getCookieValue(cookieName) {
+  let match = document.cookie.match(new RegExp(cookieName + "=([^;]*)(;|$)"));
+  let value;
+  if (match) {
+    value = match[1];
+  } else {
+    value = "";
+  }
+  console.log("  cookie = " + cookieName + " = " + value);
+  return value;
+}
+
+function setCookieValue(cookieName, value) {
+  document.cookie = cookieName + "=" + value + ";SameSite=strict";
+  console.log("document.cookie=" + document.cookie);
 }

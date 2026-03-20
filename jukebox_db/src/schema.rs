@@ -14,7 +14,7 @@ diesel::table! {
     songs (id) {
         id -> Integer,
         title -> Text,
-        artist -> Nullable<Text>,
+        artist -> Text,
         tags -> Text,
         markdown -> Text,
         serialized_chord_pro -> Text,

@@ -1,14 +1,14 @@
 {% extends "base.html" %} {% block content %}
 <table id="songlist">
     <tr>
-        <th>
+        <th width="60%">
             {% match song_list_order %}
             {% when SongListOrder::TitleAsc %} <a href="?sort=title_desc">Title ↓</a>
             {% when SongListOrder::TitleDesc %} <a href="?sort=title_asc">Title ↑</a>
             {% else %} <a href="?sort=title_asc">Title &nbsp;&nbsp;</a>
             {% endmatch %}
         </th>
-        <th>
+        <th width="40%">
             {% match song_list_order %}
             {% when SongListOrder::ArtistAsc %} <a href="?sort=artist_desc"> Artist ↓</a>
             {% when SongListOrder::ArtistDesc %} <a href="?sort=artist_asc"> Artist ↑</a>
@@ -17,25 +17,23 @@
         </th>
     </tr>
     {% for song in songs %}
-    <tr id="song-{{song.id}}" class="align-top" href="{{song.link}}" data-name="{{song.title.to_lowercase()}}">
+    <tr id="song-{{song.id}}" class="align-top" href="{{song.link}}" data-name="{{song.title.to_lowercase()}} -- {{song.artist.to_lowercase()}} ">
             <td class="align-top"><a href="{{song.link}} ">{{song.title}}</a></td>
-            {% match song.artist %} {% when Some with (artist) %}
-            <td class="align-top">{{ artist }}</td>
-            {% else %}
-            <td />
-            {% endmatch %}
+            <td class="align-top">{{ song.artist }}</td>
         </a>
     </tr>
     {% endfor %}
 </table>
-<div class="bg-amber-200 flex flex-row p-1" x-data="{ search: ''}">
+<div class="bg-amber-200 flex flex-row p-1" x-data="{ search: getCookieValue('search') }"
+    x-init="filterTable(getCookieValue('search'))">
+        <span>&nbsp;🔍&nbsp;</span>
     <input
         type="text"
-        name="search "
+        name="search"
         enterkeyhint="search"
-        placeholder="Finde Lieder!"
+        placeholder="Finde Lieder! Singe kräftig!"
         x-model="search"
-        @change="filterTable($event.target.value)"
+        @change="filterTable($event.target.value); $event.target.scrollIntoView(false)"
         class="flex-auto p-0.5 border-amber-900 border-2"
     />
 </div>
