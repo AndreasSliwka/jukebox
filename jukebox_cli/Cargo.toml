@@ -11,6 +11,11 @@ path = "src/cli/show_songs.rs"
 name = "import_songs_from_directory"
 path = "src/cli/import_songs_from_directory.rs"
 
+[[bin]]
+name = "parse_song"
+path = "src/cli/parse_song.rs"
+
 [dependencies]
 jukebox_db = { path = "../jukebox_db" }
 regex = "1.12.3"
+chord_down = { path = "../chord_down" }

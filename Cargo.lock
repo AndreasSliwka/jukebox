@@ -1043,6 +1043,7 @@ dependencies = [
 name = "jukebox_cli"
 version = "0.1.0"
 dependencies = [
+ "chord_down",
  "jukebox_db",
  "regex",
 ]

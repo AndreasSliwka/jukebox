@@ -1,8 +1,9 @@
 {t:50 Ways to Leave Your Lover}
 {artist:Paul Simon}
 
-
+{sog}
 [ G  D° C^ B7.   e  D#° F#°  B7] 
+{eog}
 
 {sot}
 0  2  0  x   0  2  5  x   0  2  0  x   0  0  0  0
@@ -13,8 +14,7 @@
 3  x  x  x   0  x  x  x   3  x  x  x   0  x  0  x
 {eot}
 
-50 Ways to Leave Your Lover Lyrics
-[Verse 1]
+{sov}
 "The problem is all inside your head," she said to me
 "The answer is easy if you take it logically
 I'd like to help you in your struggle to be free
@@ -24,8 +24,9 @@ Furthermore, I hope my meaning won't be lost or misconstrued
 But I'll repeat myself at the risk of being crude
 There must be fifty ways to leave your lover"
 Fifty ways to leave your lover
+{eov}
 
-[Chorus]
+{soc}
 |: You just slip out the back, Jack
 , Make a new plan, Stan
 You don't need to be coy, Roy
@@ -34,9 +35,9 @@ Hop on the bus, Gus
 , You don't need to discuss much
 Just drop off the key, Lee
 , And get yourself free :|
+{eoc}
 
-
-[Verse 2]
+{eov}
 She said, "It grieves me so to see you in such pain
 I wish there was something I could do to make you smile again"
 I said, "I appreciate that, and would you please explain
@@ -46,8 +47,9 @@ And I believe in the morning, you'll begin to see the light"
 And then she kissed me, and I realized she probably was right
 There must be fifty ways to leave your lover
 Fifty ways to leave your lover
+{eov}
 
-[Chorus]
+{soc}
 |: You just slip out the back, Jack
 , Make a new plan, Stan
 You don't need to be coy, Roy
@@ -56,8 +58,4 @@ Hop on the bus, Gus
 , You don't need to discuss much
 Just drop off the key, Lee
 , And get yourself free :|
-
-
-{tempo:0}
-
-{scrollspeed:6}
+{eoc}

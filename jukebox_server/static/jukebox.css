@@ -316,6 +316,15 @@
     transition-duration: var(--tw-duration, var(--default-transition-duration));
   }
 }
+.Song .tabulatur, .Song .chord_grid {
+  display: none;
+}
+.Song.showChords .tabulatur, .Song.showChords .chord_grid {
+  display: block;
+}
+.Song .chordpro {
+  margin-bottom: calc(var(--spacing) * 2);
+}
 @property --tw-rotate-x {
   syntax: "*";
   inherits: false;

@@ -37,7 +37,7 @@
                         name="chords"
                         x-model="show_chords"
                         class="hidden"
-                        x-on:change="setCookieValue('showChords', $event.target.checked.toString())"
+                        x-on:change="setCookieValue('showChords', $event.target.checked.toString());maybeApplyShowChords()"
                     />Akkorde anzeigen
                     <span x-show="show_chords">✅</span>
                     <span x-show="!show_chords">🚫</span>

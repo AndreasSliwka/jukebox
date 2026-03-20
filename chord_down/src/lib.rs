@@ -1,7 +1,7 @@
 use regex::Regex;
 use ron;
 use serde::{Deserialize, Serialize};
-use std::{collections::HashMap, sync::LazyLock};
+use std::{any::type_name_of_val, collections::HashMap, sync::LazyLock};
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct LineElement {
@@ -87,10 +87,11 @@ struct ParsingState {
     last_line_blank: bool,
     title_found: bool,
     artist_found: bool,
+    verbose: bool,
 }
 
 impl ParsingState {
-    pub fn new() -> Self {
+    pub fn new(verbose: bool) -> Self {
         ParsingState {
             in_a_block: false,
             in_tabulatur: false,
@@ -99,6 +100,12 @@ impl ParsingState {
             last_line_blank: false,
             title_found: false,
             artist_found: false,
+            verbose,
+        }
+    }
+    pub fn verbose(&self, message: String) {
+        if self.verbose {
+            println!("{}", message);
         }
     }
 }
@@ -144,6 +151,11 @@ fn should_set_part_name(line: &str) -> Option<String> {
     };
     None
 }
+
+fn should_finish_current_path(line: &str) -> bool {
+    line == "{eoc}" || line == "{eov}" || line == "{end_of_chorus}" || line == "{end_of_verse}"
+}
+
 impl Song {
     fn empty() -> Self {
         Song {
@@ -173,17 +185,36 @@ impl Song {
     }
 
     fn parse_in_grid(&mut self, line: &str, state: &mut ParsingState) -> () {
+        state.verbose(String::from("  > parse_in_grid"));
         if (line == "{eog}") || (line == "{end_of_grid}") {
+            state.verbose(String::from("  > finishing grid"));
             state.in_grid = false;
             state.last_line_blank = false;
             return;
         };
         let Some(last_block) = self.document.blocks.last_mut() else {
+            state.verbose(format!(
+                "!! last block ?? {}",
+                type_name_of_val(&self.document.blocks.last())
+            ));
             return;
         };
+        println!(" last_block = {:#?}", last_block);
+
         match last_block {
             Block::Grid(lines) => lines.push(line.to_string()),
-            _ => (),
+            Block::Unknown(_) => {
+                state.verbose(String::from("Could not append to Block::Unknown"));
+                return;
+            }
+            Block::Tabulatur(_) => {
+                state.verbose(String::from("Could not append to Block::Unknown"));
+                return;
+            }
+            Block::Part(_) => {
+                state.verbose(String::from("Could not append to Block::Unknown"));
+                return;
+            }
         }
         return;
     }
@@ -193,7 +224,9 @@ impl Song {
         state.last_line_blank = false;
     }
     fn start_grid(&mut self, state: &mut ParsingState) -> () {
+        state.verbose(String::from("  -> starting grid"));
         self.document.blocks.push(Block::Grid(vec![]));
+        println!(" last_block = {:#?}", self.document.blocks.last().unwrap());
         state.in_grid = true;
         state.last_line_blank = false;
     }
@@ -208,7 +241,7 @@ impl Song {
     }
 
     fn start_anonymous_part(&mut self, state: &mut ParsingState) -> () {
-        self.start_part(String::from("(undef)"), state)
+        self.start_part(String::from(""), state)
     }
 
     fn set_meta_key_value(&mut self, key: String, value: String, state: &mut ParsingState) -> () {
@@ -269,7 +302,7 @@ impl Song {
         if state.in_grid {
             return self.parse_in_grid(line, state);
         } else if should_start_grid(line) {
-            self.start_grid(state);
+            return self.start_grid(state);
         }
         if let Some(part_name) = should_set_part_name(line) {
             return self.start_part(part_name, state);
@@ -282,14 +315,18 @@ impl Song {
             return self.handle_empty_line(state);
         }
         if !state.in_a_block {
-            self.start_anonymous_part(state);
+            return self.start_anonymous_part(state);
+        }
+        if should_finish_current_path(line) {
+            return self.finish_part(state);
         }
         self.add_line_to_latest_part(line, state);
     }
-    pub fn parse(source: &String) -> Self {
+    pub fn parse(source: &String, verbose: bool) -> Self {
         let mut song = Song::empty();
-        let mut state = ParsingState::new();
+        let mut state = ParsingState::new(verbose);
         for line in source.lines() {
+            state.verbose(format!("line: {}", line));
             song.parse_line(line, &mut state);
         }
         song

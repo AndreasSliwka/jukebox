@@ -34,3 +34,14 @@ function setCookieValue(cookieName, value) {
   document.cookie = cookieName + "=" + value + ";SameSite=strict";
   console.log("document.cookie=" + document.cookie);
 }
+
+function maybeApplyShowChords() {
+  let song = window.document.getElementById("song");
+  if (song) {
+    if (getCookieValue("showChords") == "true") {
+      song.classList.add("showChords");
+    } else {
+      song.classList.remove("showChords");
+    }
+  }
+}

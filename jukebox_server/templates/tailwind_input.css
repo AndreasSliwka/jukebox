@@ -1,1 +1,14 @@
 @import "tailwindcss";
+
+.Song .tabulatur,
+.Song .chord_grid {
+    display: none;
+}
+.Song.showChords .tabulatur,
+.Song.showChords .chord_grid {
+    display: block;
+}
+
+.Song .chordpro {
+    @apply mb-2;
+}

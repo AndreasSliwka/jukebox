@@ -1,48 +1,56 @@
 {% extends "base.html" %} {% block upper_right_button %}
 <a href="/songs" class="button"> ↩ </a>
 {% endblock %} {% block content %}
-<div class="Song">
+<div id="song" class="Song" x-init="maybeApplyShowChords()">
     <h1>{{song.title}}</h1>
     <h3>{{song.artist}}</h3>
     {% for block in song.document.blocks %} {% let newline = "\n" %} {% match
     block %} {% when Block::Part(song_part) %}
-    <h4>{{song_part.name}}</h4>
-    {% for line in song_part.lines %} {% let has_both_lyrics_and_chords =
-    line.has_both_lyrics_and_chords() %}
-    <div
-        class="line"
-        style="{% if has_both_lyrics_and_chords %}line-height: 2.3{% endif %}"
-    >
-        {% for element in line.elements %}
-
-        <span class="lyrics" style="display: inline-block; position: relative">
-            {% if let Some(chord) = element.chord %}
+    <div class="chordpro part">
+        <h4>{{song_part.name}}</h4>
+        {% for line in song_part.lines %} {% let has_both_lyrics_and_chords =
+        line.has_both_lyrics_and_chords() %}
+        <div
+            class="line"
+            style="{% if has_both_lyrics_and_chords %}line-height: 2.3{% endif %}"
+        >
+            {% for element in line.elements %}
             <span
-                style="
-                    position: absolute;
-                    display: inline-block;
-                    width: 120px;
-                    top: -2ex;
-                    font-weight: bold;
-                "
-                >{{chord}}</span
+                class="lyrics"
+                style="display: inline-block; position: relative"
             >
-            {% endif%} {{element.lyrics}}
-        </span>
+                {% if let Some(chord) = element.chord %}
+                <span class="chord">{{chord}}</span>
+                {% endif%} {{element.lyrics}}
+            </span>
+            {% endfor %}
+        </div>
+        <!-- line -->
         {% endfor %}
     </div>
-    {% endfor %} {% when Block::Tabulatur(lines) %}
-    <pre class="tabulatur">
+    <!-- chordpro part -->
+    {% when Block::Tabulatur(lines) %}
+    <div class="chordpro tabulatur">
+        <h4>Tabulatur</h4>
+        <pre class="">
 {%- for line in lines %}{{- line }}{{ newline }}{% endfor %}</pre
-    >
+        >
+    </div>
+    <!-- chordpro tabulatur -->
     {% when Block::Grid(lines) %}
-    <pre class="grid">
-{%- for line in lines %}{{- line }}{{ "\n" }}{% endfor %}</pre
-    >
+    <div class="chordpro chord_grid">
+        <h4>Grid</h4>
+        <pre class="">
+{%- for line in lines %}{{- line }}{{ newline }}{% endfor %}</pre
+        >
+    </div>
+    <!-- chordpro chord_grid -->
     {% when Block::Unknown(lines) %}
-    <pre class="unknown">
+    <div class="chordpro unkown">
+        <pre class="">
 {%- for line in lines %}{{- line }}{{ "\n" }}{% endfor %}</pre
-    >
+        >
+    </div>
     {% endmatch %} {% endfor %}
 </div>
 {% endblock content %}
