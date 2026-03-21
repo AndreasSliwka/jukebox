@@ -1,3 +1,4 @@
+use crate::services;
 use crate::templates;
 use crate::types::DbPool;
 use actix_web::http::header::ContentType;
@@ -11,6 +12,9 @@ pub async fn service(
     pool: web::Data<DbPool>,
     request: HttpRequest,
 ) -> actix_web::Result<impl Responder> {
+    if let Some(redirect) = services::session::start_session_unless_present(&request) {
+        return Ok(redirect);
+    }
     let song_id = path.into_inner();
     let song_from_db = web::block(move || {
         let mut connection = pool.get().expect("could not get connection");
