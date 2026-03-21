@@ -1,7 +1,6 @@
-use crate::schema::{setlists, songs, songs_in_setlist};
+use crate::schema::{gigs, songs, songs_in_setlist};
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
-
 #[derive(Debug, Clone, Serialize, Deserialize, Queryable, Selectable, Insertable)]
 #[diesel(table_name = crate::schema::songs)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
@@ -12,6 +11,19 @@ pub struct Song {
     pub tags: String,
     pub markdown: String,
     pub serialized_chord_pro: String,
+}
+
+#[derive(Debug, Clone, Insertable, HasQuery)]
+#[diesel(table_name = crate::schema::gigs)]
+#[diesel(check_for_backend(diesel::sqlite::Sqlite))]
+pub struct Gig {
+    pub id: i32,
+    pub name: String,
+    pub location: String,
+    pub date_start: String,
+    pub date_end: String,
+    pub admin_secret: String,
+    pub notes: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, HasQuery)]
@@ -57,12 +69,14 @@ pub struct NewSong<'a> {
 }
 
 #[derive(Insertable)]
-#[diesel(table_name = setlists)]
-pub struct NewSetlist<'a> {
-    pub name: &'a str,
-    pub location: &'a str,
-    pub date: &'a str,
-    pub notes: Option<&'a str>,
+#[diesel(table_name = gigs)]
+pub struct NewGig {
+    pub name: String,
+    pub location: String,
+    pub date_start: String,
+    pub date_end: String,
+    pub admin_secret: String,
+    pub notes: Option<String>,
 }
 
 #[derive(Insertable)]

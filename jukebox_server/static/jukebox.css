@@ -322,6 +322,12 @@
 .Song.showChords .tabulatur, .Song.showChords .chord_grid {
   display: block;
 }
+.Song .chordpro.part .chord {
+  display: none;
+}
+.Song.showChords .chordpro.part .chord {
+  display: inline-block;
+}
 .Song .chordpro {
   margin-bottom: calc(var(--spacing) * 2);
 }

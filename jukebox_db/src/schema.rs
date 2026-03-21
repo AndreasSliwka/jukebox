@@ -1,12 +1,14 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
-    setlists (id) {
+    gigs (id) {
         id -> Integer,
         name -> Text,
         location -> Text,
-        date -> Text,
+        date_start -> Text,
+        date_end -> Text,
         notes -> Nullable<Text>,
+        admin_secret -> Text,
     }
 }
 
@@ -29,4 +31,4 @@ diesel::table! {
     }
 }
 
-diesel::allow_tables_to_appear_in_same_query!(setlists, songs, songs_in_setlist,);
+diesel::allow_tables_to_appear_in_same_query!(gigs, songs, songs_in_setlist,);

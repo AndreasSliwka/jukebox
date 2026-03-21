@@ -21,7 +21,8 @@
                     class="absolute right-0"
                     @click="menu = ! menu"
                 >
-                    &nbsp;≡&nbsp;
+                    {% if is_admin %} &nbsp;🍔&nbsp; {% else %} &nbsp;≡&nbsp; {%
+                    endif %}
                 </span>
             </div>
             <div
@@ -29,19 +30,33 @@
                 x-transition.duration.500ms
                 class="bg-amber-200 pl-2 pr-2 border-l-2 border-b-2 float-right"
             >
-                <label
-                    x-data="{ show_chords: getCookieValue('showChords') == 'true'}"
-                    x-init="console.log('showChords = ' + getCookieValue('showChords') + ', parsed as ' + (getCookieValue('showChords')== 'true'))"
-                    ><input
-                        type="checkbox"
-                        name="chords"
-                        x-model="show_chords"
-                        class="hidden"
-                        x-on:change="setCookieValue('showChords', $event.target.checked.toString());maybeApplyShowChords()"
-                    />Akkorde anzeigen
-                    <span x-show="show_chords">✅</span>
-                    <span x-show="!show_chords">🚫</span>
-                </label>
+                <div class="menuitem">
+                    <label
+                        x-data="{ show_chords: getCookieValue('showChords') == 'true'}"
+                        x-init="console.log('showChords = ' + getCookieValue('showChords') + ', parsed as ' + (getCookieValue('showChords')== 'true'))"
+                        ><input
+                            type="checkbox"
+                            name="chords"
+                            x-model="show_chords"
+                            class="hidden"
+                            x-on:change="setCookieValue('showChords', $event.target.checked.toString());maybeApplyShowChords()"
+                        />Akkorde anzeigen
+                        <span x-show="show_chords">✅</span>
+                        <span x-show="!show_chords">🚫</span>
+                    </label>
+                </div>
+                <div class="menuitem">
+                    <button>
+                        <!-- TODO: Zoom button does nothing -->
+                        <span class="btn btn-blue">&nbsp;-&nbsp;</span>&nbsp; Z
+                        o
+                    </button>
+                    <button>
+                        o m &nbsp;<span class="btn btn-blue"
+                            >&nbsp;+&nbsp;</span
+                        >
+                    </button>
+                </div>
             </div>
         </header>
         <div id="placeholder_under_header" class="h-11"></div>

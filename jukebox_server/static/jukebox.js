@@ -45,3 +45,14 @@ function maybeApplyShowChords() {
     }
   }
 }
+
+function setSearchFilter(term) {
+  if (term.startsWith("admin:")) {
+    let passkey = term.replace(/^admin:/, "");
+    let endpoint = window.location.origin + "/admin?passkey=" + passkey;
+    window.location.href = endpoint;
+  } else {
+    filterTable(term);
+    window.document.getElementById("song_search".scrollIntoView(false));
+  }
+}

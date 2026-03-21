@@ -9,6 +9,13 @@
     display: block;
 }
 
+.Song .chordpro.part .chord {
+    display: none;
+}
+.Song.showChords .chordpro.part .chord {
+    display: inline-block; /* TODO: fix layout for inline chords */
+}
+
 .Song .chordpro {
     @apply mb-2;
 }

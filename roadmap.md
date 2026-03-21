@@ -22,4 +22,9 @@
 * add splash screen
 * 
 ------>&-------------------------------------
-* add basic auth
+* refactor song display to flex-rows containing flex-columns with chords and lyrics
+* add zoom so people can adapt the font size to their device
+* add admin mode, entered by adding a code phrase in the search box
+* add time based auth, so the app can be switch on for a given evening with an QR code
+  * add songs to setlist when played (only admin)
+* add
