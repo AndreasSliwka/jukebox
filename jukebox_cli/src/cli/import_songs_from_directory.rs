@@ -58,6 +58,7 @@ fn main() {
     let mut connection = jukebox_db::establish_single_connection();
     let source_dir = get_directory_from_command_line();
     let song_files = get_songs_files_from_directory(source_dir);
+    let maybe_gig_id = jukebox_db::current_gig_from_db(connection);
     if song_files.len() > 0 {
         delete_all_songs(&mut connection);
         for song_file in song_files {
@@ -66,7 +67,12 @@ fn main() {
             if let Ok(content) = maybe_content {
                 let title: &str = get_title(song_file.as_str(), &content);
                 let artist: &str = get_artist(&content);
-                let _song = create_song(&mut connection, title, artist, content.as_str());
+                let song = create_song(&mut connection, title, artist, content.as_str());
+                if (song.id % 7) == 0 {
+                    let Some(gig_id) = maybe_gig_id else {
+                        continue;
+                    };
+                }
             }
         }
     }

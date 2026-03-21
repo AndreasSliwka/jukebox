@@ -24,11 +24,13 @@ diesel::table! {
 }
 
 diesel::table! {
-    songs_in_setlist (song_id, setlist_id) {
+    songs_in_gigs (song_id, gig_id) {
         song_id -> Integer,
-        setlist_id -> Integer,
+        gig_id -> Integer,
         played_at -> Nullable<Text>,
     }
 }
 
-diesel::allow_tables_to_appear_in_same_query!(gigs, songs, songs_in_setlist,);
+diesel::joinable!(songs_in_gigs -> gigs (gig_id));
+
+diesel::allow_tables_to_appear_in_same_query!(gigs, songs, songs_in_gigs,);
