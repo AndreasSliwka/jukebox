@@ -91,7 +91,6 @@ async fn single_song(
             .body("moved on")),
         Some(song) => {
             let chord_down_song = chord_down::Song::from_ron(song.serialized_chord_pro);
-            println!("{:#?}", chord_down_song);
             let template = templates::SongsTemplate {
                 song: chord_down_song,
             };

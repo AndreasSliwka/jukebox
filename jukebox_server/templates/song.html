@@ -8,20 +8,20 @@
     block %} {% when Block::Part(song_part) %}
     <div class="chordpro part">
         <h4>{{song_part.name}}</h4>
-        {% for line in song_part.lines %} {% let has_both_lyrics_and_chords =
-        line.has_both_lyrics_and_chords() %}
+        {% for line in song_part.lines %} {% let (has_lyrics, has_chords) =
+        line.has_lyrics_has_chords() %}
         <div
-            class="line"
-            style="{% if has_both_lyrics_and_chords %}line-height: 2.3{% endif %}"
+            class="line {% if has_lyrics %} with-lyrics {% endif %} {% if has_chords %} with-chords {% endif %}"
         >
             {% for element in line.elements %}
-            <span
-                class="lyrics"
-                style="display: inline-block; position: relative"
-            >
+            <span class="chords-and-lyrics-container">
+                {% if let Some(lyrics) = element.lyrics %}
+                    <span class="lyrics">{{lyrics}}</span>
+                {% endif %}
                 {% if let Some(chord) = element.chord %}
-                <span class="chord">{{chord}}</span>
-                {% endif%} {{element.lyrics}}
+                    <span class="chord">{{chord}}</span>
+                {% endif%}
+            </span>
             </span>
             {% endfor %}
         </div>

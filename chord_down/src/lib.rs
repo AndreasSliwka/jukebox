@@ -5,7 +5,7 @@ use std::{any::type_name_of_val, collections::HashMap, sync::LazyLock};
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct LineElement {
-    pub lyrics: String,
+    pub lyrics: Option<String>,
     pub chord: Option<String>,
 }
 
@@ -21,33 +21,38 @@ impl Line {
             if part == "" {
                 continue;
             }
+            let mut lyrics: Option<String> = None;
+            let mut chord: Option<String> = None;
             if let Some(captures) = RE.captures(part) {
-                elements.push(LineElement {
-                    lyrics: captures[2].to_string(),
-                    chord: Some(captures[1].to_string()),
-                });
+                let (maybe_chord, maybe_lyrics) =
+                    (captures[1].to_string(), captures[2].to_string());
+                if maybe_chord != "" {
+                    chord = Some(maybe_chord)
+                };
+                if maybe_lyrics != "" {
+                    lyrics = Some(maybe_lyrics)
+                }
             } else {
-                elements.push(LineElement {
-                    lyrics: part.to_string(),
-                    chord: None,
-                });
+                lyrics = Some(part.to_string());
             }
+            elements.push(LineElement { lyrics, chord });
         }
         Line { elements }
     }
-    pub fn has_both_lyrics_and_chords(&self) -> bool {
+    pub fn has_lyrics_has_chords(&self) -> (bool, bool) {
         let mut has_lyrics = false;
         let mut has_chords = false;
         for element in self.elements.iter() {
-            if "" != element.lyrics {
-                has_lyrics = true
+            match element.lyrics {
+                Some(_) => has_lyrics = true,
+                _ => (),
             }
             match element.chord {
                 Some(_) => has_chords = true,
                 _ => (),
             }
         }
-        has_lyrics && has_chords
+        (has_lyrics, has_chords)
     }
 }
 #[derive(Deserialize, Serialize, Debug)]
