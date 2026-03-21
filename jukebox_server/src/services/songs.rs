@@ -1,6 +1,5 @@
 use crate::services;
 use crate::templates::SongsIndexTemplate;
-use actix_session::SessionExt;
 use actix_web::http::header::ContentType;
 
 use actix_web::{HttpRequest, HttpResponse, Responder, error, get, web};
@@ -26,12 +25,9 @@ pub async fn service(
     request: HttpRequest,
     pool: web::Data<crate::types::DbPool>,
 ) -> actix_web::Result<impl Responder> {
-    println!("songs::service");
     if let Some(redirect) = services::session::start_session_unless_present(&request) {
-        println!("  no session found, redirecting");
         return Ok(redirect);
     }
-    println!("  session: {:#?}", request.get_session().entries());
     let song_list_order = song_list_order(request.query_string());
     let songs_without_links = web::block(move || {
         let mut connection = pool.get().expect("could not get connection");

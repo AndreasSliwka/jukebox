@@ -33,16 +33,11 @@ pub fn is_admin(request: &HttpRequest) -> bool {
 
 const ALLOW_ACCES_WITHOUT_SESSION: bool = false;
 pub fn is_present(request: &HttpRequest) -> bool {
-    println!("session::is_present?");
     let maybe_gig_id: Option<i32> = request.get_session().get::<i32>(GIG_ID).unwrap();
-    if let Some(gig_id) = maybe_gig_id {
-        println!("  found gig_id {}", gig_id);
+    if let Some(_gig_id) = maybe_gig_id {
         return true;
     };
-    println!(
-        "   found no gig_id, session = {:#?}",
-        request.get_session().entries()
-    );
+
     // Houston, we have a Problem.
     return ALLOW_ACCES_WITHOUT_SESSION || false;
 }
@@ -67,18 +62,15 @@ async fn service(
         let mut connection = pool.get().expect("could not get connection");
 
         let result = jukebox_db::current_gig_from_db(&mut connection);
-        println!("  start_session: result = {:#?}", result);
         result
     })
     .await?
     else {
-        println!("  start_session: No shoes, no shirt");
         return Ok(HttpResponse::PermanentRedirect()
             .append_header(("Location", "/no_shoes_no_shirt"))
             .body("moved on"));
     };
     request.get_session().insert(GIG_ID, gig.id).unwrap();
-    println!("  session = {:?}", request.get_session().entries());
     return Ok(HttpResponse::PermanentRedirect()
         .append_header(("Location", "/songs"))
         .body("Session started"));
