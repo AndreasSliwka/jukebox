@@ -1,0 +1,10 @@
+-- Your SQL goes here
+CREATE TABLE gigs (
+  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  name VARCHAR NOT NULL,
+  location VARCHAR NOT NULL,
+  date_start VARCHAR NOT NULL,
+  date_end VARCHAR NOT NULL,
+  notes TEXT DEFAULT '',
+  admin_secret VARCHAR NOT NULL
+)
