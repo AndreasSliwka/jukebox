@@ -1,6 +1,6 @@
 {% extends "base.html" %} {% block content %}
 <table id="songlist">
-    <tr>
+    <tr >
         <th width="60%">
             {% match song_list_order %}
             {% when SongListOrder::TitleAsc %} <a href="?sort=title_desc">Title ↓</a>
@@ -17,7 +17,7 @@
         </th>
     </tr>
     {% for song in songs %}
-    <tr id="song-{{song.id}}" class="align-top" href="{{song.link}}" data-name="{{song.title.to_lowercase()}} -- {{song.artist.to_lowercase()}} ">
+    <tr id="song-{{song.id}}" class="align-top song {% if song.occurences > 0 %} played {% endif %}" href="{{song.link}}" data-name="{{song.title.to_lowercase()}} -- {{song.artist.to_lowercase()}} ">
             <td class="align-top"><a href="{{song.link}} ">{{song.title}}</a></td>
             <td class="align-top">{{ song.artist }}</td>
         </a>

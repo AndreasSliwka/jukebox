@@ -19,3 +19,7 @@
 .Song .chordpro {
     @apply mb-2;
 }
+
+#songlist .song.played {
+    @apply line-through;
+}

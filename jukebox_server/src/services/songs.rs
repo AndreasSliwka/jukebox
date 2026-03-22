@@ -28,16 +28,22 @@ pub async fn service(
     if let Some(redirect) = services::session::start_session_unless_present(&request) {
         return Ok(redirect);
     }
+    let Some(gig_id) = services::session::gig_id_from_session(&request) else {
+        return Ok(services::session::redirect_to_start_session());
+    };
     let song_list_order = song_list_order(request.query_string());
-    let songs_without_links = web::block(move || {
+    let (songs_without_links, occurences) = web::block(move || {
         let mut connection = pool.get().expect("could not get connection");
-        jukebox_db::all_songs(&mut connection, song_list_order, None)
+        (
+            jukebox_db::all_songs(&mut connection, song_list_order, None),
+            jukebox_db::songs_of_gig(gig_id, &mut connection),
+        )
     })
     .await
     .map_err(error::ErrorInternalServerError)?;
     let songs_with_links: Vec<SongWithLink> = songs_without_links
         .iter()
-        .map(|song| SongWithLink::from(song))
+        .map(|song| SongWithLink::from(song, &occurences))
         .collect();
 
     let template = SongsIndexTemplate {

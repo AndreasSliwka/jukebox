@@ -1,11 +1,12 @@
 use crate::types::DbPool;
-use actix_session::SessionExt;
 use actix_session::config::BrowserSession;
+use actix_session::{Session, SessionExt};
 use actix_session::{SessionMiddleware, storage::CookieSessionStore};
 use actix_web::{HttpRequest, HttpResponse, Responder, cookie::Key, get, web};
 use jukebox_db;
 
-pub const GIG_ID: &str = "gig_id";
+pub const GIG_ID: &str = "gig.id";
+pub const GIG_ADMIN_SECRET: &str = "gig.admin_secret";
 pub const IS_ADMIN: &str = "isAdmin";
 fn get_secret_key() -> Key {
     Key::from(b"aBcDeFGhIjKlIaBcDeFGhIjKlIaBcDeFGhIjKlIaBcDeFGhIjKlIaBcDeFGhIjKlIaBcDeFGhIjKlI")
@@ -33,7 +34,7 @@ pub fn is_admin(request: &HttpRequest) -> bool {
 
 const ALLOW_ACCES_WITHOUT_SESSION: bool = false;
 pub fn is_present(request: &HttpRequest) -> bool {
-    let maybe_gig_id: Option<i32> = request.get_session().get::<i32>(GIG_ID).unwrap();
+    let maybe_gig_id: Option<i32> = gig_id_from_session(request);
     if let Some(_gig_id) = maybe_gig_id {
         return true;
     };
@@ -42,14 +43,23 @@ pub fn is_present(request: &HttpRequest) -> bool {
     return ALLOW_ACCES_WITHOUT_SESSION || false;
 }
 
+pub fn gig_id_from_session(request: &HttpRequest) -> Option<i32> {
+    request.get_session().get::<i32>(GIG_ID).unwrap()
+}
+
+pub fn admin_secret_from_session(session: &Session) -> Option<String> {
+    session.get::<String>(GIG_ADMIN_SECRET).unwrap()
+}
+
+pub fn redirect_to_start_session() -> HttpResponse {
+    HttpResponse::TemporaryRedirect()
+        .append_header(("Location", "/start_session"))
+        .body("no session")
+}
 pub fn start_session_unless_present(request: &HttpRequest) -> Option<HttpResponse> {
     match is_present(request) {
         true => None,
-        false => Some(
-            HttpResponse::TemporaryRedirect()
-                .append_header(("Location", "/start_session"))
-                .body("no session"),
-        ),
+        false => Some(redirect_to_start_session()),
     }
 }
 
@@ -71,6 +81,11 @@ async fn service(
             .body("moved on"));
     };
     request.get_session().insert(GIG_ID, gig.id).unwrap();
+    request
+        .get_session()
+        .insert(GIG_ADMIN_SECRET, gig.admin_secret)
+        .unwrap();
+
     return Ok(HttpResponse::PermanentRedirect()
         .append_header(("Location", "/songs"))
         .body("Session started"));

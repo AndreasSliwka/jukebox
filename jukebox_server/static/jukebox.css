@@ -331,6 +331,9 @@
 .Song .chordpro {
   margin-bottom: calc(var(--spacing) * 2);
 }
+#songlist .song.played {
+  text-decoration-line: line-through;
+}
 @property --tw-rotate-x {
   syntax: "*";
   inherits: false;

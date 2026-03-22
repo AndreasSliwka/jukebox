@@ -1,6 +1,8 @@
-use crate::schema::{gigs, songs, songs_in_setlist};
+use crate::schema::{gigs, songs, songs_in_gigs};
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+
 #[derive(Debug, Clone, Serialize, Deserialize, Queryable, Selectable, Insertable)]
 #[diesel(table_name = crate::schema::songs)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
@@ -42,18 +44,22 @@ pub struct SongWithLink {
     pub title: String,
     pub artist: String,
     pub link: String,
+    pub occurences: u8,
 }
 fn link_to_song(song_id: i32) -> String {
     format!("/songs/{}", song_id)
 }
 
 impl SongWithLink {
-    pub fn from(simplified: &SimplifiedSong) -> Self {
+    pub fn from(simplified: &SimplifiedSong, all_occurences: &HashMap<i32, u8>) -> Self {
+        let occurences_entry = all_occurences.get(&simplified.id);
+        let occurence_ptr: &u8 = occurences_entry.or(Some(&0)).unwrap();
         Self {
             id: simplified.id,
             title: simplified.title.clone(),
             artist: simplified.artist.clone(),
             link: link_to_song(simplified.id),
+            occurences: *occurence_ptr,
         }
     }
 }
@@ -79,10 +85,13 @@ pub struct NewGig {
     pub notes: Option<String>,
 }
 
-#[derive(Insertable)]
-#[diesel(table_name = songs_in_setlist)]
-pub struct NewSongInSetlist<'a> {
+#[derive(Insertable, Selectable, Queryable, Debug)]
+#[diesel(belongs_to(Gig))]
+#[diesel(belongs_to(SimplifiedSong))]
+#[diesel(table_name = songs_in_gigs)]
+#[diesel(primary_key(song_id, gig_id))]
+pub struct SongInGig {
     pub song_id: i32,
-    pub setlist_id: i32,
-    pub played_at: Option<&'a str>,
+    pub gig_id: i32,
+    pub played_at: Option<String>,
 }
