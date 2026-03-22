@@ -32,18 +32,19 @@ pub async fn service(
         return Ok(services::session::redirect_to_start_session());
     };
     let song_list_order = song_list_order(request.query_string());
-    let (songs_without_links, occurences) = web::block(move || {
+
+    let (songs_without_links, songs_played) = web::block(move || {
         let mut connection = pool.get().expect("could not get connection");
         (
             jukebox_db::all_songs(&mut connection, song_list_order, None),
-            jukebox_db::songs_of_gig(gig_id, &mut connection),
+            jukebox_db::songs_played_in_gig(gig_id, &mut connection),
         )
     })
     .await
     .map_err(error::ErrorInternalServerError)?;
     let songs_with_links: Vec<SongWithLink> = songs_without_links
         .iter()
-        .map(|song| SongWithLink::from(song, &occurences))
+        .map(|song| SongWithLink::from(song, &songs_played))
         .collect();
 
     let template = SongsIndexTemplate {

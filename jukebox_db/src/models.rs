@@ -44,22 +44,27 @@ pub struct SongWithLink {
     pub title: String,
     pub artist: String,
     pub link: String,
-    pub occurences: u8,
+    pub played_at: String,
 }
 fn link_to_song(song_id: i32) -> String {
     format!("/songs/{}", song_id)
 }
 
 impl SongWithLink {
-    pub fn from(simplified: &SimplifiedSong, all_occurences: &HashMap<i32, u8>) -> Self {
-        let occurences_entry = all_occurences.get(&simplified.id);
-        let occurence_ptr: &u8 = occurences_entry.or(Some(&0)).unwrap();
+    pub fn from(simplified: &SimplifiedSong, songs_played: &HashMap<i32, Option<String>>) -> Self {
+        let played_at = match songs_played.get(&simplified.id).clone() {
+            None => String::from(""),
+            Some(option_ref) => match option_ref {
+                None => String::from(""),
+                Some(string_ref) => string_ref.as_str().to_string(),
+            },
+        };
         Self {
             id: simplified.id,
             title: simplified.title.clone(),
             artist: simplified.artist.clone(),
             link: link_to_song(simplified.id),
-            occurences: *occurence_ptr,
+            played_at,
         }
     }
 }

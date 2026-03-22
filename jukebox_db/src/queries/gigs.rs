@@ -34,21 +34,22 @@ pub fn add_song_to_gig(song_id: i32, gig_id: i32, connection: &mut SqliteConnect
         .expect("Error saving new song in gig");
 }
 
-pub fn songs_of_gig(gig_id_i32: i32, connection: &mut SqliteConnection) -> HashMap<i32, u8> {
+pub fn songs_played_in_gig(
+    gig_id_i32: i32,
+    connection: &mut SqliteConnection,
+) -> HashMap<i32, Option<String>> {
     use crate::schema::songs_in_gigs::dsl::*;
     let query = songs_in_gigs
         .select(SongInGig::as_select())
         .filter(gig_id.eq(gig_id_i32));
     let maybe_songs_in_gigs = query.load::<SongInGig>(connection);
-    let mut occurences_by_song_id: HashMap<i32, u8> = HashMap::new();
-    if let Ok(songs_in_gig) = maybe_songs_in_gigs {
-        for occurence in songs_in_gig {
-            let entry = occurences_by_song_id.entry(occurence.song_id).or_insert(0);
-            *entry += 1;
-        }
-    }
-
-    occurences_by_song_id
+    let Ok(songs_in_gig) = maybe_songs_in_gigs else {
+        return HashMap::new();
+    };
+    let list = songs_in_gig
+        .iter()
+        .map(|sig| (sig.song_id, sig.played_at.clone()));
+    HashMap::from_iter(list)
 }
 
 pub fn delete_all_songs_in_gigs(connection: &mut SqliteConnection) -> () {
