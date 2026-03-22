@@ -1,3 +1,4 @@
+use crate::filters;
 use askama::Template;
 use chord_down::{Block, Song};
 use jukebox_db::models::SongWithLink;
@@ -15,6 +16,7 @@ pub struct SongsIndexTemplate {
 #[template(path = "song.html")]
 pub struct SongsTemplate {
     pub song: Song,
+    pub played_at: Option<String>,
     pub is_admin: bool,
 }
 

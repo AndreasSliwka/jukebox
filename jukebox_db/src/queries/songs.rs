@@ -1,6 +1,6 @@
 use crate::models::{NewSong, SimplifiedSong, Song};
 use chord_down;
-use diesel::prelude::*;
+use diesel::{debug_query, prelude::*};
 use ron;
 use serde::{Deserialize, Serialize};
 
@@ -41,14 +41,62 @@ pub fn all_songs(
     .expect("Error loading songs")
 }
 
-pub fn song_by_id(connection: &mut SqliteConnection, song_id: i32) -> Option<Song> {
+pub struct SongWithGigInfo {
+    pub id: i32,
+    pub title: String,
+    pub artist: String,
+    pub tags: String,
+    pub serialized_chord_pro: String,
+    pub played_at_gig: Option<String>,
+}
+
+pub fn maybe_played_at_gig(
+    song_id: i32,
+    maybe_gig_id: Option<i32>,
+    connection: &mut SqliteConnection,
+) -> Option<String> {
+    use crate::schema::songs_in_gigs::dsl;
+    println!("maybe_played_at_gig({},{:#?}", song_id, maybe_gig_id);
+    let Some(gig_id) = maybe_gig_id else {
+        return None;
+    };
+    let query = dsl::songs_in_gigs
+        .select(dsl::played_at)
+        .filter(dsl::gig_id.eq(gig_id))
+        .filter(dsl::song_id.eq(song_id));
+    println!(
+        "  query: {}",
+        debug_query::<diesel::sqlite::Sqlite, _>(&query)
+    );
+    let result = query.first::<Option<String>>(connection);
+
+    if let Ok(maybe_played_at) = result {
+        println!("  maybe_played_at = {:#?}", maybe_played_at);
+        maybe_played_at
+    } else {
+        None
+    }
+}
+
+pub fn song_by_id_with_gig_info(
+    connection: &mut SqliteConnection,
+    song_id: i32,
+    maybe_gig_id: Option<i32>,
+) -> Option<SongWithGigInfo> {
     use crate::schema::songs::dsl::*;
+
+    let played_at_gig = maybe_played_at_gig(song_id, maybe_gig_id, connection);
     let maybe_song = songs.find(song_id).first::<Song>(connection);
     if let Ok(song) = maybe_song {
-        println!("  found song #{}: {}", song.id, song.title);
-        Some(song)
+        Some(SongWithGigInfo {
+            id: song.id,
+            title: song.title,
+            artist: song.artist,
+            tags: song.tags,
+            serialized_chord_pro: song.serialized_chord_pro,
+            played_at_gig,
+        })
     } else {
-        println!("   could not find song #{}", song_id);
         None
     }
 }

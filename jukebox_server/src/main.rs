@@ -1,3 +1,4 @@
+mod filters;
 mod services;
 mod templates;
 mod types;

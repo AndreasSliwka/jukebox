@@ -21,10 +21,12 @@ pub fn current_gig_from_db(connection: &mut SqliteConnection) -> Option<Gig> {
 
 pub fn add_song_to_gig(song_id: i32, gig_id: i32, connection: &mut SqliteConnection) -> () {
     use crate::schema::songs_in_gigs;
+    let now = Local::now().naive_local().to_string().replace(" ", "T");
+
     let new_song_in_gig = SongInGig {
         song_id,
         gig_id,
-        played_at: None,
+        played_at: Some(now),
     };
     diesel::insert_into(songs_in_gigs::table)
         .values(&new_song_in_gig)

@@ -1,6 +1,9 @@
 {% extends "base.html" %} {% block upper_right_button %}
 <a href="/songs" class="button"> ↩ </a>
 {% endblock %} {% block content %}
+{% if let Some(timestamp) = played_at %}
+<div id="played_at" class="bg-amber-200 text-right"> Lied wurde um {{timestamp | time_from_timestamp}} gespielt</div>
+{% endif %}
 <div id="song" class="Song" x-init="maybeApplyShowChords()">
     <h1>{{song.title}}</h1>
     <h3>{{song.artist}}</h3>
@@ -53,4 +56,11 @@
     </div>
     {% endmatch %} {% endfor %}
 </div>
+{% if let None = played_at && is_admin %}
+    <div class="bg-amber-200 flex flex-row p-1" x-data="{ search: getCookieValue('search') }">
+        <a href="?add_to_setlist=1" class="btn bg-amber-950 text-white font-bold py-2 px-4 rounded-full" >
+            Lied als gespielt markieren
+        </a>
+    </div>
+{% endif %}
 {% endblock content %}
