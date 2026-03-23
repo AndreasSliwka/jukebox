@@ -1,30 +1,33 @@
 {% extends "base.html" %} {% block upper_right_button %}
 <a href="/songs" class="button"> ↩ </a>
-{% endblock %} {% block content %}
+{% endblock %} {% block title %}{{song.title}}{% endblock %} {% block content %}
 {% if let Some(timestamp) = played_at %}
-<div id="played_at" class="bg-amber-200 text-right"> Lied wurde um {{timestamp | time_from_timestamp}} gespielt</div>
+<div id="played_at" class="bg-amber-200 text-right">
+    Lied wurde um {{timestamp | time_from_timestamp}} gespielt
+</div>
 {% endif %}
 <div id="song" class="Song" x-init="maybeApplyShowChords()">
-    <h1>{{song.title}}</h1>
-    <h3>{{song.artist}}</h3>
+    <h3 class="artist">von {{song.artist}}</h3>
     {% for block in song.document.blocks %} {% let newline = "\n" %} {% match
     block %} {% when Block::Part(song_part) %}
-    <div class="chordpro part">
-        <h4>{{song_part.name}}</h4>
+    <div class="chordpro part part-{{song_part.name | lower}}">
+        <h4 class="partname">-- {{song_part.name}}</h4>
         {% for line in song_part.lines %} {% let (has_lyrics, has_chords) =
         line.has_lyrics_has_chords() %}
         <div
             class="line {% if has_lyrics %} with-lyrics {% endif %} {% if has_chords %} with-chords {% endif %}"
         >
             {% for element in line.elements %}
-            <span class="chords-and-lyrics-container">
-                {% if let Some(lyrics) = element.lyrics %}
-                    <span class="lyrics">{{lyrics}}</span>
-                {% endif %}
+            <span class="fragment">
                 {% if let Some(chord) = element.chord %}
-                    <span class="chord">{{chord}}</span>
-                {% endif%}
-            </span>
+                <span class="chord"
+                    ><span class="signature">{{chord}}</span></span
+                >
+                {% else %}
+                <span class="chord">&nbsp;</span>
+                {% endif%} {% if let Some(lyrics) = element.lyrics %}
+                <span class="lyrics">{{lyrics}}</span>
+                {% endif %}
             </span>
             {% endfor %}
         </div>
@@ -57,10 +60,15 @@
     {% endmatch %} {% endfor %}
 </div>
 {% if let None = played_at && is_admin %}
-    <div class="bg-amber-200 flex flex-row p-1" x-data="{ search: getCookieValue('search') }">
-        <a href="?add_to_setlist=1" class="btn bg-amber-950 text-white font-bold py-2 px-4 rounded-full" >
-            Lied als gespielt markieren
-        </a>
-    </div>
-{% endif %}
-{% endblock content %}
+<div
+    class="bg-amber-200 flex flex-row p-1"
+    x-data="{ search: getCookieValue('search') }"
+>
+    <a
+        href="?add_to_setlist=1"
+        class="btn bg-amber-950 text-white font-bold py-2 px-4 rounded-full"
+    >
+        Lied als gespielt markieren
+    </a>
+</div>
+{% endif %} {% endblock content %}

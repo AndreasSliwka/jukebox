@@ -1,5 +1,21 @@
 @import "tailwindcss";
 
+.Song .part.part-verse .partname,
+.Song .part.part-chorus .partname,
+.Song .part.part-bridge .partname {
+    display: none;
+}
+
+.Song .part.part-chorus {
+    @apply ml-4;
+}
+.Song .part.part-bridge {
+    @apply ml-8;
+}
+
+.Song .artist {
+    text-align: right;
+}
 .Song .tabulatur,
 .Song .chord_grid {
     display: none;
@@ -7,15 +23,36 @@
 .Song.showChords .tabulatur,
 .Song.showChords .chord_grid {
     display: block;
+    @apply bg-amber-100;
 }
-
-.Song .chordpro.part .chord {
-    display: none;
-}
-.Song.showChords .chordpro.part .chord {
-    display: inline-block; /* TODO: fix layout for inline chords */
-}
-
 .Song .chordpro {
     @apply mb-2;
+    .line {
+        line-height: 1.2;
+    }
+}
+/* fragments, chords and lyrics */
+.Song .fragment {
+    display: inline-flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.Song .chord {
+    display: none;
+}
+
+.Song.showChords .with-chords .chord {
+    position: relative;
+    display: inline-block;
+    top: 0;
+    left: 0; /* TODO: fix layout for inline chords */
+    .signature {
+        @apply bg-amber-200;
+    }
+}
+.Song.showChords .with-chords .lyrics {
+    position: relative;
+    bottom: 0;
+    left: 0; /* TODO: fix layout for inline chords */
 }

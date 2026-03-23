@@ -139,12 +139,16 @@ fn should_set_meta_key_value(line: &str) -> Option<(String, String)> {
 
 fn should_set_part_name(line: &str) -> Option<String> {
     let line = line.trim();
-    if line == "{soc}" {
+    if line == "{soi}" {
+        return Some(String::from("Intro"));
+    } else if line == "{soc}" {
         return Some(String::from("Chorus"));
     } else if line == "{sov}" {
         return Some(String::from("Verse"));
     } else if line == "{sob}" {
         return Some(String::from("Bridge"));
+    } else if line == "{soo}" {
+        return Some(String::from("Outro"));
     }
 
     // Outros, Intros, everything written as
@@ -157,8 +161,15 @@ fn should_set_part_name(line: &str) -> Option<String> {
     None
 }
 
-fn should_finish_current_path(line: &str) -> bool {
-    line == "{eoc}" || line == "{eov}" || line == "{end_of_chorus}" || line == "{end_of_verse}"
+fn should_finish_current_path(line: &str, maybe_last_part: &Option<String>) -> bool {
+    let Some(last_path) = maybe_last_part else {
+        return false;
+    };
+    (last_path == "Intro" && line == "{eoi}")
+        || (last_path == "Verse" && line == "{eov}")
+        || (last_path == "Chorus" && line == "{eoc}")
+        || (last_path == "Bridge" && line == "{eob}")
+        || (last_path == "Outro" && line == "{eoo}")
 }
 
 impl Song {
@@ -322,7 +333,7 @@ impl Song {
         if !state.in_a_block {
             return self.start_anonymous_part(state);
         }
-        if should_finish_current_path(line) {
+        if should_finish_current_path(line, &state.last_part_name) {
             return self.finish_part(state);
         }
         self.add_line_to_latest_part(line, state);

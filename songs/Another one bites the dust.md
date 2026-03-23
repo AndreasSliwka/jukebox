@@ -1,7 +1,11 @@
 {title:Another one bites the dust}
 {artist:Queen }
 
-Let's go!
+{soi}
+... Let's go!
+{eoi}
+
+{sov}
 [e]Steve walks warily down the street
 With the [a]brim pulled way down low
 Ain't no sound but the sound of his feet
@@ -10,14 +14,18 @@ Are you [C]ready? Hey, are you [G]ready for this?
 Are you hanging on the edge of your seat?
 Out of the doorway, the bullets rip
 [a]To the sound of the [B]beat, yeah
+{eov}
 
+{soc}
 Another one bites the dust
 Another one bites the dust
 And another one gone, and another one gone
 Another one bites the dust (yeah)
 [f#]Hey, I'm gonna [A]get you, too
 [f#]Another one bites the [B]dust
+{eoc}
 
+{sov}
 How do you think I'm gonna get along
 Without you, when you're gone?
 You took me for everything that I had
@@ -26,13 +34,18 @@ Are you happy, are you satisfied?
 How long can you stand the heat?
 Out of the doorway, the bullets rip
 To the sound of the beat, look out
+{eov}
+
+{soc}
 Another one bites the dust
 Another one bites the dust
 And another one gone, and another one gone
 Another one bites the dust
 Hey, I'm gonna get you too
 Another one bites the dust
+{eoc}
 
+{sov}
 There are plenty of ways that you can hurt a man
 And bring him to the ground
 You can beat him, you can cheat him, you can treat him bad
@@ -41,10 +54,13 @@ But I'm ready, yes I'm ready for you
 I'm standing on my own two feet
 Out of the doorway, the bullets rip
 Repeating to the sound of the beat, oh yeah
+{eov}
 
+{soc}
 Another one bites the dust
 Another one bites the dust
 And another one gone, and another one gone
 Another one bites the dust, yeah
 Hey, I'm gonna get you too
 Another one bites the dust
+{eoc}

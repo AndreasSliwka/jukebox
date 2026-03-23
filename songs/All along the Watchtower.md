@@ -1,6 +1,11 @@
 {t:All along the Watchtower}
 {artist:Bob Dylan / Jimi Hendrix}
 
+{sog}
+|: B C# B A :|
+{eog}
+
+{sov}
 There must be some kind of way out of here"
 Said the joker to the thief
 "There's too much confusion
@@ -9,7 +14,9 @@ Businessmen, they drink my wine
 Plowmen dig my earth
 None will level on the line
 Nobody offered his word,
+{eov}
 
+{sov}
 "No reason to get excited"
 The thief, he kindly spoke
 "There are many here among us
@@ -18,7 +25,9 @@ But you and I, we've been through that
 And this is not our fate
 So let us stop talking falsely now
 The hour's getting late
+{eov}
 
+{sov}
 All along the watchtower
 Princes kept the view
 While all the women came and went
@@ -27,7 +36,4 @@ Outside in the cold distance
 A wildcat did growl
 Two riders were approaching
 And the wind began to howl, hey
-
-{tempo:120}
-
-{scrollspeed:6}
+{eov}

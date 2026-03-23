@@ -2,39 +2,39 @@
 {artist:Paul Simon}
 
 {sog}
-[ G  D° C^ B7.   e  D#° F#°  B7] 
+Verse:
+[ G  D° C^ B7  |  E  D#° F#°  B7  |  G  D° C^ B7  |  E- A- E- ] 
+
+Chorus:
+[|: G Bb C G :|]
 {eog}
 
 {sot}
 0  2  0  x   0  2  5  x   0  2  0  x   0  0  0  0
-0  0  0  1   0  1  0  x   0  0  0  1   0  1  0  1
-0  2  0  2   0  2  0  0   0  2  0  2   0  0  0  0
+0  0  0  1   0  1  4  x   0  0  0  1   0  1  0  1
+0  2  0  2   0  2  5  0   0  2  0  2   0  0  0  0
 0  0  2  1   2  1  4  1   0  0  2  1   2  2  2  2
-2  x  3  2   2  x  x  2   2  x  3  2   2  0  0  0
+2  x  3  2   2  x  x  2   2  x  3  2   2  0  2  0
 3  x  x  x   0  x  x  x   3  x  x  x   0  x  0  x
 {eot}
 
 {sov}
-"The problem is all inside your head," she said to me
-"The answer is easy if you take it logically
-I'd like to help you in your struggle to be free
-There must be fifty ways to leave your lover"
-She said, "It's really not my habit to intrude
-Furthermore, I hope my meaning won't be lost or misconstrued
-But I'll repeat myself at the risk of being crude
-There must be fifty ways to leave your lover"
-Fifty ways to leave your lover
+[G]"The problem is [D]all inside your [C^]head," she said to [B]me
+[E-]"The answer is [D#°]easy if you [F#°]take it logical[B]ly
+[G]I'd like to [D]help you in your [C^]struggle to be [B]free
+There must [E-]- be fifty [A-7]ways to leave your [e-]lover"
+[G]She said, "It's [D]really not my [C^]habit to in[B]trude
+Further[E-]more, I hope my [D#°]meaning won't be [F#°]lost or miscon[B]strued
+But I'll rep[G]eat myself [D]- at the [C^]risk of being [B]crude
+There must be [E-]- fifty [A-]ways to leave your [E-]lover"
+[E-]- Fifty [A-]ways to leave your [E-]lover
 {eov}
 
 {soc}
-|: You just slip out the back, Jack
-, Make a new plan, Stan
-You don't need to be coy, Roy
-, Just get yourself free
-Hop on the bus, Gus
-, You don't need to discuss much
-Just drop off the key, Lee
-, And get yourself free :|
+You just slip out the [G]back, Jack, Make a new [Bb]plan, Stan
+You don't need to be [C]coy, Roy, Just get yourself [G]free
+Hop on the [G]bus, Gus, You don't need to dis[Bb]cuss much
+Just drop off the [C]key, Lee, And get yourself [G]free
 {eoc}
 
 {eov}
@@ -50,12 +50,8 @@ Fifty ways to leave your lover
 {eov}
 
 {soc}
-|: You just slip out the back, Jack
-, Make a new plan, Stan
-You don't need to be coy, Roy
-, Just get yourself free
-Hop on the bus, Gus
-, You don't need to discuss much
-Just drop off the key, Lee
-, And get yourself free :|
+You just slip out the back, Jack, Make a new plan, Stan
+You don't need to be coy, Roy, Just get yourself free
+Hop on the bus, Gus, You don't need to discuss much
+Just drop off the key, Lee, And get yourself free
 {eoc}
