@@ -1,7 +1,7 @@
 {% extends "base.html" %} {% block title %} Songs {% endblock %} {% block
 content %}
 
-<table id="songlist">
+<table id="songlist" x-init="maybeApplyHidePlayedSongs()">
     <tr>
         <th width="50%">
             {% match song_list_order %} {% when SongListOrder::TitleAsc %}
@@ -23,7 +23,7 @@ content %}
     {% for song in songs %} {% if song.played_at != "" %}
     <tr
         id="song-{{song.id}}"
-        class="align-top song text-gray-500"
+        class="align-top song alreadyPlayed text-gray-500"
         href="{{song.link}}"
         data-name="{{song.title.to_lowercase()}} -- {{song.artist.to_lowercase()}} "
     >
@@ -34,7 +34,7 @@ content %}
     {% else %}
     <tr
         id="song-{{song.id}}"
-        class="align-top song text-gr"
+        class="align-top song"
         href="{{song.link}}"
         data-name="{{song.title.to_lowercase()}} -- {{song.artist.to_lowercase()}} "
     >

@@ -393,6 +393,9 @@
   bottom: 0;
   left: 0;
 }
+#songlist.hidePlayedSongs .song.alreadyPlayed {
+  display: none;
+}
 @property --tw-rotate-x {
   syntax: "*";
   inherits: false;

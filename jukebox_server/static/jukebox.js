@@ -46,6 +46,17 @@ function maybeApplyShowChords() {
   }
 }
 
+function maybeApplyHidePlayedSongs() {
+  let songlist = window.document.getElementById("songlist");
+  if (songlist) {
+    if (getCookieValue("hidePlayedSongs") == "true") {
+      songlist.classList.add("hidePlayedSongs");
+    } else {
+      songlist.classList.remove("hidePlayedSongs");
+    }
+  }
+}
+
 function setSearchFilter(term) {
   if (term.startsWith("admin:")) {
     let passkey = term.replace(/^admin:/, "");

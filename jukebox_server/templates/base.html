@@ -34,6 +34,20 @@
             </label>
         </div>
         <div class="menuitem">
+            <label
+                x-data="{ hide_played_songs: getCookieValue('hidePlayedSongs') == 'true'}"
+                ><input
+                    type="checkbox"
+                    name="chords"
+                    x-model="hide_played_songs"
+                    class="hidden"
+                    x-on:change="setCookieValue('hidePlayedSongs', $event.target.checked.toString());maybeApplyHidePlayedSongs()"
+                />Gespielte Lieder verstecken
+                <span x-show="hide_played_songs">✅</span>
+                <span x-show="!hide_played_songs">🚫</span>
+            </label>
+        </div>
+        <div class="menuitem">
             <button>
                 <!-- TODO: Zoom button does nothing -->
                 <span class="btn btn-blue">&nbsp;-&nbsp;</span>&nbsp; Z o
