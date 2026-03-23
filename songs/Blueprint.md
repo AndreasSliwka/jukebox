@@ -1,5 +1,5 @@
-{title:Blueprint }
-{artist:Raimbirds}
+{title: Blueprint}
+{artist: Rainbirds}
 
 I walk ahead alone, you tell me not to go so fast
 But I am slower than you think, I am as careful as your touch
