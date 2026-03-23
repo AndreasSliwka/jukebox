@@ -1,3 +1,4 @@
+use jukebox_db::models::Song;
 use jukebox_db::*;
 use regex::Regex;
 use std::env;
@@ -54,6 +55,23 @@ fn get_artist<'a>(content: &'a String) -> &'a str {
         ""
     }
 }
+
+fn song_has_verse(song: &Song) -> bool {
+    let mut has_verse = false;
+    let chordown_song: chord_down::Song =
+        chord_down::Song::from_ron(song.serialized_chord_pro.clone());
+    for block in chordown_song.document.blocks {
+        match block {
+            chord_down::Block::Part(part) => {
+                if part.name == "Verse" {
+                    has_verse = true
+                }
+            }
+            _ => {}
+        }
+    }
+    has_verse
+}
 fn main() {
     let mut connection = jukebox_db::establish_single_connection();
     let source_dir = get_directory_from_command_line();
@@ -73,7 +91,7 @@ fn main() {
                 let title: &str = get_title(song_file.as_str(), &content);
                 let artist: &str = get_artist(&content);
                 let song = create_song(&mut connection, title, artist, content.as_str());
-                if (song.id % 7) == 0 {
+                if song_has_verse(&song) {
                     add_song_to_gig(song.id, gig.id, &mut connection)
                 }
             }
