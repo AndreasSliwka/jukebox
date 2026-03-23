@@ -1,33 +1,33 @@
 {title:Pure Lust am Leben}
 {artist:Geier Sturzflug}
 
-
-[Intro]
+{soi}
 Eins, Zwei, A-B-C-D
+[|C | C | F | G ]
+{eoi}
 
-[Strophe 1]
-Verseucht mir meinen Garten, mit Schwefeldioxid
-Vernebelt mir die Sinne
-Bis man nichts mehr sieht
+{sov}
+[C]Verseucht mir meinen Garten, mit [F]Schwefeldioxid
+Ver[G]nebelt mir die Sinne [C]bis man nichts mehr sieht
 Baut mir durch die Küche, noch 'ne Autobahn
-Schneidet mir die Haare
-Und zieht mir doch den Zahn
-Und wenn es wirklich nötig ist
-Dann will ich nicht so sein
-Dann lagert noch Plutonium (Ach, sie kommen wegen dem Plutonium?)
-In meinem Keller ein
+Schneidet mir die Haare und zieht mir doch den Zahn
+Und [F]wenn es wirklich nötig ist dann [C]will ich nicht so sein
+Dann [F]lagert noch Plutonium (Ach, sie kommen wegen dem Plutonium?)
+In [G]meinem Keller ein
+{eov}
 
-[Refrain 1]
-Aber eins kann mir Keiner (eins kann mir Keiner)
+{soc}
+Aber [C]eins kann mir Keiner (eins kann mir Keiner)
+[F]Eins kann mir Keiner (eins kann mir Keiner)
+[G]Eins kann mir Keiner nehmen
+Und das [F]ist die pure [G]Lust am Leben
+Eins kann mir Keiner (eins kann mir Keiner)
 Eins kann mir Keiner (eins kann mir Keiner)
 Eins kann mir Keiner nehmen
 Und das ist die pure Lust am Leben
-Eins kann mir Keiner (eins kann mir Keiner)
-Eins kann mir Keiner (eins kann mir Keiner)
-Eins kann mir Keiner nehmen
-Und das ist die pure Lust am Leben
+{eoc}
 
-[Strophe 2]
+{sov}
 Schlachtet meine Katze, zum Wohl der Medizin
 Bringt mich auf die Palme
 Verpasst mir Ephedrin
@@ -38,22 +38,12 @@ Bis ich nicht mehr kann
 Gebt 's mir dann und schmutzig
 Stampft mich kräftig ein
 Zum Segen der Nation, muss das wohl so sein
+{eov}
 
-[Refrain 2]
+{soc}
 Aber eins kann mir Keiner (eins kann mir Keiner)
 Eins kann mir Keiner (eins kann mir Keiner)
 Eins kann mir Keiner nehmen
 Und das ist die pure Lust am Leben
-Eins kann mir Keiner (eins kann mir Keiner)
-Eins kann mir Keiner (eins kann mir Keiner)
-Eins kann mir Keiner nehmen
-Und das ist die pure Lust am Leben
-Eins kann mir Keiner (eins kann mir Keiner)
-Eins kann mir Keiner (eins kann mir Keiner)
-Eins kann mir Keiner nehmen
-Und das ist die pure Lust am Leben
-Eins kann mir Keiner (eins kann mir Keiner)
-Eins kann mir Keiner (eins kann mir Keiner)
-Eins kann mir Keiner nehmen
-Und das ist die pure Lust am Leben
-Eins kann mir Keiner ...
+...
+{eoc}

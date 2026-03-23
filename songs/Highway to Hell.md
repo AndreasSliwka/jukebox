@@ -1,7 +1,11 @@
 {title: Highway to Hell}
 {artist: AC/DC}
 
-[Verse]
+{sog}
+(Sorry, entweder man kanns ...)
+{eog}
+
+{sov}
 Livin' easy, Lovin' free
 Season ticket on a one way ride
 Askin' nothin', Leave me be
@@ -10,14 +14,16 @@ Don't need reason, Don't need rhyme
 Ain't nothin' that I'd rather do
 Goin' down, Party time
 My friends are gonna be there too
+{eov}
 
-[Chorus]
+{soc}
 I'm on the highway to hell
 On the highway to hell
 Highway to hell
 I'm on the highway to hell
+{eoc}
 
-[Verse]
+{sov}
 No stop signs, Speed limit
 Nobody's gonna slow me down
 Like a wheel, Gonna spin it
@@ -26,8 +32,9 @@ Hey satan, Payin' my dues
 Playin' in a rockin' band
 Hey mumma, Look at me
 I'm on the way to the promised land
+{eov}
 
-[Chorus]
+{soc}
 I'm on the highway to hell
 Highway to hell
 I'm on the highway to hell
@@ -37,8 +44,13 @@ I'm on the highway to hell
 On the highway to hell
 Highway to hell
 I'm on the highway to hell
+{eoc}
 
-[(Solo)]
+{sob}
+(Solo)
+{eob}
+
+{soc}
 (highway to hell) I'm on the highway to hell
 (highway to hell) highway to hell
 (highway to hell) highway to hell
@@ -46,3 +58,4 @@ I'm on the highway to hell
 And I'm goin' down
 All the way
 I'm on the highway to hell
+{eoc}

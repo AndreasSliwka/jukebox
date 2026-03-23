@@ -1,19 +1,18 @@
 {title:Heart Of Gold}
 {artist:Neil Young}
 
-I want to live
-I want to give
-I've been a miner
-For a heart of gold
-It's these expressions
-I never give
-That keep me searching
-For a heart of gold
-And I'm getting old
-Keep me searching
-For a heart of gold
-And I'm getting old
+{sov}
+[E-]I want to [C]live / [D]I want to [G]give
+I've been a miner / For a heart of gold
+It's these expressions / I never give
+[E-]That keep me searching / For a [G]heart of gold
+[C]And I'm getting old [G]
+[E-]Keep me searching
+For a [G]heart of gold
+[C]And I'm getting old [G]
+{eov}
 
+{sov}
 I've been to Hollywood
 I've been to Redwood
 I crossed the ocean
@@ -26,12 +25,15 @@ And I'm getting old
 Keeps me searching
 For a heart of gold
 And I'm getting old
+{eov}
 
-Keep me searching
-For a heart of gold
+{sov}
+[E-]Keep me searching
+For a [D]heart of [E-]gold
 You keep me searching
-And I'm growing old
+And I'm [D]growing [E-]old
 Keep me searching
-For a heart of gold
-I've been a miner
-For a heart of gold
+For a [D]heart of [E-]gold
+[E-]I've been a miner
+For a [G]heart of gold [C G]
+{eov}

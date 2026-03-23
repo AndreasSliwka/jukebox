@@ -1,22 +1,25 @@
 {title:Nur ein Wort}
 {artist:Wir sind Helden}
 
-[G h e C] 
+{soi}
+[C E- A- F] 
+{eoi}
 
-[Strophe 1]
-Ich sehe, was du denkst
-Ich denke, was du fühlst
-Ich fühle, was du willst
+{sov}
+[C]Ich sehe, was du [E-]denkst
+Ich denke, was du [A-]fühlst
+Ich fühle, was du [F]willst
 Aber ich hör' dich nicht
-Ich hab' mir ein Wörterbuch gelieh'n
-Dir A bis Z ins Ohr geschrien
-Ich stapel' tausend wirre Worte auf
-Die dich am Ärmel zieh'n
-Und wo du hingeh'n willst, ich häng' an dein'n Bein'n
-Wenn du schon auf den Mund fall'n musst
-Warum dann nicht auf meinen?
+Ich [C]hab' mir ein Wörterbuch ge[E-]lieh'n
+Dir A bis Z ins Ohr ge[A-]schrien
+Ich stapel' tausend wirre [F]Worte auf
+Die dich am Ärmel [C]zieh'n
+Und wo du [E-/B]hingeh'n willst, ich [A-]häng' an dein'n [G]Bein'n
+Wenn [F]du schon auf den [E-]Mund fall'n musst
+Wa[D-]rum dann nicht auf [F]mei[G]nen?
+{eov}
 
-[Refrain]
+{soc}
 Oh, bitte gib mir nur ein „Oh“
 Bitte gib mir nur ein „Oh“
 Bitte gib mir nur ein
@@ -25,8 +28,9 @@ Bitte gib mir nur ein „Oh“
 Bitte gib mir nur ein „Oh“
 Bitte gib mir nur ein
 Bitte, bitte gib mir nur ein Wort
+{eoc}
 
-[Strophe 2]
+{sov}
 Es ist verrückt, wie schön du schweigst
 Wie du dein hübsches Köpfchen neigst
 Und so der ganzen lauten Welt und mir
@@ -36,8 +40,9 @@ Stellst es mitten in die Welt
 Spannst die Schnüre und staunst stumm, wenn nachts ein Mädchen drüberfällt
 Zu deinen Füßen red' ich mich um Kopf und Kragen
 Ich will in deine tiefen Wasser große Well'n schlagen
+{eov}
 
-[Refrain]
+{soc}
 Oh, bitte gib mir nur ein „Oh“
 Bitte gib mir nur ein „Oh“
 Bitte gib mir nur ein
@@ -46,14 +51,14 @@ Bitte gib mir nur ein „Oh“
 Bitte gib mir nur ein „Oh“
 Bitte gib mir nur ein
 Bitte, bitte gib mir nur ein Wort
+{eoc}
 
-[Instrumental]
-
-[Bridge]
+{sob}
 In meinem Blut werfen die Endorphine Blasen
 Wenn hinter dein'n still'n Hasenaugen die Gedanken rasen
+{eob}
 
-[Refrain]
+{soc}
 Oh, bitte gib mir nur ein „Oh“
 Bitte gib mir nur ein „Oh“
 Bitte gib mir nur ein
@@ -73,12 +78,4 @@ Oh, bitte gib mir nur ein „Oh“
 Bitte gib mir nur ein „Oh“
 Bitte gib mir nur ein—
 Bitte, bitte gib mir nur ein Wort
-You might also like
-The Alchemy
-Taylor Swift
-So Long, London
-Taylor Swift
-​the boy is mine
-Ariana Grande
-9
-Embed
+{eoc}
