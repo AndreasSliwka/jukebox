@@ -1,15 +1,14 @@
 {t:All you need is Love}
 {artist:The Beatles}
 
-[G]Love, [D/F#]love, [e]love
+[G]Love, [D/F#]love, [E-]love 
 Love, love, love
-[a]Love, [G]love, [D]love
+[A-]Love, [G]love, [D]love 
 
-There's nothing you can do that can't be done
-Nothing you can sing that can't be sung
-Nothing you can say, but you can learn
-How to play the game
-It's easy
+[G]There's nothing you can [D]do that can't be [E-]done
+[G]Nothing you can [D]sing that can't be [E-]sung
+[A-]Nothing you can [G]say, but you can [D]learn how to play the game
+It's [D]easy
 
 Nothing you can make that can't be made
 No one you can save that can't be saved
