@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use crate::models::Gig;
+use crate::models::NewGig;
 use crate::models::SongInGig;
 use chrono::{self, Local};
 use diesel::prelude::*;
@@ -55,4 +56,13 @@ pub fn songs_played_in_gig(
 pub fn delete_all_songs_in_gigs(connection: &mut SqliteConnection) -> () {
     use crate::schema::songs_in_gigs::dsl::*;
     let _ = diesel::delete(songs_in_gigs).execute(connection);
+}
+
+pub fn save_new_gig(new_gig: NewGig, connection: &mut SqliteConnection) -> () {
+    use crate::schema::gigs;
+
+    diesel::insert_into(gigs::table)
+        .values(&new_gig)
+        .execute(connection)
+        .expect("Error saving new gig");
 }

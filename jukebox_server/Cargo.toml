@@ -7,7 +7,7 @@ edition = "2024"
 actix-web = "4"
 jukebox_db = { path = "../jukebox_db" }
 chord_down = { path = "../chord_down" }
-
+dotenvy = "0.15.7"
 diesel = { version = "2.3.7", features = ["sqlite", "returning_clauses_for_sqlite_3_35"] }
 r2d2 = "0.8.10"
 tokio = { version = "1.50.0", features = ["macros", "rt-multi-thread"] }

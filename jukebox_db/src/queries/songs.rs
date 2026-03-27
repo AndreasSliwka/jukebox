@@ -1,6 +1,6 @@
 use crate::models::{NewSong, SimplifiedSong, Song};
 use chord_down;
-use diesel::{debug_query, prelude::*};
+use diesel::prelude::*;
 use ron;
 use serde::{Deserialize, Serialize};
 
@@ -56,7 +56,6 @@ pub fn maybe_played_at_gig(
     connection: &mut SqliteConnection,
 ) -> Option<String> {
     use crate::schema::songs_in_gigs::dsl;
-    println!("maybe_played_at_gig({},{:#?}", song_id, maybe_gig_id);
     let Some(gig_id) = maybe_gig_id else {
         return None;
     };
@@ -64,14 +63,9 @@ pub fn maybe_played_at_gig(
         .select(dsl::played_at)
         .filter(dsl::gig_id.eq(gig_id))
         .filter(dsl::song_id.eq(song_id));
-    println!(
-        "  query: {}",
-        debug_query::<diesel::sqlite::Sqlite, _>(&query)
-    );
     let result = query.first::<Option<String>>(connection);
 
     if let Ok(maybe_played_at) = result {
-        println!("  maybe_played_at = {:#?}", maybe_played_at);
         maybe_played_at
     } else {
         None
@@ -101,9 +95,65 @@ pub fn song_by_id_with_gig_info(
     }
 }
 
-pub fn create_song(conn: &mut SqliteConnection, title: &str, artist: &str, markdown: &str) -> Song {
+pub fn song_by_title_and_artist(
+    title: &str,
+    artist: &str,
+    connection: &mut SqliteConnection,
+) -> Option<Song> {
+    use crate::schema::songs::dsl;
+    let maybe_song = dsl::songs
+        .filter(dsl::title.eq(title))
+        .filter(dsl::artist.eq(artist))
+        .first::<Song>(connection);
+    match maybe_song {
+        Ok(song) => Some(song),
+        Err(_) => None,
+    }
+}
+
+fn update_song(song_id: i32, new_song: NewSong, conn: &mut SqliteConnection) -> Option<Song> {
+    use crate::schema::songs::dsl;
+    let song = Song {
+        id: song_id,
+        title: new_song.title.to_string(),
+        artist: new_song.artist.to_string(),
+        tags: new_song.tags,
+        markdown: new_song.markdown.to_string(),
+        serialized_chord_pro: new_song.serialized_chord_pro.to_string(),
+    };
+    let result = diesel::update(dsl::songs.filter(dsl::id.eq(song.id)))
+        .set((
+            dsl::title.eq(song.title),
+            dsl::artist.eq(song.artist),
+            dsl::tags.eq(song.tags),
+            dsl::markdown.eq(song.markdown),
+            dsl::serialized_chord_pro.eq(song.serialized_chord_pro),
+        ))
+        .get_result::<Song>(conn);
+    match result {
+        Ok(song) => Some(song),
+        Err(_) => None,
+    }
+}
+
+pub fn create_song(new_song: NewSong, conn: &mut SqliteConnection) -> Option<Song> {
     use crate::schema::songs;
 
+    Some(
+        diesel::insert_into(songs::table)
+            .values(&new_song)
+            .returning(Song::as_returning())
+            .get_result(conn)
+            .expect("Error saving new post"),
+    )
+}
+
+pub fn update_or_create_song(
+    conn: &mut SqliteConnection,
+    title: &str,
+    artist: &str,
+    markdown: &str,
+) -> Option<Song> {
     let song = chord_down::Song::parse(&(markdown.to_string()), false);
     let tags = serde_json::to_string(&song.tags).unwrap_or(String::from("[]"));
     let chord_pro = ron::ser::to_string(&song).unwrap();
@@ -116,11 +166,11 @@ pub fn create_song(conn: &mut SqliteConnection, title: &str, artist: &str, markd
         serialized_chord_pro,
     };
 
-    diesel::insert_into(songs::table)
-        .values(&new_song)
-        .returning(Song::as_returning())
-        .get_result(conn)
-        .expect("Error saving new post")
+    if let Some(song) = song_by_title_and_artist(title, artist, conn) {
+        update_song(song.id, new_song, conn)
+    } else {
+        create_song(new_song, conn)
+    }
 }
 
 pub fn delete_all_songs(conn: &mut SqliteConnection) -> () {

@@ -27,7 +27,7 @@ async fn service(request: HttpRequest) -> actix_web::Result<impl Responder> {
         }
     }
 
-    Ok(HttpResponse::TemporaryRedirect()
+    Ok(HttpResponse::SeeOther()
         .append_header(("Location", "/songs"))
         .body("moved on"))
 }

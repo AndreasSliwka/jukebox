@@ -6,6 +6,7 @@ pub use crate::queries::*;
 
 use diesel::prelude::*;
 use diesel::r2d2::{ConnectionManager, Pool};
+use diesel_migrations::{EmbeddedMigrations, MigrationHarness, embed_migrations};
 use dotenvy::dotenv;
 use std::env;
 
@@ -24,4 +25,17 @@ pub fn establish_single_connection() -> SqliteConnection {
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     SqliteConnection::establish(&database_url)
         .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
+}
+
+pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!();
+type DB = diesel::sqlite::Sqlite;
+
+fn run_pending_migrations(conn: &mut impl MigrationHarness<DB>) {
+    conn.run_pending_migrations(MIGRATIONS)
+        .expect("Could not run migrations");
+}
+
+pub fn run_migrations() {
+    let mut connection = establish_single_connection();
+    run_pending_migrations(&mut connection);
 }

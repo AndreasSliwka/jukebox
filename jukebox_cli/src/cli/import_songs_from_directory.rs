@@ -1,18 +1,11 @@
-use jukebox_db::models::Song;
+use dotenvy::dotenv;
 use jukebox_db::*;
 use regex::Regex;
-use std::env;
 use std::fs;
-use std::process::exit;
 
-fn get_directory_from_command_line() -> String {
-    let args: Vec<String> = env::args().collect();
-    println!("args.len() = {}", args.len());
-    if args.len() < 2 {
-        println!("usage: {} path/to/markdown/directory/.", args[0]);
-        exit(255)
-    }
-    let dir_name = args[1].clone();
+fn get_directory_from_environment() -> String {
+    dotenv().ok();
+    let dir_name = std::env::var("SONGS_DIR").expect("SONGS_DIR must be set");
     let metadata = fs::metadata(dir_name.clone()).unwrap();
     fs::exists(dir_name.clone())
         .expect(format!("Directory {} does not exist", dir_name.clone()).as_str());
@@ -56,44 +49,30 @@ fn get_artist<'a>(content: &'a String) -> &'a str {
     }
 }
 
-fn song_has_verse(song: &Song) -> bool {
-    let mut has_verse = false;
-    let chordown_song: chord_down::Song =
-        chord_down::Song::from_ron(song.serialized_chord_pro.clone());
-    for block in chordown_song.document.blocks {
-        match block {
-            chord_down::Block::Part(part) => {
-                if part.name == "Verse" {
-                    has_verse = true
-                }
-            }
-            _ => {}
-        }
-    }
-    has_verse
-}
 fn main() {
     let mut connection = jukebox_db::establish_single_connection();
-    let source_dir = get_directory_from_command_line();
+    let source_dir = get_directory_from_environment();
     let song_files = get_songs_files_from_directory(source_dir);
-    let maybe_gig = jukebox_db::current_gig_from_db(&mut connection);
-    let Some(gig) = maybe_gig else {
-        println!("No current gig, Problem.");
-        return;
-    };
     if song_files.len() > 0 {
-        delete_all_songs(&mut connection);
-        delete_all_songs_in_gigs(&mut connection);
         for song_file in song_files {
+            let mut song_loaded: bool = false;
             let maybe_content = fs::read_to_string(song_file.clone());
-
             if let Ok(content) = maybe_content {
                 let title: &str = get_title(song_file.as_str(), &content);
                 let artist: &str = get_artist(&content);
-                let song = create_song(&mut connection, title, artist, content.as_str());
-                if song_has_verse(&song) {
-                    add_song_to_gig(song.id, gig.id, &mut connection)
+
+                if let Some(song) =
+                    update_or_create_song(&mut connection, title, artist, content.as_str())
+                {
+                    song_loaded = true;
+                    println!("Song #{}: {} - {}", song.id, song.title, song.artist);
+                    if song.tags != "" && song.tags != "[]" {
+                        println!("  Tags: {}", song.tags);
+                    }
                 }
+            }
+            if !song_loaded {
+                println!("! Could not load song from {}", song_file)
             }
         }
     }

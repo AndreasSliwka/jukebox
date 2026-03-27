@@ -31,7 +31,7 @@ async fn set_played_at_now_and_redirect(
         jukebox_db::add_song_to_gig(song_id, gig_id, connection);
     };
     Some(
-        HttpResponse::TemporaryRedirect()
+        HttpResponse::SeeOther()
             .append_header(("Location", request.path()))
             .body("no session"),
     )
@@ -63,7 +63,7 @@ pub async fn service(
     .await?;
 
     match song_from_db {
-        None => Ok(HttpResponse::PermanentRedirect()
+        None => Ok(HttpResponse::SeeOther()
             .append_header(("Location", "/songs"))
             .body("moved on")),
         Some(song) => {

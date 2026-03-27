@@ -52,7 +52,7 @@ pub fn admin_secret_from_session(session: &Session) -> Option<String> {
 }
 
 pub fn redirect_to_start_session() -> HttpResponse {
-    HttpResponse::TemporaryRedirect()
+    HttpResponse::SeeOther()
         .append_header(("Location", "/start_session"))
         .body("no session")
 }
@@ -76,7 +76,7 @@ async fn service(
     })
     .await?
     else {
-        return Ok(HttpResponse::PermanentRedirect()
+        return Ok(HttpResponse::SeeOther()
             .append_header(("Location", "/no_shoes_no_shirt"))
             .body("moved on"));
     };
@@ -86,7 +86,7 @@ async fn service(
         .insert(GIG_ADMIN_SECRET, gig.admin_secret)
         .unwrap();
 
-    return Ok(HttpResponse::PermanentRedirect()
+    return Ok(HttpResponse::SeeOther()
         .append_header(("Location", "/songs"))
         .body("Session started"));
 }

@@ -32,5 +32,5 @@ diesel::table! {
 }
 
 diesel::joinable!(songs_in_gigs -> gigs (gig_id));
-diesel::joinable!(songs_in_gigs -> songs (song_id));
+
 diesel::allow_tables_to_appear_in_same_query!(gigs, songs, songs_in_gigs,);

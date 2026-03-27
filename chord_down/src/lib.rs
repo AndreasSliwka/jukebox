@@ -215,7 +215,7 @@ impl Song {
             ));
             return;
         };
-        println!(" last_block = {:#?}", last_block);
+        state.verbose(format!(" last_block = {:#?}", last_block));
 
         match last_block {
             Block::Grid(lines) => lines.push(line.to_string()),
@@ -242,7 +242,10 @@ impl Song {
     fn start_grid(&mut self, state: &mut ParsingState) -> () {
         state.verbose(String::from("  -> starting grid"));
         self.document.blocks.push(Block::Grid(vec![]));
-        println!(" last_block = {:#?}", self.document.blocks.last().unwrap());
+        state.verbose(format!(
+            " last_block = {:#?}",
+            self.document.blocks.last().unwrap()
+        ));
         state.in_grid = true;
         state.last_line_blank = false;
     }
