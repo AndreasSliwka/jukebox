@@ -59,6 +59,7 @@ fn main() {
     let mut known_songs: Vec<i32> = vec![];
     for song_file in song_files {
         let mut song_loaded: bool = false;
+        println!("File: {}", song_file);
         let maybe_content = fs::read_to_string(song_file.clone());
         if let Ok(content) = maybe_content {
             let title: &str = get_title(song_file.as_str(), &content);
@@ -69,7 +70,7 @@ fn main() {
             {
                 song_loaded = true;
                 known_songs.push(song.id);
-                println!("Song #{}: {} - {}", song.id, song.title, song.artist);
+                println!("  Song #{}: {} - {}", song.id, song.title, song.artist);
                 if song.tags != "" && song.tags != "[]" {
                     println!("  Tags: {}", song.tags);
                 }
