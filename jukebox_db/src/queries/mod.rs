@@ -6,6 +6,6 @@ pub use gigs::{
     songs_played_in_gig,
 };
 pub use songs::{
-    SongListOrder, all_songs, create_song, delete_all_songs, song_by_id_with_gig_info,
-    update_or_create_song,
+    SongListOrder, all_songs, create_song, delete_all_other_songs, delete_all_songs,
+    song_by_id_with_gig_info, update_or_create_song,
 };

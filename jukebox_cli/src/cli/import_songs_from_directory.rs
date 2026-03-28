@@ -53,27 +53,31 @@ fn main() {
     let mut connection = jukebox_db::establish_single_connection();
     let source_dir = get_directory_from_environment();
     let song_files = get_songs_files_from_directory(source_dir);
-    if song_files.len() > 0 {
-        for song_file in song_files {
-            let mut song_loaded: bool = false;
-            let maybe_content = fs::read_to_string(song_file.clone());
-            if let Ok(content) = maybe_content {
-                let title: &str = get_title(song_file.as_str(), &content);
-                let artist: &str = get_artist(&content);
+    if song_files.len() == 0 {
+        return;
+    }
+    let mut known_songs: Vec<i32> = vec![];
+    for song_file in song_files {
+        let mut song_loaded: bool = false;
+        let maybe_content = fs::read_to_string(song_file.clone());
+        if let Ok(content) = maybe_content {
+            let title: &str = get_title(song_file.as_str(), &content);
+            let artist: &str = get_artist(&content);
 
-                if let Some(song) =
-                    update_or_create_song(&mut connection, title, artist, content.as_str())
-                {
-                    song_loaded = true;
-                    println!("Song #{}: {} - {}", song.id, song.title, song.artist);
-                    if song.tags != "" && song.tags != "[]" {
-                        println!("  Tags: {}", song.tags);
-                    }
+            if let Some(song) =
+                update_or_create_song(&mut connection, title, artist, content.as_str())
+            {
+                song_loaded = true;
+                known_songs.push(song.id);
+                println!("Song #{}: {} - {}", song.id, song.title, song.artist);
+                if song.tags != "" && song.tags != "[]" {
+                    println!("  Tags: {}", song.tags);
                 }
             }
-            if !song_loaded {
-                println!("! Could not load song from {}", song_file)
-            }
+        }
+        if !song_loaded {
+            println!("! Could not load song from {}", song_file)
         }
     }
+    delete_all_other_songs(known_songs, &mut connection);
 }

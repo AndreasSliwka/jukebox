@@ -173,6 +173,15 @@ pub fn update_or_create_song(
     }
 }
 
+pub fn delete_all_other_songs(known_song_ids: Vec<i32>, connection: &mut SqliteConnection) {
+    use crate::schema::songs::dsl::*;
+    use diesel::dsl::not;
+    diesel::delete(songs)
+        .filter(not(id.eq_any(known_song_ids)))
+        .execute(connection)
+        .unwrap();
+}
+
 pub fn delete_all_songs(conn: &mut SqliteConnection) -> () {
     use crate::schema::songs::dsl::*;
 
