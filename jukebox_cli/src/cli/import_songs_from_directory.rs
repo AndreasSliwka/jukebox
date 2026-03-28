@@ -6,6 +6,7 @@ use std::fs;
 fn get_directory_from_environment() -> String {
     dotenv().ok();
     let dir_name = std::env::var("SONGS_DIR").expect("SONGS_DIR must be set");
+    println!("Reading songs from {}", dir_name);
     let metadata = fs::metadata(dir_name.clone()).unwrap();
     fs::exists(dir_name.clone())
         .expect(format!("Directory {} does not exist", dir_name.clone()).as_str());

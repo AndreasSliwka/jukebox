@@ -74,11 +74,14 @@ pub struct Document {
     pub blocks: Vec<Block>,
 }
 
+// https://music.youtube.com/watch?v=P59I1nt5vsw&si=fhMxuwiDFhEEBWyy
+// https://music.youtube.com/watch?v=IvoafFsw0kg&si=Aev-konJtBoBL3i6
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Song {
     pub title: String,
     pub artist: String,
     pub tags: Vec<String>,
+    pub ytmusic_id: Option<String>,
     pub manual_meta: HashMap<String, String>,
     pub document: Document,
 }
@@ -178,6 +181,7 @@ impl Song {
             title: String::from("undef"),
             artist: String::from("undef"),
             tags: vec![],
+            ytmusic_id: None,
             manual_meta: HashMap::new(),
             document: Document { blocks: vec![] },
         }
@@ -283,6 +287,7 @@ impl Song {
                     .collect();
                 self.tags.append(&mut new_tags);
             }
+            "ytmusic_id" => self.ytmusic_id = Some(value),
             _ => {
                 self.manual_meta.insert(key, value);
                 ()

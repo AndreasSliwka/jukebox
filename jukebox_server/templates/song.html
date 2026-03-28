@@ -59,16 +59,22 @@
     </div>
     {% endmatch %} {% endfor %}
 </div>
-{% if let None = played_at && is_admin %}
-<div
-    class="bg-amber-200 flex flex-row p-1"
-    x-data="{ search: getCookieValue('search') }"
->
+{% if is_admin %}
+<div class="bg-amber-200 flex flex-row p-1">
+    {% match song.ytmusic_id %} {% when Some(ytmusic_id) %}
+    <a
+        class="btn bg-red-600 text-white font-bold py-2 px-4 rounded-full"
+        target="_blank"
+        href="https://music.youtube.com/watch?v={{ ytmusic_id }}"
+    >
+        ▶ Dudeln
+    </a>
+    {% else %} {% endmatch %}<span>&nbsp;</span> {% if let None = played_at %}
     <a
         href="?add_to_setlist=1"
         class="btn bg-amber-950 text-white font-bold py-2 px-4 rounded-full"
     >
-        Lied als gespielt markieren
+        ♬ Abhaken
     </a>
 </div>
-{% endif %} {% endblock content %}
+{% endif %} {% endif %} {% endblock content %}
