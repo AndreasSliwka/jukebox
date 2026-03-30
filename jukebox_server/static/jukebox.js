@@ -26,13 +26,11 @@ function getCookieValue(cookieName) {
   } else {
     value = "";
   }
-  console.log("  cookie = " + cookieName + " = " + value);
   return value;
 }
 
 function setCookieValue(cookieName, value) {
   document.cookie = cookieName + "=" + value + ";SameSite=strict";
-  console.log("document.cookie=" + document.cookie);
 }
 
 function maybeApplyShowChords() {
