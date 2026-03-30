@@ -3,7 +3,7 @@ use jukebox_db::*;
 
 fn main() {
     let connection = &mut establish_single_connection();
-    let results = all_songs(connection, SongListOrder::ArtistAsc, None);
+    let results = all_songs(connection, SongListOrder::ArtistAsc, vec![], None);
 
     println!("Displaying {} posts", results.len());
     for simplified_song in results {

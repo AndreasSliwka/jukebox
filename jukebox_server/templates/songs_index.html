@@ -3,7 +3,7 @@ content %}
 
 <table id="songlist" x-init="maybeApplyHidePlayedSongs()">
     <tr>
-        <th width="50%">
+        <th width="40%">
             {% match song_list_order %} {% when SongListOrder::TitleAsc %}
             <a href="?sort=title_desc">Title ↓</a> {% when
             SongListOrder::TitleDesc %} <a href="?sort=title_asc">Title ↑</a> {%
@@ -19,6 +19,7 @@ content %}
             {% endmatch %}
         </th>
         <th width="10%">Played?</th>
+        <th width="10%">Tags</th>
     </tr>
     {% for song in songs %} {% if song.played_at != "" %}
     <tr
@@ -30,6 +31,9 @@ content %}
         <td class="align-top"><a href="{{song.link}} ">({{song.title}})</a></td>
         <td class="align-top">({{ song.artist }})</td>
         <td class="align-top">{{ &song.played_at | time_from_timestamp }}</td>
+        <td class="align-top">
+            {% for tag_id in song.tag_ids %} {{ tag_id }} {% endfor %}
+        </td>
     </tr>
     {% else %}
     <tr
@@ -41,6 +45,9 @@ content %}
         <td class="align-top"><a href="{{song.link}} ">{{song.title}}</a></td>
         <td class="align-top">{{ song.artist }}</td>
         <td class="align-top">{{ &song.played_at | time_from_timestamp }}</td>
+        <td class="align-top">
+            {% for tag_id in song.tag_ids %} {{ tag_id }} {% endfor %}
+        </td>
     </tr>
     {% endif %} {% endfor %}
 </table>

@@ -1291,6 +1291,7 @@ dependencies = [
  "r2d2",
  "regex",
  "ron",
+ "serde",
  "tokio",
 ]
 

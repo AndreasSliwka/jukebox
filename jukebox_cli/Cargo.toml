@@ -19,11 +19,13 @@ path = "src/cli/parse_song.rs"
 name = "create_default_gig"
 path = "src/cli/create_default_gig.rs"
 
-
-
 [[bin]]
 name = "run_pending_migrations"
 path = "src/cli/run_pending_migrations.rs"
+
+[[bin]]
+name = "ensure_seed_data"
+path = "src/cli/ensure_seed_data.rs"
 
 [dependencies]
 jukebox_db = { path = "../jukebox_db" }

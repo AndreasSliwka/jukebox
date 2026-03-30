@@ -1,4 +1,4 @@
-use crate::schema::{gigs, songs, songs_in_gigs};
+use crate::schema::{gigs, songs, songs_in_gigs, tags, tags_on_songs};
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -10,8 +10,6 @@ pub struct Song {
     pub id: i32,
     pub title: String,
     pub artist: String,
-    pub tags: String,
-    pub markdown: String,
     pub serialized_chord_pro: String,
 }
 
@@ -35,23 +33,28 @@ pub struct SimplifiedSong {
     pub id: i32,
     pub title: String,
     pub artist: String,
-    pub tags: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct SongWithLink {
+pub struct SongWithLinkAndTags {
     pub id: i32,
     pub title: String,
     pub artist: String,
     pub link: String,
+    pub tag_ids: Vec<String>,
     pub played_at: String,
 }
 fn link_to_song(song_id: i32) -> String {
     format!("/songs/{}", song_id)
 }
 
-impl SongWithLink {
-    pub fn from(simplified: &SimplifiedSong, songs_played: &HashMap<i32, Option<String>>) -> Self {
+impl SongWithLinkAndTags {
+    pub fn from(
+        simplified: &SimplifiedSong,
+        songs_played: &HashMap<i32, Option<String>>,
+        tags_by_song: &HashMap<i32, Vec<i32>>,
+        all_tags: &HashMap<i32, (String, String)>,
+    ) -> Self {
         let played_at = match songs_played.get(&simplified.id).clone() {
             None => String::from(""),
             Some(option_ref) => match option_ref {
@@ -59,11 +62,18 @@ impl SongWithLink {
                 Some(string_ref) => string_ref.as_str().to_string(),
             },
         };
+        let tag_ids = tags_by_song
+            .get(&simplified.id)
+            .unwrap_or(&vec![])
+            .iter()
+            .map(|tag_id| all_tags.get(tag_id).unwrap().1.clone())
+            .collect();
         Self {
             id: simplified.id,
             title: simplified.title.clone(),
             artist: simplified.artist.clone(),
             link: link_to_song(simplified.id),
+            tag_ids: tag_ids,
             played_at,
         }
     }
@@ -74,8 +84,6 @@ impl SongWithLink {
 pub struct NewSong<'a> {
     pub title: &'a str,
     pub artist: &'a str,
-    pub tags: String,
-    pub markdown: &'a str,
     pub serialized_chord_pro: &'a str,
 }
 
@@ -99,4 +107,29 @@ pub struct SongInGig {
     pub song_id: i32,
     pub gig_id: i32,
     pub played_at: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Insertable, HasQuery)]
+#[diesel(table_name = tags)]
+#[diesel(check_for_backend(diesel::sqlite::Sqlite))]
+pub struct Tag {
+    pub id: i32,
+    pub name: String,
+    pub unicode: String,
+    pub private: i32,
+}
+
+#[derive(Insertable)]
+#[diesel(table_name = tags)]
+pub struct NewTag<'a> {
+    pub name: &'a str,
+    pub unicode: &'a str,
+    pub private: i32,
+}
+
+#[derive(Insertable, HasQuery)]
+#[diesel(table_name = tags_on_songs)]
+pub struct TagOnSong {
+    pub song_id: i32,
+    pub tag_id: i32,
 }

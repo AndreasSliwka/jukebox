@@ -4,7 +4,7 @@ use actix_web::http::header::ContentType;
 
 use actix_web::{HttpRequest, HttpResponse, Responder, error, get, web};
 use askama::Template;
-use jukebox_db::{self, SongListOrder, models::SongWithLink};
+use jukebox_db::{self, SongListOrder, models::SongWithLinkAndTags};
 use querystring;
 fn song_list_order(query: &str) -> SongListOrder {
     for (key, value) in querystring::querify(query) {
@@ -31,20 +31,28 @@ pub async fn service(
     let Some(gig_id) = services::session::gig_id_from_session(&request) else {
         return Ok(services::session::redirect_to_start_session());
     };
+    let Some(_private_tag_ids) = services::session::private_tag_ids_from_session(&request) else {
+        return Ok(services::session::redirect_to_start_session());
+    };
+    let Some(all_tags_by_id) = services::session::all_tags_by_id_from_session(&request) else {
+        return Ok(services::session::redirect_to_start_session());
+    };
+
     let song_list_order = song_list_order(request.query_string());
 
-    let (songs_without_links, songs_played) = web::block(move || {
+    let (songs_without_links, songs_played, tags_by_song) = web::block(move || {
         let mut connection = pool.get().expect("could not get connection");
         (
-            jukebox_db::all_songs(&mut connection, song_list_order, None),
+            jukebox_db::all_songs(&mut connection, song_list_order, vec![], None),
             jukebox_db::songs_played_in_gig(gig_id, &mut connection),
+            jukebox_db::tags_by_song(&mut connection),
         )
     })
     .await
     .map_err(error::ErrorInternalServerError)?;
-    let songs_with_links: Vec<SongWithLink> = songs_without_links
+    let songs_with_links: Vec<SongWithLinkAndTags> = songs_without_links
         .iter()
-        .map(|song| SongWithLink::from(song, &songs_played))
+        .map(|song| SongWithLinkAndTags::from(song, &songs_played, &tags_by_song, &all_tags_by_id))
         .collect();
 
     let template = SongsIndexTemplate {

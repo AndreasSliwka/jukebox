@@ -12,13 +12,24 @@ pub enum SongListOrder {
     ArtistDesc,
 }
 
+fn excepted_songs(except_tags: Vec<i32>, connection: &mut SqliteConnection) -> Vec<i32> {
+    use crate::schema::tags_on_songs::dsl::*;
+    tags_on_songs
+        .select(song_id)
+        .filter(tag_id.eq_any(except_tags))
+        .load(connection)
+        .unwrap()
+}
+
 pub fn all_songs(
     connection: &mut SqliteConnection,
     order: SongListOrder,
+    except_tags: Vec<i32>,
     search: Option<String>,
 ) -> Vec<SimplifiedSong> {
     use crate::schema::songs::dsl::*;
-    let query = SimplifiedSong::query().filter(tags.not_like("%\"private\"%"));
+    let excepted_song_ids = excepted_songs(except_tags, connection);
+    let query = SimplifiedSong::query().filter(diesel::dsl::not(id.eq_any(excepted_song_ids)));
     let query = if let Some(term) = search {
         query.filter(title.like(format!("%{}%", term)))
     } else {
@@ -45,7 +56,6 @@ pub struct SongWithGigInfo {
     pub id: i32,
     pub title: String,
     pub artist: String,
-    pub tags: String,
     pub serialized_chord_pro: String,
     pub played_at_gig: Option<String>,
 }
@@ -86,7 +96,6 @@ pub fn song_by_id_with_gig_info(
             id: song.id,
             title: song.title,
             artist: song.artist,
-            tags: song.tags,
             serialized_chord_pro: song.serialized_chord_pro,
             played_at_gig,
         })
@@ -117,16 +126,12 @@ fn update_song(song_id: i32, new_song: NewSong, conn: &mut SqliteConnection) -> 
         id: song_id,
         title: new_song.title.to_string(),
         artist: new_song.artist.to_string(),
-        tags: new_song.tags,
-        markdown: new_song.markdown.to_string(),
         serialized_chord_pro: new_song.serialized_chord_pro.to_string(),
     };
     let result = diesel::update(dsl::songs.filter(dsl::id.eq(song.id)))
         .set((
             dsl::title.eq(song.title),
             dsl::artist.eq(song.artist),
-            dsl::tags.eq(song.tags),
-            dsl::markdown.eq(song.markdown),
             dsl::serialized_chord_pro.eq(song.serialized_chord_pro),
         ))
         .get_result::<Song>(conn);
@@ -155,14 +160,12 @@ pub fn update_or_create_song(
     markdown: &str,
 ) -> Option<Song> {
     let song = chord_down::Song::parse(&(markdown.to_string()), false);
-    let tags = serde_json::to_string(&song.tags).unwrap_or(String::from("[]"));
+    let _tags = serde_json::to_string(&song.tags).unwrap_or(String::from("[]"));
     let chord_pro = ron::ser::to_string(&song).unwrap();
     let serialized_chord_pro = chord_pro.as_str();
     let new_song = NewSong {
         title,
         artist,
-        tags,
-        markdown,
         serialized_chord_pro,
     };
 

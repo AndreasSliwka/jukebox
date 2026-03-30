@@ -27,3 +27,9 @@
 
 ------>&-------------------------------------
 * add zoom so people can adapt the font size to their device
+* create tags 
+  * add tags and and tags_on_songs table
+  * when loading a song link the song to the tags listed in the tags attribute
+
+# convert all songs to [namedParts| instead of {start_of_part}{end_of_part}
+
