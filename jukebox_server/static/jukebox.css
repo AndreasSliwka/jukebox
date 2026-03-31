@@ -330,6 +330,9 @@
     --tw-font-weight: var(--font-weight-bold);
     font-weight: var(--font-weight-bold);
   }
+  .text-ellipsis {
+    text-overflow: ellipsis;
+  }
   .text-gray-500 {
     color: var(--color-gray-500);
   }
@@ -393,7 +396,31 @@
   bottom: 0;
   left: 0;
 }
+table {
+  display: grid;
+  grid-template-columns: repeat(100, max-content);
+}
+thead, tbody, tr {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+}
+td, th {
+  display: block;
+}
+caption {
+  grid-column: 1 / -1;
+}
+td[cellspan="2"] {
+  grid-column: span 2;
+}
+td[cellspan="3"] {
+  grid-column: span 3;
+}
 #songlist.hidePlayedSongs .song.alreadyPlayed {
+  display: none;
+}
+table.hidePlayedSongs td.column-played, table.hidePlayedSongs th.column-played {
   display: none;
 }
 @property --tw-rotate-x {
