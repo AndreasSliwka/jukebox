@@ -81,6 +81,12 @@ fn required_tags() -> Vec<(&'static str, &'static str, bool)> {
         ("Love", "💋", false),
         ("Soft", "🍦", false),
         ("XMas", "🎄", false),
+        ("Children", "👶", false),
+        ("70s", "[70]", false),
+        ("80s", "[80]", false),
+        ("90s", "[90]", false),
+        ("2000s", "[00]", false),
+        ("2010s", "[10]", false),
     ]
 }
 
