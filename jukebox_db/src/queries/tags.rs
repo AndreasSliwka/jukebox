@@ -77,6 +77,7 @@ fn required_tags() -> Vec<(&'static str, &'static str, bool)> {
         ("Private", "😎", true),
         ("Rock", "🪨", false),
         ("Metal", "🔨", false),
+        ("Locale", "🛢", false),
         ("Drinking", "🍺", false),
         ("Love", "💋", false),
         ("Soft", "🍦", false),
