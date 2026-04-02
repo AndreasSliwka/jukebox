@@ -1,7 +1,7 @@
 {
   "name": "Freestyle Lagerfeuer Jukebox",
   "short_name": "Jukebox",
-  "start_url": "/",
+  "start_url": "/songs",
   "display": "standalone",
   "prefer_related_applications": false,
   "icons": [
