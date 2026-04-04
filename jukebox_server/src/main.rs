@@ -21,7 +21,7 @@ async fn main() -> Result<(), std::io::Error> {
         App::new()
             .wrap(services::session::middleware(&server_config))
             .wrap(Logger::default())
-            .wrap(Logger::new("%s \"%r\" %b %T"))
+            // .wrap(Logger::new("%s \"%r\" %b %T"))
             .app_data(web::Data::new(connection_pool.clone()))
             .service(services::static_files::service())
             .service(services::admin::service)
