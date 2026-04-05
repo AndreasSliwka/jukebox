@@ -1,3 +1,4 @@
+use askama::filters::Safe;
 use regex::Regex;
 use std::sync::LazyLock;
 
@@ -11,4 +12,15 @@ pub fn time_from_timestamp(value: &&String, _env: &dyn askama::Values) -> askama
         return Ok(captures[1].to_string());
     }
     Ok(String::from(""))
+}
+
+const TRAILING_WHITESPACE: &str = r"\s+$";
+
+#[askama::filter_fn]
+pub fn make_trailing_whitespace_nbsp(
+    value: &&String,
+    _env: &dyn askama::Values,
+) -> askama::Result<Safe<String>> {
+    static RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(TRAILING_WHITESPACE).unwrap());
+    Ok(Safe(RE.replace(value.as_str(), "&nbsp;").to_string()))
 }

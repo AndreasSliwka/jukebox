@@ -6,11 +6,12 @@
     display: none;
 }
 
-.Song .part.part-chorus {
-    @apply ml-4;
-}
 .Song .part.part-bridge {
-    @apply ml-8;
+    @apply ml-4 border-l-1;
+}
+
+.Song .part.part-chorus {
+    @apply ml-8 border-l-1 italic;
 }
 
 .Song .artist {
@@ -29,6 +30,10 @@
     @apply mb-2;
     .line {
         line-height: 1.2;
+        @apply -indent-4 pl-5;
+        * {
+            @apply indent-0 pl-0;
+        }
     }
 }
 /* fragments, chords and lyrics */
@@ -48,7 +53,7 @@
     top: 0;
     left: 0; /* TODO: fix layout for inline chords */
     .signature {
-        @apply bg-amber-200;
+        @apply font-mono bg-amber-200 whitespace-pre;
     }
 }
 .Song.showChords .with-chords .lyrics {

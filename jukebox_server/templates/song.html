@@ -11,25 +11,25 @@
     {% for block in song.document.blocks %} {% let newline = "\n" %} {% match
     block %} {% when Block::Part(song_part) %}
     <div class="chordpro part part-{{song_part.name | lower}}">
-        <h4 class="partname">-- {{song_part.name}}</h4>
+        <!-- {{song_part.name}} -->
         {% for line in song_part.lines %} {% let (has_lyrics, has_chords) =
         line.has_lyrics_has_chords() %}
         <div
             class="line {% if has_lyrics %} with-lyrics {% endif %} {% if has_chords %} with-chords {% endif %}"
         >
-            {% for element in line.elements %}
-            <span class="fragment">
-                {% if let Some(chord) = element.chord %}
+            {%- for element in line.elements -%}<span class="fragment">
+                {%- if let Some(chord) = element.chord -%}
                 <span class="chord"
                     ><span class="signature">{{chord}}</span></span
                 >
-                {% else %}
+                {%- else -%}
                 <span class="chord">&nbsp;</span>
-                {% endif%} {% if let Some(lyrics) = element.lyrics %}
-                <span class="lyrics">{{lyrics}}</span>
-                {% endif %}
-            </span>
-            {% endfor %}
+                {%- endif -%} {%- if let Some(lyrics) = element.lyrics -%}
+                <span class="lyrics"
+                    >{{lyrics | make_trailing_whitespace_nbsp }}</span
+                >
+                {%- endif -%}</span
+            >{%- endfor -%}
         </div>
         <!-- line -->
         {% endfor %}
