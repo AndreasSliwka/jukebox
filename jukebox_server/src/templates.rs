@@ -10,6 +10,7 @@ pub struct SongsIndexTemplate {
     pub songs: Vec<SongWithLinkAndTags>,
     pub song_list_order: SongListOrder,
     pub is_admin: bool,
+    pub all_tags_by_name: String,
 }
 
 #[derive(Template)]

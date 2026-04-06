@@ -1,6 +1,5 @@
 {% extends "base.html" %} {% block title %} Songs {% endblock %} {% block
-content %}
-
+content %} {% include "category_wof.html" %}
 <table id="songlist" x-init="maybeApplyHidePlayedSongs()">
     <tr>
         <th width="40%">
@@ -58,7 +57,7 @@ content %}
 <div
     class="bg-amber-200 flex flex-row p-1"
     x-data="{ search: getCookieValue('search') }"
-    x-init="filterTable(getCookieValue('search'))"
+    x-init="filterTableByText(getCookieValue('search'))"
 >
     <span>&nbsp;🔍&nbsp;</span>
     <input

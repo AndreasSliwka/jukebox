@@ -1,4 +1,4 @@
-function filterTable(raw_term) {
+function filterTableByText(raw_term) {
   let term = raw_term.toLowerCase();
 
   document.cookie =
@@ -61,7 +61,7 @@ function setSearchFilter(term) {
     let endpoint = window.location.origin + "/admin?passkey=" + passkey;
     window.location.href = endpoint;
   } else {
-    filterTable(term);
+    filterTableByText(term);
     window.document.getElementById("song_search".scrollIntoView(false));
   }
 }

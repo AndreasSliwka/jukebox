@@ -7,11 +7,11 @@
 }
 
 .Song .part.part-bridge {
-    @apply ml-4 border-l-1;
+    @apply ml-4 border-l-2;
 }
 
 .Song .part.part-chorus {
-    @apply ml-8 border-l-1 italic;
+    @apply ml-8 border-l-2 italic;
 }
 
 .Song .artist {
@@ -95,4 +95,25 @@ td[cellspan="3"] {
 table.hidePlayedSongs td.column-played,
 table.hidePlayedSongs th.column-played {
     display: none;
+}
+
+.category_wof {
+    > * {
+        display: flex;
+        @apply flex-col;
+        @apply border-2 w-3/12 m-3 text-center;
+        border-style: outset;
+    }
+    > .category {
+        .icon {
+            font-size: 250%;
+            @apply text-center aspect-square;
+        }
+        @apply p-3 pt-0 pb-0;
+        border-style: outset;
+    }
+    > .reroll {
+        @apply w-2/12;
+    }
+    @apply bg-amber-100;
 }
