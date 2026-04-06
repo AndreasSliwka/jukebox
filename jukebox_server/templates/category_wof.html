@@ -1,6 +1,6 @@
 <div
     class="category_wof flex flex-row"
-    x-data="{ categories: {{all_tags_by_name}}}"
+    x-data="{ categories: {{all_tags_by_name | json }}}"
 >
     <a id="category-3" on:click="filterListByCategory('👶')" class="category">
         <span class="icon" title="children">👶</span>

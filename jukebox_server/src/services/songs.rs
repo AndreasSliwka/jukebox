@@ -1,12 +1,14 @@
+use std::collections::HashMap;
+
 use crate::services;
 use crate::templates::SongsIndexTemplate;
 use crate::types::AppState;
 use actix_web::http::header::ContentType;
-
 use actix_web::{HttpRequest, HttpResponse, Responder, error, get, web};
 use askama::Template;
 use jukebox_db::{self, SongListOrder, models::SongWithLinkAndTags};
 use querystring;
+
 fn song_list_order(query: &str) -> SongListOrder {
     for (key, value) in querystring::querify(query) {
         if key == "sort" {
@@ -19,6 +21,14 @@ fn song_list_order(query: &str) -> SongListOrder {
         }
     }
     SongListOrder::TitleAsc
+}
+
+fn tags_by_name(tags_by_id: HashMap<i32, (String, String)>) -> HashMap<String, String> {
+    let mut tags: HashMap<String, String> = HashMap::new();
+    for (name, sign) in tags_by_id.into_values() {
+        tags.insert(name, sign);
+    }
+    tags
 }
 
 #[get("/songs")]
@@ -52,12 +62,13 @@ pub async fn service(
             SongWithLinkAndTags::from(song, &songs_played, &tags_by_song, &app_state.tags_by_id)
         })
         .collect();
+    let tags_by_name: HashMap<String, String> = tags_by_name(app_state.tags_by_id.clone());
 
     let template = SongsIndexTemplate {
         songs: songs_with_links,
         song_list_order,
         is_admin: services::session::is_admin(&request),
-        all_tags_by_name: String::from("{}"),
+        all_tags_by_name: tags_by_name,
     };
 
     let html = template.render().unwrap();

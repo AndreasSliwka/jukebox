@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::filters;
 use askama::Template;
 use chord_down::{Block, Song};
@@ -10,7 +12,7 @@ pub struct SongsIndexTemplate {
     pub songs: Vec<SongWithLinkAndTags>,
     pub song_list_order: SongListOrder,
     pub is_admin: bool,
-    pub all_tags_by_name: String,
+    pub all_tags_by_name: HashMap<String, String>,
 }
 
 #[derive(Template)]

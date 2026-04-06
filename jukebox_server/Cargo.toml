@@ -12,7 +12,7 @@ diesel = { version = "2.3.7", features = ["sqlite", "returning_clauses_for_sqlit
 r2d2 = "0.8.10"
 tokio = { version = "1.50.0", features = ["macros", "rt-multi-thread"] }
 regex = "1.12.3"
-askama = "0.15.4"
+askama = { version = "0.15.4", features = ["serde_json"]}
 ron = "0.12.0"
 actix-files = "0.6.10"
 env_logger = "0.11.9"
@@ -20,3 +20,4 @@ querystring = "1.1.0"
 actix-session = { version = "0.11.0", features = ["cookie-session"]}
 serde = "1.0.228"
 log = "0.4.29"
+serde_json = "1.0.149"
