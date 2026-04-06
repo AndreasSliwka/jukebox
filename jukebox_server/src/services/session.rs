@@ -1,16 +1,13 @@
-use crate::types::{DbPool, ServerConfig};
+use crate::types::{AppState, ServerConfig};
 use actix_session::config::BrowserSession;
 use actix_session::{Session, SessionExt};
 use actix_session::{SessionMiddleware, storage::CookieSessionStore};
 use actix_web::{HttpRequest, HttpResponse, Responder, cookie::Key, get, web};
 use jukebox_db;
-use std::collections::HashMap;
 
 pub const GIG_ID: &str = "gig.id";
 pub const GIG_ADMIN_SECRET: &str = "gig.admin_secret";
 pub const IS_ADMIN: &str = "isAdmin";
-pub const PRIVATE_TAG_IDS: &str = "private_tag_ids";
-pub const ALL_TAGS_BY_ID: &str = "all_tags_by_id";
 
 fn get_secret_key() -> Key {
     Key::from(b"aBcDeFGhIjKlIaBcDeFGhIjKlIaBcDeFGhIjKlIaBcDeFGhIjKlIaBcDeFGhIjKlIaBcDeFGhIjKlI")
@@ -51,24 +48,8 @@ pub fn gig_id_from_session(request: &HttpRequest) -> Option<i32> {
     request.get_session().get::<i32>(GIG_ID).unwrap()
 }
 
-pub fn private_tag_ids_from_session(request: &HttpRequest) -> Option<Vec<i32>> {
-    request
-        .get_session()
-        .get::<Vec<i32>>(PRIVATE_TAG_IDS)
-        .unwrap()
-}
-
 pub fn admin_secret_from_session(session: &Session) -> Option<String> {
     session.get::<String>(GIG_ADMIN_SECRET).unwrap()
-}
-
-pub fn all_tags_by_id_from_session(
-    request: &HttpRequest,
-) -> Option<HashMap<i32, (String, String)>> {
-    request
-        .get_session()
-        .get::<HashMap<i32, (String, String)>>(ALL_TAGS_BY_ID)
-        .unwrap()
 }
 
 pub fn redirect_to_start_session() -> HttpResponse {
@@ -86,17 +67,12 @@ pub fn start_session_unless_present(request: &HttpRequest) -> Option<HttpRespons
 #[get("/start_session")]
 async fn service(
     request: HttpRequest,
-    pool: web::Data<DbPool>,
+    app_state: web::Data<AppState>,
 ) -> actix_web::Result<impl Responder> {
-    let (maybe_gig, private_tag_ids, all_tags_by_id) = web::block(move || {
-        let mut connection = pool.get().expect("could not get connection");
+    let maybe_gig = web::block(move || {
+        let mut connection = app_state.pool.get().expect("could not get connection");
 
-        let maybe_gig = jukebox_db::current_gig_from_db(&mut connection);
-
-        let private_tag_ids = jukebox_db::all_private_tag_ids(&mut connection);
-        let all_tags_by_id = jukebox_db::all_tags_by_id(&mut connection);
-
-        (maybe_gig, private_tag_ids, all_tags_by_id)
+        jukebox_db::current_gig_from_db(&mut connection)
     })
     .await?;
     let Some(gig) = maybe_gig else {
@@ -105,15 +81,6 @@ async fn service(
             .body("moved on"));
     };
     request.get_session().insert(GIG_ID, gig.id).unwrap();
-    request
-        .get_session()
-        .insert(PRIVATE_TAG_IDS, private_tag_ids)
-        .unwrap();
-
-    request
-        .get_session()
-        .insert(ALL_TAGS_BY_ID, all_tags_by_id)
-        .unwrap();
 
     request
         .get_session()

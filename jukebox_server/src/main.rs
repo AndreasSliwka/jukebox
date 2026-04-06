@@ -3,26 +3,28 @@ mod services;
 mod templates;
 mod types;
 
+use actix_web::middleware::Logger;
 use actix_web::{App, HttpServer, web};
+use env_logger::Env;
 use jukebox_db;
+
+use crate::types::AppState;
+use log;
 
 #[actix_web::main]
 async fn main() -> Result<(), std::io::Error> {
     let server_config = types::ServerConfig::from_env();
     let binding = server_config.binding();
-    use actix_web::middleware::Logger;
-    use env_logger::Env;
     env_logger::init_from_env(Env::default().default_filter_or("info"));
 
     jukebox_db::run_migrations();
-    let connection_pool = jukebox_db::create_connection_pool();
-
+    let app_state = AppState::load();
+    log::debug!("app_state = {:#?}", app_state);
     HttpServer::new(move || {
         App::new()
             .wrap(services::session::middleware(&server_config))
             .wrap(Logger::default())
-            // .wrap(Logger::new("%s \"%r\" %b %T"))
-            .app_data(web::Data::new(connection_pool.clone()))
+            .app_data(web::Data::new(app_state.clone()))
             .service(services::static_files::service())
             .service(services::admin::service)
             .service(services::welcome::service)

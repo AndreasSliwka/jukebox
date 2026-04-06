@@ -1,6 +1,6 @@
 use crate::services;
 use crate::templates;
-use crate::types::DbPool;
+use crate::types::AppState;
 use actix_web::http::header::ContentType;
 use actix_web::{HttpRequest, HttpResponse, Responder, get, web};
 use askama::Template;
@@ -40,7 +40,7 @@ async fn set_played_at_now_and_redirect(
 #[get("/songs/{song_id}")]
 pub async fn service(
     path: web::Path<i32>,
-    pool: web::Data<DbPool>,
+    app_state: web::Data<AppState>,
     request: HttpRequest,
 ) -> actix_web::Result<impl Responder> {
     if let Some(redirect) = start_session_unless_present(&request) {
@@ -49,7 +49,8 @@ pub async fn service(
     let song_id = path.into_inner();
     let maybe_gig_id = gig_id_from_session(&request);
 
-    let mut connection = web::block(move || pool.get().expect("could not get connection")).await?;
+    let mut connection =
+        web::block(move || app_state.pool.get().expect("could not get connection")).await?;
 
     if let Some(redirect) =
         set_played_at_now_and_redirect(song_id, maybe_gig_id, &request, &mut connection).await

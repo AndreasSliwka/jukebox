@@ -1,8 +1,9 @@
-use diesel::{prelude::*, r2d2};
+use diesel::prelude::*;
+use diesel::r2d2::{ConnectionManager, Pool};
 use dotenvy::dotenv;
+use jukebox_db;
+use std::collections::HashMap;
 use std::env;
-
-pub type DbPool = r2d2::Pool<r2d2::ConnectionManager<SqliteConnection>>;
 
 #[derive(Clone)]
 pub struct ServerConfig {
@@ -28,5 +29,26 @@ impl ServerConfig {
     }
     pub fn binding(&self) -> (String, u16) {
         (self.binding_ip.clone(), self.port)
+    }
+}
+
+#[derive(Clone, Debug)]
+pub struct AppState {
+    pub pool: Pool<ConnectionManager<SqliteConnection>>,
+    pub private_tag_ids: Vec<i32>,
+    pub tags_by_id: HashMap<i32, (String, String)>,
+}
+
+impl AppState {
+    pub fn load() -> Self {
+        let pool = jukebox_db::create_connection_pool();
+        let mut connection = pool.get().expect("could not get connection");
+        let private_tag_ids = jukebox_db::all_private_tag_ids(&mut connection);
+        let tags_by_id = jukebox_db::all_tags_by_id(&mut connection);
+        Self {
+            pool,
+            private_tag_ids,
+            tags_by_id,
+        }
     }
 }

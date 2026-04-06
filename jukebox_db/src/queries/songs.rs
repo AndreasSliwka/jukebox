@@ -1,9 +1,11 @@
 use crate::models::{NewSong, SimplifiedSong, Song};
 use chord_down;
+use diesel::debug_query;
 use diesel::prelude::*;
+use diesel::sqlite::Sqlite;
+use log;
 use ron;
 use serde::{Deserialize, Serialize};
-
 #[derive(Clone, Copy, Serialize, Deserialize)]
 pub enum SongListOrder {
     TitleAsc,
@@ -14,11 +16,11 @@ pub enum SongListOrder {
 
 fn excepted_songs(except_tags: Vec<i32>, connection: &mut SqliteConnection) -> Vec<i32> {
     use crate::schema::tags_on_songs::dsl::*;
-    tags_on_songs
+    let query = tags_on_songs
         .select(song_id)
-        .filter(tag_id.eq_any(except_tags))
-        .load(connection)
-        .unwrap()
+        .filter(tag_id.eq_any(except_tags));
+    log::debug!("Excepted Songs: {}", debug_query::<Sqlite, _>(&query));
+    query.load(connection).unwrap()
 }
 
 pub fn all_songs(
@@ -35,6 +37,7 @@ pub fn all_songs(
     } else {
         query.filter(title.like(String::from("%")))
     };
+    log::debug!("All Songs query: {}", debug_query::<Sqlite, _>(&query));
     match order {
         SongListOrder::TitleDesc => query
             .order(crate::schema::songs::title.desc())
