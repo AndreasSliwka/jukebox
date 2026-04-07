@@ -1,12 +1,26 @@
 <div
+    id="wheel_of_fortune"
     class="category_wof flex flex-row"
-    x-data="{ categories: {{all_tags_by_name | json }}}"
+    x-init="setup_wof({{all_tags_by_name | json }})"
+    x-data="$store.wof"
 >
-    <a id="category-3" on:click="filterListByCategory('👶')" class="category">
-        <span class="icon" title="children">👶</span>
-    </a>
-
+    <template x-show="false" x-for="category in visible_categories">
+        <span
+            x-bind:category-name="category.name"
+            class="category"
+            x-data="{something:'special'}"
+        >
+            <span
+                x-on:click="$store.wof.filterListByCategory($event.target)"
+                class="icon"
+                x-bind:title="category.name"
+                x-text="category.sign"
+            />
+        </>
+    </template>
     <div class="reroll">
-        <span class="icon">🎲</span>
+        <span class="icon"
+            x-on:click="$store.wof.reshuffle()"
+        >🎲</span>
     </div>
 </div>

@@ -1,21 +1,27 @@
-function filterTableByText(raw_term) {
-  let term = raw_term.toLowerCase();
-
-  document.cookie =
-    "search=" + term.replaceAll("'", "\\'") + ";SameSite=strict";
-
-  let table = document.getElementById("songlist");
-  let song_trs = table.getElementsByTagName("tr");
+function filter_song_list(field, term) {
+  const song_trs = document
+    .getElementById("songlist")
+    .getElementsByTagName("tr");
   for (const song_tr of song_trs) {
-    if (song_tr.hasAttribute("data-name")) {
-      const title = song_tr.getAttribute("data-name");
-      if (title.includes(term)) {
+    if (song_tr.hasAttribute(field)) {
+      const data = song_tr.getAttribute(field);
+      if (data.includes(term)) {
         song_tr.classList.remove("hidden");
       } else {
         song_tr.classList.add("hidden");
       }
     }
   }
+}
+function filterTableByText(raw_term) {
+  let term = raw_term.toLowerCase();
+
+  document.cookie =
+    "search=" + term.replaceAll("'", "\\'") + ";SameSite=strict";
+  document.cookie = "category=;SameSite=strict";
+  deselect_category_wof_entries();
+
+  filter_song_list("data-name", raw_term.toLowerCase());
 }
 
 function getCookieValue(cookieName) {
@@ -62,6 +68,56 @@ function setSearchFilter(term) {
     window.location.href = endpoint;
   } else {
     filterTableByText(term);
-    window.document.getElementById("song_search".scrollIntoView(false));
+    window.document.getElementById("song_search").scrollIntoView(false);
   }
+}
+
+function deselect_category_wof_entries() {
+  Array.from(
+    document
+      .getElementById("wheel_of_fortune")
+      .getElementsByClassName("category selected"),
+  ).forEach((category) => {
+    category.classList.remove("selected");
+  });
+}
+
+document.addEventListener("alpine:init", () => {
+  Alpine.store("wof", {
+    visible_categories: [],
+    categories_by_name: {},
+
+    initialize(categories_by_name) {
+      this.categories_by_name = categories_by_name;
+    },
+    reshuffle() {
+      var keys = Object.keys(this.categories_by_name);
+      var randomized = keys.sort(() => Math.random() - 0.5);
+      var sliced = randomized.slice(0, 3);
+      this.visible_categories = [
+        { name: sliced[0], sign: this.categories_by_name[sliced[0]] },
+        { name: sliced[1], sign: this.categories_by_name[sliced[1]] },
+        { name: sliced[2], sign: this.categories_by_name[sliced[2]] },
+      ];
+    },
+    filterListByCategory(target) {
+      // set category cookie, clear search cookie and input
+      document.cookie = "category=" + target.textContent + ";SameSite=strict";
+      document.cookie = "search=;SameSite=strict";
+      document.getElementById("song_search").value = "";
+
+      // deselect all category <spans>
+      deselect_category_wof_entries();
+
+      // select current category <span>
+      target.parentElement.classList.add("selected");
+
+      filter_song_list("data-categories", "|" + target.textContent + "|");
+    },
+  });
+});
+
+function setup_wof(categories_by_name) {
+  Alpine.store("wof").initialize(categories_by_name);
+  Alpine.store("wof").reshuffle();
 }

@@ -26,6 +26,7 @@ content %} {% include "category_wof.html" %}
         class="align-top song alreadyPlayed text-gray-500 text-ellipsis"
         href="{{song.link}}"
         data-name="{{song.title.to_lowercase()}} -- {{song.artist.to_lowercase()}} "
+        data-categories="{% for tag_sign in song.tag_signs %}|{{ tag_sign }}{% endfor %}|"
     >
         <td class="align-top"><a href="{{song.link}} ">({{song.title}})</a></td>
         <td class="align-top">({{ song.artist }})</td>
@@ -33,7 +34,7 @@ content %} {% include "category_wof.html" %}
             {{ &song.played_at | time_from_timestamp }}
         </td>
         <td class="align-top">
-            {% for tag_id in song.tag_ids %} {{ tag_id }} {% endfor %}
+            {% for tag_sign in song.tag_signs %} {{ tag_sign }} {% endfor %}
         </td>
     </tr>
     {% else %}
@@ -42,6 +43,7 @@ content %} {% include "category_wof.html" %}
         class="align-top song text-ellipsis"
         href="{{song.link}}"
         data-name="{{song.title.to_lowercase()}} -- {{song.artist.to_lowercase()}} "
+        data-categories="{% for tag_sign in song.tag_signs %}|{{ tag_sign }}{% endfor %}|"
     >
         <td class="align-top"><a href="{{song.link}} ">{{song.title}}</a></td>
         <td class="align-top">{{ song.artist }}</td>
@@ -49,7 +51,7 @@ content %} {% include "category_wof.html" %}
             {{ &song.played_at | time_from_timestamp }}
         </td>
         <td class="align-top">
-            {% for tag_id in song.tag_ids %} {{ tag_id }} {% endfor %}
+            {% for tag_sign in song.tag_signs %} {{ tag_sign }} {% endfor %}
         </td>
     </tr>
     {% endif %} {% endfor %}

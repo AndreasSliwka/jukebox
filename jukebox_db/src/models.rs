@@ -41,7 +41,7 @@ pub struct SongWithLinkAndTags {
     pub title: String,
     pub artist: String,
     pub link: String,
-    pub tag_ids: Vec<String>,
+    pub tag_signs: Vec<String>,
     pub played_at: String,
 }
 fn link_to_song(song_id: i32) -> String {
@@ -62,7 +62,7 @@ impl SongWithLinkAndTags {
                 Some(string_ref) => string_ref.as_str().to_string(),
             },
         };
-        let tag_ids = tags_by_song
+        let tag_signs = tags_by_song
             .get(&simplified.id)
             .unwrap_or(&vec![])
             .iter()
@@ -73,7 +73,7 @@ impl SongWithLinkAndTags {
             title: simplified.title.clone(),
             artist: simplified.artist.clone(),
             link: link_to_song(simplified.id),
-            tag_ids: tag_ids,
+            tag_signs,
             played_at,
         }
     }
