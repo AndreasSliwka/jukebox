@@ -25,12 +25,13 @@
 * refactor song display to flex-rows containing flex-columns with chords and lyrics
 * add songs to setlist when played (only admin)
 * Chords in monospace
-
------->&-------------------------------------
 * fix display of inclu[D-]ed Chords
-* add zoom so people can adapt the font size to their device
 * create tags 
   * add tags and and tags_on_songs table
   * when loading a song link the song to the tags listed in the tags attribute
 
-# convert all songs to [namedParts| instead of {start_of_part}{end_of_part}
+------>&-------------------------------------
+* change default MD format to [NamedPart]
+  * Load and reexport all songs
+  * add CLI to tag Songs from TSV
+* add zoom so people can adapt the font size to their device

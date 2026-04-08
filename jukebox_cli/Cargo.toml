@@ -23,6 +23,12 @@ path = "src/cli/create_default_gig.rs"
 name = "run_pending_migrations"
 path = "src/cli/run_pending_migrations.rs"
 
+
+[[bin]]
+name = "update_all_tags_from_tsv"
+path = "src/cli/update_all_tags_from_tsv.rs"
+
+
 [dependencies]
 jukebox_db = { path = "../jukebox_db" }
 regex = "1.12.3"
