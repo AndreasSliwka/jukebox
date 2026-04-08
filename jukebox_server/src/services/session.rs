@@ -6,8 +6,9 @@ use actix_web::{HttpRequest, HttpResponse, Responder, cookie::Key, get, web};
 use jukebox_db;
 
 pub const GIG_ID: &str = "gig.id";
-pub const GIG_ADMIN_SECRET: &str = "gig.admin_secret";
+pub const GIG_ADMIN_SECRET: &str = "gig.admin_secret"; // TODO move this to AppState
 pub const IS_ADMIN: &str = "isAdmin";
+pub const SHOW_PRIVATE: &str = "showPrivate";
 
 fn get_secret_key() -> Key {
     Key::from(b"aBcDeFGhIjKlIaBcDeFGhIjKlIaBcDeFGhIjKlIaBcDeFGhIjKlIaBcDeFGhIjKlIaBcDeFGhIjKlI")
@@ -31,6 +32,24 @@ pub fn is_admin(request: &HttpRequest) -> bool {
         return false;
     };
     value
+}
+
+pub fn show_private(request: &HttpRequest) -> bool {
+    let Ok(session_value) = request.get_session().get::<bool>(SHOW_PRIVATE) else {
+        return false;
+    };
+    let Some(value) = session_value else {
+        return false;
+    };
+    value
+}
+
+fn toggle_is_private(request: &HttpRequest) {
+    let new_show_private = !show_private(request);
+    request
+        .get_session()
+        .insert(SHOW_PRIVATE, new_show_private)
+        .unwrap();
 }
 
 const ALLOW_ACCES_WITHOUT_SESSION: bool = false;
@@ -64,6 +83,19 @@ pub fn start_session_unless_present(request: &HttpRequest) -> Option<HttpRespons
     }
 }
 
+#[get("/toggle_private")]
+async fn toggle_private_service(request: HttpRequest) -> actix_web::Result<impl Responder> {
+    log::debug!("> toggle_private_service");
+    if is_admin(&request) {
+        log::debug!("   > is_admin!");
+        toggle_is_private(&request);
+    }
+    log::debug!("show_private: {}", show_private(&request));
+
+    return Ok(HttpResponse::SeeOther()
+        .append_header(("Location", "/songs"))
+        .body("Session started"));
+}
 #[get("/start_session")]
 async fn service(
     request: HttpRequest,
@@ -86,6 +118,8 @@ async fn service(
         .get_session()
         .insert(GIG_ADMIN_SECRET, gig.admin_secret)
         .unwrap();
+
+    request.get_session().insert(SHOW_PRIVATE, false).unwrap();
 
     println!("session = {:#?}", request.get_session().entries());
 

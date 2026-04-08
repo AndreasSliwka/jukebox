@@ -108,11 +108,14 @@ pub fn all_tags_by_name(connection: &mut SqliteConnection) -> HashMap<String, (i
     them_tags
 }
 
-pub fn all_tags_by_id(connection: &mut SqliteConnection) -> HashMap<i32, (String, String)> {
-    let mut them_tags: HashMap<i32, (String, String)> = HashMap::new();
+pub fn all_tags_by_id(connection: &mut SqliteConnection) -> HashMap<i32, (String, String, bool)> {
+    let mut them_tags: HashMap<i32, (String, String, bool)> = HashMap::new();
 
     for tag in Tag::query().load(connection).unwrap() {
-        them_tags.insert(tag.id, (tag.name.to_lowercase(), tag.unicode));
+        them_tags.insert(
+            tag.id,
+            (tag.name.to_lowercase(), tag.unicode, tag.private == 1),
+        );
     }
     them_tags
 }

@@ -36,7 +36,7 @@ impl ServerConfig {
 pub struct AppState {
     pub pool: Pool<ConnectionManager<SqliteConnection>>,
     pub private_tag_ids: Vec<i32>,
-    pub tags_by_id: HashMap<i32, (String, String)>,
+    pub tags_by_id: HashMap<i32, (String, String, bool)>,
 }
 
 impl AppState {

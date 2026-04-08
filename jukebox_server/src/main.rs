@@ -29,6 +29,7 @@ async fn main() -> Result<(), std::io::Error> {
             .service(services::admin::service)
             .service(services::welcome::service)
             .service(services::session::service)
+            .service(services::session::toggle_private_service)
             .service(services::no_shoes_no_shirt::service)
             .service(services::song::service)
             .service(services::songs::service)

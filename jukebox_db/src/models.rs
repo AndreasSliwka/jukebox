@@ -53,7 +53,7 @@ impl SongWithLinkAndTags {
         simplified: &SimplifiedSong,
         songs_played: &HashMap<i32, Option<String>>,
         tags_by_song: &HashMap<i32, Vec<i32>>,
-        all_tags: &HashMap<i32, (String, String)>,
+        all_tags: &HashMap<i32, (String, String, bool)>,
     ) -> Self {
         let played_at = match songs_played.get(&simplified.id).clone() {
             None => String::from(""),

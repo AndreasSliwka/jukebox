@@ -47,6 +47,17 @@
             </label>
         </div>
         <div class="menuitem">
+            {% if is_admin %}
+            <a href="/toggle_private"
+                >Private Songs {% if show_private %}
+                <span>✅</span>
+                {% else %}
+                <span>🚫</span>
+                {% endif %}
+            </a>
+            {% endif %}
+        </div>
+        <div class="menuitem">
             <button>
                 <!-- TODO: Zoom button does nothing -->
                 <span class="btn btn-blue">&nbsp;-&nbsp;</span>&nbsp; Z o

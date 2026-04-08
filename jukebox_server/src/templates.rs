@@ -12,6 +12,7 @@ pub struct SongsIndexTemplate {
     pub songs: Vec<SongWithLinkAndTags>,
     pub song_list_order: SongListOrder,
     pub is_admin: bool,
+    pub show_private: bool,
     pub all_tags_by_name: HashMap<String, String>,
 }
 
@@ -21,6 +22,7 @@ pub struct SongsTemplate {
     pub song: Song,
     pub played_at: Option<String>,
     pub is_admin: bool,
+    pub show_private: bool,
 }
 
 #[derive(Template)]
