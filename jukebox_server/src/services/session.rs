@@ -3,19 +3,27 @@ use actix_session::config::BrowserSession;
 use actix_session::{Session, SessionExt};
 use actix_session::{SessionMiddleware, storage::CookieSessionStore};
 use actix_web::{HttpRequest, HttpResponse, Responder, cookie::Key, get, web};
+use base64::prelude::*;
+
 use jukebox_db;
 
 pub const GIG_ID: &str = "gig.id";
-pub const GIG_ADMIN_SECRET: &str = "gig.admin_secret"; // TODO move this to AppState
+pub const GIG_ADMIN_SECRET: &str = "gig.admin_secret";
 pub const IS_ADMIN: &str = "isAdmin";
 pub const SHOW_PRIVATE: &str = "showPrivate";
 
-fn get_secret_key() -> Key {
-    Key::from(b"aBcDeFGhIjKlIaBcDeFGhIjKlIaBcDeFGhIjKlIaBcDeFGhIjKlIaBcDeFGhIjKlIaBcDeFGhIjKlI")
+fn get_secret_key(server_config: &ServerConfig) -> Key {
+    let binary = BASE64_STANDARD
+        .decode(server_config.secret_key.clone())
+        .expect("SECRET_KEY must be valid Base64");
+    if binary.len() < 64 {
+        panic!("SECRET_KEY must be >64 bytes after Base64 Decoding")
+    }
+    Key::from(&binary[0..])
 }
 
 pub fn middleware(server_config: &ServerConfig) -> SessionMiddleware<CookieSessionStore> {
-    SessionMiddleware::builder(CookieSessionStore::default(), get_secret_key())
+    SessionMiddleware::builder(CookieSessionStore::default(), get_secret_key(server_config))
         .cookie_name(String::from("session"))
         .cookie_secure(!server_config.http_only) // Defina como false para localhost, true para produção
         .cookie_http_only(server_config.http_only)

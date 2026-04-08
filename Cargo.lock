@@ -1283,6 +1283,7 @@ dependencies = [
  "actix-session",
  "actix-web",
  "askama",
+ "base64 0.22.1",
  "chord_down",
  "diesel",
  "dotenvy",

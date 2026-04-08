@@ -10,6 +10,7 @@ pub struct ServerConfig {
     pub binding_ip: String,
     pub port: u16,
     pub http_only: bool,
+    pub secret_key: String,
 }
 
 impl ServerConfig {
@@ -25,6 +26,7 @@ impl ServerConfig {
                 .expect("PORT must be a u16"),
             http_only: env::var("HTTP_ONLY").expect("Set HTTP_ONLY (bool) in Environment or .env")
                 == "true",
+            secret_key: env::var("SECRET_KEY").expect("SECRET_KEY must be set"),
         }
     }
     pub fn binding(&self) -> (String, u16) {
@@ -41,10 +43,12 @@ pub struct AppState {
 
 impl AppState {
     pub fn load() -> Self {
+        dotenv().ok();
         let pool = jukebox_db::create_connection_pool();
         let mut connection = pool.get().expect("could not get connection");
         let private_tag_ids = jukebox_db::all_private_tag_ids(&mut connection);
         let tags_by_id = jukebox_db::all_tags_by_id(&mut connection);
+
         Self {
             pool,
             private_tag_ids,
