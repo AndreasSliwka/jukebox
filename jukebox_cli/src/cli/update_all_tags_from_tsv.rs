@@ -96,8 +96,8 @@ fn load_tags_and_songs(filename: String) -> (Tags, Vec<TaggedSong>) {
         line_number += 1;
         let song = TaggedSong {
             line: line_number,
-            title: line[0].clone(),
-            artist: line[1].clone(),
+            title: line[0].to_lowercase(),
+            artist: line[1].to_lowercase(),
             tags: marked_tags(&line[2..], &tag_names),
         };
         songs.push(song);
@@ -109,8 +109,10 @@ fn find_tagged_song(
     tagged_songs: &Vec<TaggedSong>,
     song_in_file: &chord_down::Song,
 ) -> Option<TaggedSong> {
+    let artist = song_in_file.artist.to_lowercase();
+    let title = song_in_file.title.to_lowercase();
     for tagged_song in tagged_songs {
-        if tagged_song.artist == song_in_file.artist && tagged_song.title == song_in_file.title {
+        if tagged_song.artist == artist && tagged_song.title == title {
             return Some(tagged_song.clone());
         }
     }
@@ -132,11 +134,15 @@ fn main() {
             let mut song_in_file = chord_down::Song::parse(&content, false);
             if let Some(tagged_song) = find_tagged_song(&tagged_songs, &song_in_file) {
                 song_in_file.tags = tagged_song.tags;
-                found_tagged_songs.push(tagged_song.line)
+                found_tagged_songs.push(tagged_song.line);
+                song_in_file
+                    .write_to_file(song_file)
+                    .expect("Could not dump song");
             } else {
                 println!(
                     "!!! Could not find tagged song '{} -- {}'",
-                    song_in_file.title, song_in_file.artist
+                    song_in_file.title.to_lowercase(),
+                    song_in_file.artist.to_lowercase()
                 );
             };
         }

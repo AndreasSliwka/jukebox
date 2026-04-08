@@ -1,7 +1,7 @@
 use regex::Regex;
 use ron;
 use serde::{Deserialize, Serialize};
-use std::{any::type_name_of_val, collections::HashMap, sync::LazyLock};
+use std::{any::type_name_of_val, collections::HashMap, fs, sync::LazyLock};
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct LineElement {
@@ -53,6 +53,18 @@ impl Line {
             }
         }
         (has_lyrics, has_chords)
+    }
+    pub fn to_string(&self) -> String {
+        let mut result = String::new();
+        for element in self.elements.iter() {
+            let maybe_chord = element.chord.clone();
+            let maybe_lyrics = element.lyrics.clone();
+            if let Some(chord) = maybe_chord {
+                result.push_str(format!("[{}]", chord).as_str());
+            }
+            result.push_str(maybe_lyrics.unwrap_or(String::from("")).as_str());
+        }
+        result
     }
 }
 #[derive(Deserialize, Serialize, Debug)]
@@ -117,16 +129,17 @@ impl ParsingState {
         }
     }
 }
+
 fn should_start_tabulatur(line: &str) -> bool {
     match line {
-        "{sot}" | "{start_of_tab}" => true,
+        "{Tabulatur}" => true,
         _ => false,
     }
 }
 
 fn should_start_grid(line: &str) -> bool {
     match line {
-        "{sog}" | "{start_of_grid}" => true,
+        "{Grid}" => true,
         _ => false,
     }
 }
@@ -142,37 +155,20 @@ fn should_set_meta_key_value(line: &str) -> Option<(String, String)> {
 
 fn should_set_part_name(line: &str) -> Option<String> {
     let line = line.trim();
-    if line == "{soi}" {
+    if line == "{soi}" || line == "{Intro}" {
         return Some(String::from("Intro"));
-    } else if line == "{soc}" {
+    } else if line == "{soc}" || line == "{Chorus}" {
         return Some(String::from("Chorus"));
-    } else if line == "{sov}" {
+    } else if line == "{sov}" || line == "{Verse}" {
         return Some(String::from("Verse"));
-    } else if line == "{sob}" {
+    } else if line == "{sob}" || line == "{Bridge}" {
         return Some(String::from("Bridge"));
-    } else if line == "{soo}" {
+    } else if line == "{soo}" || line == "{Outro}" {
         return Some(String::from("Outro"));
+    } else if line == "{Interlude}" {
+        return Some(String::from("Interlude"));
     }
-
-    // Outros, Intros, everything written as
-    // [Blockname]
-    static RE: LazyLock<Regex> =
-        LazyLock::new(|| Regex::new(r"^\{comment:\s*(\w+)\}\s*$").unwrap());
-    if let Some(captures) = RE.captures(line) {
-        return Some(captures[1].to_string());
-    };
     None
-}
-
-fn should_finish_current_path(line: &str, maybe_last_part: &Option<String>) -> bool {
-    let Some(last_path) = maybe_last_part else {
-        return false;
-    };
-    (last_path == "Intro" && line == "{eoi}")
-        || (last_path == "Verse" && line == "{eov}")
-        || (last_path == "Chorus" && line == "{eoc}")
-        || (last_path == "Bridge" && line == "{eob}")
-        || (last_path == "Outro" && line == "{eoo}")
 }
 
 impl Song {
@@ -188,10 +184,11 @@ impl Song {
     }
 
     fn parse_in_tabulatur(&mut self, line: &str, state: &mut ParsingState) -> () {
-        if (line == "{eot}") || (line == "{end_of_tab}") {
+        state.verbose(String::from("  > parse_in_tabulatur"));
+        if line == "" {
+            state.verbose(String::from("  > finishing tabulatur"));
             state.in_tabulatur = false;
-            state.last_line_blank = false;
-
+            state.last_line_blank = true;
             return;
         };
         let Some(last_block) = self.document.blocks.last_mut() else {
@@ -206,10 +203,10 @@ impl Song {
 
     fn parse_in_grid(&mut self, line: &str, state: &mut ParsingState) -> () {
         state.verbose(String::from("  > parse_in_grid"));
-        if (line == "{eog}") || (line == "{end_of_grid}") {
+        if line == "" {
             state.verbose(String::from("  > finishing grid"));
             state.in_grid = false;
-            state.last_line_blank = false;
+            state.last_line_blank = true;
             return;
         };
         let Some(last_block) = self.document.blocks.last_mut() else {
@@ -219,19 +216,10 @@ impl Song {
             ));
             return;
         };
-        state.verbose(format!(" last_block = {:#?}", last_block));
 
         match last_block {
             Block::Grid(lines) => lines.push(line.to_string()),
-            Block::Unknown(_) => {
-                state.verbose(String::from("Could not append to Block::Unknown"));
-                return;
-            }
-            Block::Tabulatur(_) => {
-                state.verbose(String::from("Could not append to Block::Unknown"));
-                return;
-            }
-            Block::Part(_) => {
+            _ => {
                 state.verbose(String::from("Could not append to Block::Unknown"));
                 return;
             }
@@ -298,6 +286,7 @@ impl Song {
     fn finish_part(&mut self, state: &mut ParsingState) -> () {
         state.last_part_name = None;
         state.in_a_block = false;
+        state.verbose(String::from("  ! finishing part "));
     }
 
     fn add_line_to_latest_part(&mut self, line: &str, state: &mut ParsingState) -> () {
@@ -313,6 +302,8 @@ impl Song {
     }
 
     fn handle_empty_line(&mut self, state: &mut ParsingState) -> () {
+        state.verbose(format!("  > handle_empty_line"));
+
         self.finish_part(state);
     }
 
@@ -328,7 +319,11 @@ impl Song {
         } else if should_start_grid(line) {
             return self.start_grid(state);
         }
+        state.verbose(String::from("  -- ? "));
+
         if let Some(part_name) = should_set_part_name(line) {
+            state.verbose(format!("  ! Start part {} ", part_name));
+
             return self.start_part(part_name, state);
         }
         if let Some((key, value)) = should_set_meta_key_value(line) {
@@ -340,9 +335,6 @@ impl Song {
         }
         if !state.in_a_block {
             return self.start_anonymous_part(state);
-        }
-        if should_finish_current_path(line, &state.last_part_name) {
-            return self.finish_part(state);
         }
         self.add_line_to_latest_part(line, state);
     }
@@ -358,5 +350,61 @@ impl Song {
 
     pub fn from_ron(stuff: String) -> Self {
         ron::from_str(&stuff).unwrap()
+    }
+
+    pub fn write_to_file(&self, filename: String) -> Result<(), Box<dyn std::error::Error>> {
+        use std::io::Write;
+        let mut file = fs::File::create(filename)?;
+        writeln!(file, "{{title: {}}}", self.title)?;
+        writeln!(file, "{{artist: {}}}", self.artist)?;
+        writeln!(file, "{{tags: {}}}", self.tags.join(", "))?;
+        writeln!(
+            file,
+            "{{ytmusic_id: {}}}",
+            self.ytmusic_id.clone().unwrap_or(String::from(""))
+        )?;
+        writeln!(file, "")?;
+        for block in self.document.blocks.iter() {
+            match block {
+                Block::Part(part) => {
+                    let partname = if part.name == "" {
+                        String::from("Verse")
+                    } else {
+                        part.name.clone()
+                    };
+                    writeln!(file, "{{{}}}", partname)?;
+                    for line in part.lines.iter() {
+                        let printable = line.to_string();
+                        writeln!(file, "{}", line.to_string())?;
+                        if printable == "" {
+                            writeln!(file, "{{{}}}", partname)?;
+                        }
+                    }
+                }
+                Block::Tabulatur(tabulatur) => {
+                    writeln!(file, "{{Tabulatur}}")?;
+                    for line in tabulatur {
+                        writeln!(file, "{}", line)?;
+                        if line == "" {
+                            writeln!(file, "{{Tabulatur}}")?;
+                        }
+                    }
+                }
+                Block::Grid(tabulatur) => {
+                    writeln!(file, "{{Grid}}")?;
+                    for line in tabulatur {
+                        writeln!(file, "{}", line)?;
+                        if line == "" {
+                            writeln!(file, "{{Grid}}")?;
+                        }
+                    }
+                }
+                Block::Unknown(_content) => {
+                    println!("Skipping unknown block");
+                }
+            }
+            writeln!(file, "")?;
+        }
+        Ok(())
     }
 }
