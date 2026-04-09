@@ -28,7 +28,7 @@ pub fn middleware(server_config: &ServerConfig) -> SessionMiddleware<CookieSessi
         .cookie_secure(!server_config.http_only) // Defina como false para localhost, true para produção
         .cookie_http_only(server_config.http_only)
         .session_lifecycle(BrowserSession::default())
-        .cookie_same_site(actix_web::cookie::SameSite::Strict)
+        .cookie_same_site(actix_web::cookie::SameSite::Lax)
         .build()
 }
 
