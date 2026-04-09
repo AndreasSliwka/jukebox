@@ -16,9 +16,8 @@ function filter_song_list(field, term) {
 function filterTableByText(raw_term) {
   let term = raw_term.toLowerCase();
 
-  document.cookie =
-    "search=" + term.replaceAll("'", "\\'") + ";SameSite=strict";
-  document.cookie = "category=;SameSite=strict";
+  document.cookie = "search=" + term.replaceAll("'", "\\'") + ";SameSite=lax";
+  document.cookie = "category=;SameSite=lax";
   deselect_category_wof_entries();
 
   filter_song_list("data-name", raw_term.toLowerCase());
@@ -36,7 +35,7 @@ function getCookieValue(cookieName) {
 }
 
 function setCookieValue(cookieName, value) {
-  document.cookie = cookieName + "=" + value + ";SameSite=strict";
+  document.cookie = cookieName + "=" + value + ";SameSite=lax";
 }
 
 function maybeApplyShowChords() {
@@ -102,8 +101,8 @@ document.addEventListener("alpine:init", () => {
     },
     filterListByCategory(target) {
       // set category cookie, clear search cookie and input
-      document.cookie = "category=" + target.textContent + ";SameSite=strict";
-      document.cookie = "search=;SameSite=strict";
+      document.cookie = "category=" + target.textContent + ";SameSite=lax";
+      document.cookie = "search=;SameSite=lax";
       document.getElementById("song_search").value = "";
 
       // deselect all category <spans>
@@ -120,4 +119,18 @@ document.addEventListener("alpine:init", () => {
 function setup_wof(categories_by_name) {
   Alpine.store("wof").initialize(categories_by_name);
   Alpine.store("wof").reshuffle();
+}
+
+function changeZoom(offset) {
+  let main = document.getElementById("root_of_all_evil");
+  let current_zoom = main.className;
+  let zoom_level = parseInt(current_zoom.split("-")[1]);
+  let new_zoom = zoom_level + offset;
+  if (new_zoom < 0) {
+    new_zoom = 0;
+  } else if (new_zoom > 7) {
+    new_zoom = 7;
+  }
+  main.className = "zoom-" + new_zoom;
+  document.cookie = "zoom=" + new_zoom + ";SameSite=lax";
 }

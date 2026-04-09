@@ -14,6 +14,7 @@ pub struct SongsIndexTemplate {
     pub is_admin: bool,
     pub show_private: bool,
     pub all_tags_by_name: HashMap<String, String>,
+    pub zoom: u16,
 }
 
 #[derive(Template)]
@@ -23,6 +24,7 @@ pub struct SongsTemplate {
     pub played_at: Option<String>,
     pub is_admin: bool,
     pub show_private: bool,
+    pub zoom: u16,
 }
 
 #[derive(Template)]
@@ -32,6 +34,7 @@ pub struct QrCodesTemplate {
     pub admin_url_svg: String,
     pub is_admin: bool,
     pub show_private: bool,
+    pub zoom: u16,
 }
 
 #[derive(Template)]

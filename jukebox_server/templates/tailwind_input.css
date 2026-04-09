@@ -121,6 +121,30 @@ table.hidePlayedSongs th.column-played {
     @apply bg-amber-100;
 }
 
+main.zoom-0 {
+    font-size: x-small;
+}
+main.zoom-1 {
+    font-size: small;
+}
+main.zoom-2 {
+    font-size: smaller;
+}
+main.zoom-3 {
+    font-size: medium;
+}
+main.zoom-4 {
+    font-size: larger;
+}
+main.zoom-5 {
+    font-size: large;
+}
+main.zoom-6 {
+    font-size: x-large;
+}
+main.zoom-7 {
+    font-size: xx-large;
+}
 .svg_container svg {
     width: 100vw;
 }

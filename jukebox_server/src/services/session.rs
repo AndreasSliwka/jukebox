@@ -11,6 +11,7 @@ pub const GIG_ID: &str = "gig.id";
 pub const GIG_ADMIN_SECRET: &str = "gig.admin_secret";
 pub const IS_ADMIN: &str = "isAdmin";
 pub const SHOW_PRIVATE: &str = "showPrivate";
+pub const ZOOM: &str = "zoom";
 
 fn get_secret_key(server_config: &ServerConfig) -> Key {
     let binary = BASE64_STANDARD
@@ -75,6 +76,20 @@ pub fn gig_id_from_session(request: &HttpRequest) -> Option<i32> {
     request.get_session().get::<i32>(GIG_ID).unwrap()
 }
 
+pub fn zoom_from_session(request: &HttpRequest) -> u16 {
+    if let Some(zoom_cookie) = request.cookie("zoom") {
+        let zoom_level = zoom_cookie.value().parse::<u16>().unwrap_or(7);
+        request.get_session().insert(ZOOM, zoom_level).unwrap();
+        return zoom_level;
+    } else {
+        if let Some(from_session) = request.get_session().get::<u16>(ZOOM).unwrap() {
+            from_session
+        } else {
+            3
+        }
+    }
+}
+
 pub fn admin_secret_from_session(session: &Session) -> Option<String> {
     session.get::<String>(GIG_ADMIN_SECRET).unwrap()
 }
@@ -128,6 +143,7 @@ async fn service(
         .unwrap();
 
     request.get_session().insert(SHOW_PRIVATE, false).unwrap();
+    request.get_session().insert(ZOOM, 3).unwrap();
 
     println!("session = {:#?}", request.get_session().entries());
 

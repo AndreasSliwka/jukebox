@@ -75,6 +75,7 @@ pub async fn service(
                 played_at: song.played_at_gig,
                 is_admin: crate::services::session::is_admin(&request),
                 show_private: crate::services::session::show_private(&request),
+                zoom: crate::services::session::zoom_from_session(&request),
             };
             let html = template.render().unwrap();
             Ok(HttpResponse::Ok()
