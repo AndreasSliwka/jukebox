@@ -19,6 +19,7 @@ fn sanitized_svg(source: String) -> String {
     let without_background = RE2.replace(unbounded_svg.as_str(), "").to_string();
     without_background
 }
+
 #[get("/qrcode")]
 async fn service(
     request: HttpRequest,
@@ -31,7 +32,7 @@ async fn service(
         admin_url.set_path("admin");
         admin_url.set_query(Some(format!("passkey={}", passkey).as_str()));
         log::debug!("admin_url = {}", admin_url);
-        let mut public_url = request.full_url();
+        let mut public_url = app_state.base_url.clone();
         public_url.set_path("songs/");
 
         let template = templates::QrCodesTemplate {
