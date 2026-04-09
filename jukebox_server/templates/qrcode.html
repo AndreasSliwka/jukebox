@@ -1,0 +1,22 @@
+{% extends "base.html" %} {% block upper_left_button %}
+<a href="/songs" class="button"> ↩ </a>
+{% endblock %} {% block title %} Scan me!{% endblock %} {% block content %}
+
+<div class="svg_container bg-green-300" style="height: 100vh">
+    {{ public_url_svg | safe }}
+</div>
+<div class="svg_container bg-lime-300" style="height: 100vh">&nbsp;</div>
+<div class="svg_container bg-lime-200" style="height: 100vh">&nbsp;</div>
+<div class="svg_container bg-yellow-100" style="height: 100vh">&nbsp;</div>
+<div class="svg_container bg-amber-200" style="height: 100vh">&nbsp;</div>
+<div class="svg_container bg-orange-300" style="height: 100vh">&nbsp;</div>
+<div class="svg_container bg-red-300" style="height: 100vh">
+    <br /><br /><br /><br /><br /><br />
+    <br /><br /><br /><br /><br /><br />
+
+    <div class="relative bottom-0">
+        <h1 class="text-5xl text-center">Admins only</h1>
+        {{ admin_url_svg | safe }}
+    </div>
+</div>
+{% endblock %}

@@ -5,7 +5,7 @@
 >
     <div class="h-10 text-center relative bg-amber-200 left-0">
         <span class="absolute left-0">
-            {% block upper_right_button %} 🔥 {% endblock %}
+            {% block upper_left_button %} 🔥 {% endblock %}
         </span>
         {% block title %} Jukebox {% endblock %}
         <span id="menu_trigger" class="absolute right-0" @click="menu = ! menu">
@@ -46,17 +46,7 @@
                 <span x-show="!hide_played_songs">🚫</span>
             </label>
         </div>
-        <div class="menuitem">
-            {% if is_admin %}
-            <a href="/toggle_private"
-                >Private Songs {% if show_private %}
-                <span>✅</span>
-                {% else %}
-                <span>🚫</span>
-                {% endif %}
-            </a>
-            {% endif %}
-        </div>
+
         <div class="menuitem">
             <button>
                 <!-- TODO: Zoom button does nothing -->
@@ -66,6 +56,20 @@
                 o m &nbsp;<span class="btn btn-blue">&nbsp;+&nbsp;</span>
             </button>
         </div>
+        {% if is_admin %}
+        <div class="menuitem">
+            <a href="/toggle_private"
+                >Private Songs {% if show_private %}
+                <span>✅</span>
+                {% else %}
+                <span>🚫</span>
+                {% endif %}
+            </a>
+        </div>
+        <div class="menuitem">
+            <a href="/qrcode">Show QR Codes</a>
+        </div>
+        {% endif %}
     </div>
 </header>
 <div id="placeholder_under_header" class="h-11"></div>

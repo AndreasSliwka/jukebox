@@ -27,6 +27,7 @@ async fn main() -> Result<(), std::io::Error> {
             .app_data(web::Data::new(app_state.clone()))
             .service(services::static_files::service())
             .service(services::admin::service)
+            .service(services::qrcode::service)
             .service(services::welcome::service)
             .service(services::session::service)
             .service(services::session::toggle_private_service)
