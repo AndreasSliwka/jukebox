@@ -8,6 +8,7 @@ use qrcode::QrCode;
 use qrcode::render::svg;
 use regex::Regex;
 use std::sync::LazyLock;
+use url::Url;
 
 fn sanitized_svg(source: String) -> String {
     static RE1: LazyLock<Regex> =
@@ -20,6 +21,13 @@ fn sanitized_svg(source: String) -> String {
     without_background
 }
 
+fn base_url_with(app_state: &crate::types::AppState, path: &str, query: Option<&str>) -> Url {
+    let mut url = app_state.base_url.clone();
+    url.set_path(path);
+    url.set_query(query);
+    url
+}
+
 #[get("/qrcode")]
 async fn service(
     request: HttpRequest,
@@ -28,13 +36,14 @@ async fn service(
     if session::is_admin(&request) {
         let passkey =
             crate::services::session::admin_secret_from_session(&request.get_session()).unwrap();
-        let mut admin_url = app_state.base_url.clone();
-        admin_url.set_path("admin");
-        admin_url.set_query(Some(format!("passkey={}", passkey).as_str()));
+        let admin_url = base_url_with(
+            &app_state,
+            "admin",
+            Some(format!("passkey={}", passkey).as_str()),
+        );
+        let public_url = base_url_with(&app_state, "songs", None);
         log::debug!("admin_url = {}", admin_url);
-        let mut public_url = app_state.base_url.clone();
-        public_url.set_path("songs/");
-
+        log::debug!("public_url = {}", public_url);
         let template = templates::QrCodesTemplate {
             public_url_svg: sanitized_svg(public_url.to_string()),
             admin_url_svg: sanitized_svg(admin_url.to_string()),
