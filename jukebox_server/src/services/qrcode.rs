@@ -20,11 +20,14 @@ fn sanitized_svg(source: String) -> String {
     without_background
 }
 #[get("/qrcode")]
-async fn service(request: HttpRequest) -> actix_web::Result<impl Responder> {
+async fn service(
+    request: HttpRequest,
+    app_state: actix_web::web::Data<crate::types::AppState>,
+) -> actix_web::Result<impl Responder> {
     if session::is_admin(&request) {
         let passkey =
             crate::services::session::admin_secret_from_session(&request.get_session()).unwrap();
-        let mut admin_url = request.full_url();
+        let mut admin_url = app_state.base_url.clone();
         admin_url.set_path("admin");
         admin_url.set_query(Some(format!("passkey={}", passkey).as_str()));
         log::debug!("admin_url = {}", admin_url);

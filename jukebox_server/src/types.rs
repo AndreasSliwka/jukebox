@@ -13,6 +13,12 @@ pub struct ServerConfig {
     pub secret_key: String,
 }
 
+fn base_url() -> url::Url {
+    let base_url_string = env::var("BASE_URL").expect("BASE_URL must be set");
+
+    url::Url::parse(base_url_string.as_str()).expect("BASE_URL must be a valid URI")
+}
+
 impl ServerConfig {
     pub fn from_env() -> Self {
         dotenv().ok();
@@ -39,6 +45,7 @@ pub struct AppState {
     pub pool: Pool<ConnectionManager<SqliteConnection>>,
     pub private_tag_ids: Vec<i32>,
     pub tags_by_id: HashMap<i32, (String, String, bool)>,
+    pub base_url: url::Url,
 }
 
 impl AppState {
@@ -48,11 +55,13 @@ impl AppState {
         let mut connection = pool.get().expect("could not get connection");
         let private_tag_ids = jukebox_db::all_private_tag_ids(&mut connection);
         let tags_by_id = jukebox_db::all_tags_by_id(&mut connection);
+        let base_url = base_url();
 
         Self {
             pool,
             private_tag_ids,
             tags_by_id,
+            base_url,
         }
     }
 }

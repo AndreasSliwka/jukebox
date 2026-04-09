@@ -32,7 +32,7 @@
 * change default MD format to [NamedPart]
   * Load and reexport all songs
   * add CLI to tag Songs from TSV
+* create special page that shows QR codes for participants and admins
 
 ------>&-------------------------------------
-* create special page that shows QR codes for participants and admins
 * add zoom so people can adapt the font size to their device
