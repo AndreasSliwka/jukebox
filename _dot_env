@@ -1,0 +1,18 @@
+# The server requires a .env file in its working directory
+# this is a template
+# for true local development you can keep the SECRET_KEY, but for an externally accessible instance YOU SHOULD NOT.
+#
+# here the database file will be placed
+DATABASE_URL=/some/writable/path/database.sqlite
+# use localhost for 127.0.0.1 if you dont want to acess the server from another machine
+BINDING_HOST=andreass-mini
+# well, some number
+PORT=8080
+# where the jukebox_fuel repo is checked out, plus ./songs
+SONGS_DIR=/Users/andreassliwka/src/jukebox_fuel/songs
+# Since the server does not know if its placed between an reverse procy doing TSL, we specify this here
+HTTP_ONLY=true
+# BASE64 encoded secret, at least 512bytes long, for securing the session cookie
+SECRET_KEY=4PesLTYl4ZdsbGuiz1NCuaL3eS94li3CxzjeGFMFSnNvV+3yJYXfmklOJkOOEFI2VNL6LtzRErJrKBlpuh5KYS50h/WqGiLyp5dT4JwFJDi//jpqZXzjuoyTNFWPkXqNytWPDMVPqBvy3UjGozFNrlNmW5aTJFAhcRCZwDOMQqz2LWfvRvVwrT8+fe7Wj44y8LuREfAg6ZLKOaT7/q6xqcWUZXLGpAiAvHx3iKDYlXybGAj2lOB5fY9/dwcVIRggwsjGgzSG658ppcc1Kdmjvtwiky/PBnM0XOpXiaTVFePtQiFho4Tbcc4lDOAHQTnRLBHiSxzv/bbNApCHpoBYhCksBi1+osfmORm25AwuzB5XPAsFT63mzOJpnxWEdoywZ4HyUsKvpC9InuTpqK0ZBGzKb0ze4hbtXxxmsKWjW6Y7RuyKVqjL3mxIjJHS78Z9X19S/O4eXFNj9AgFJWgnms8PRYGQGSDBYLk1/g54tZ8vBsGuAXPQcIEirO1PcR4jQ36LcON9eg9P3IatkCZgG4KHTw1UuedyrwKkpsrsl9BHv8moXmLJ9uSeCH8HuqTnJxvJNvHvU4t43qDxSpP3Y5+0Om6LPwrT2LflswrItVDoEgDgzZ8fsd46xtI5OY/ikmev2q38wOYeAGSwxdfQaMjQuftt7nwK
+# to generate QR Codes, the server must know its external URL
+BASE_URL=http://andreass-mini:8080/
