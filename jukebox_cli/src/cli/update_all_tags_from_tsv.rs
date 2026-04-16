@@ -128,6 +128,7 @@ fn main() {
     let song_files = get_songs_files_from_directory(songs_dir);
 
     let mut found_tagged_songs: Vec<u16> = vec![];
+    println!("Songs missing in TSV:");
     for song_file in song_files {
         let maybe_content = fs::read_to_string(song_file.clone());
         if let Ok(content) = maybe_content {
@@ -140,19 +141,17 @@ fn main() {
                     .expect("Could not dump song");
             } else {
                 println!(
-                    "!!! Could not find tagged song '{} -- {}'",
+                    "{}\t{}",
                     song_in_file.title.to_lowercase(),
                     song_in_file.artist.to_lowercase()
                 );
             };
         }
     }
+    println!("Songs missing in GIT:");
     for tagged_song in tagged_songs {
         if !found_tagged_songs.contains(&tagged_song.line) {
-            println!(
-                "!!! Could not find song in file '{} -- {}'",
-                tagged_song.title, tagged_song.artist
-            );
+            println!("{} -- {}", tagged_song.title, tagged_song.artist);
         }
     }
 }

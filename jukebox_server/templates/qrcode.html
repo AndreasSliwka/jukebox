@@ -5,6 +5,8 @@
 <div class="svg_container bg-green-300" style="height: 100vh">
     {{ public_url_svg | safe }}
 </div>
+{% if is_admin %}
+
 <div class="svg_container bg-lime-300" style="height: 100vh">&nbsp;</div>
 <div class="svg_container bg-lime-200" style="height: 100vh">&nbsp;</div>
 <div class="svg_container bg-yellow-100" style="height: 100vh">&nbsp;</div>
@@ -19,4 +21,4 @@
         {{ admin_url_svg | safe }}
     </div>
 </div>
-{% endblock %}
+{% endif %} {% endblock %}

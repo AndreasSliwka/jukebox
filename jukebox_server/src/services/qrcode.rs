@@ -33,29 +33,25 @@ async fn service(
     request: HttpRequest,
     app_state: actix_web::web::Data<crate::types::AppState>,
 ) -> actix_web::Result<impl Responder> {
-    if session::is_admin(&request) {
-        let passkey =
-            crate::services::session::admin_secret_from_session(&request.get_session()).unwrap();
-        let admin_url = base_url_with(
-            &app_state,
-            "admin",
-            Some(format!("passkey={}", passkey).as_str()),
-        );
-        let public_url = base_url_with(&app_state, "songs", None);
-        log::debug!("admin_url = {}", admin_url);
-        log::debug!("public_url = {}", public_url);
-        let template = templates::QrCodesTemplate {
-            public_url_svg: sanitized_svg(public_url.to_string()),
-            admin_url_svg: sanitized_svg(admin_url.to_string()),
-            is_admin: session::is_admin(&request),
-            show_private: session::show_private(&request),
-            zoom: crate::services::session::zoom_from_session(&request),
-        };
-        let html = template.render().unwrap();
-        Ok(HttpResponse::Ok()
-            .content_type(header::ContentType::html())
-            .body(html))
-    } else {
-        Ok(HttpResponse::NotFound().body("moved on"))
-    }
+    let passkey =
+        crate::services::session::admin_secret_from_session(&request.get_session()).unwrap();
+    let admin_url = base_url_with(
+        &app_state,
+        "admin",
+        Some(format!("passkey={}", passkey).as_str()),
+    );
+    let public_url = base_url_with(&app_state, "songs", None);
+    log::debug!("admin_url = {}", admin_url);
+    log::debug!("public_url = {}", public_url);
+    let template = templates::QrCodesTemplate {
+        public_url_svg: sanitized_svg(public_url.to_string()),
+        admin_url_svg: sanitized_svg(admin_url.to_string()),
+        is_admin: session::is_admin(&request),
+        show_private: session::show_private(&request),
+        zoom: crate::services::session::zoom_from_session(&request),
+    };
+    let html = template.render().unwrap();
+    Ok(HttpResponse::Ok()
+        .content_type(header::ContentType::html())
+        .body(html))
 }
