@@ -2,3 +2,4 @@
 .DS_Store
 target
 database.sqlite
+missing_songs.tsv
