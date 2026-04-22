@@ -1,7 +1,8 @@
 {% extends "base.html" %} {% block upper_left_button %}
 <a href="/songs" class="button"> ↩ </a>
-{% endblock %} {% block title %}{{song.title}}{% endblock %} {% block content %}
-{% if let Some(timestamp) = played_at %}
+{% endblock %} {% block mainClass %} single-song {% endblock %} {% block title
+%}{{song.title}}{% endblock %} {% block content %} {% if let Some(timestamp) =
+played_at %}
 <div id="played_at" class="bg-amber-200 text-right">
     Lied wurde um {{timestamp | time_from_timestamp}} gespielt
 </div>

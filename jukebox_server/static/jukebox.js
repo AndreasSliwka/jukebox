@@ -1,14 +1,14 @@
 function filter_song_list(field, term) {
   const song_trs = document
     .getElementById("songlist")
-    .getElementsByTagName("tr");
-  for (const song_tr of song_trs) {
-    if (song_tr.hasAttribute(field)) {
-      const data = song_tr.getAttribute(field);
+    .getElementsByClassName("listed-song");
+  for (const song of song_trs) {
+    if (song.hasAttribute(field)) {
+      const data = song.getAttribute(field);
       if (data.includes(term)) {
-        song_tr.classList.remove("hidden");
+        song.classList.remove("hidden");
       } else {
-        song_tr.classList.add("hidden");
+        song.classList.add("hidden");
       }
     }
   }
@@ -123,14 +123,23 @@ function setup_wof(categories_by_name) {
 
 function changeZoom(offset) {
   let main = document.getElementById("root_of_all_evil");
-  let current_zoom = main.className;
+
+  let current_zoom = main.className
+    .split(" ")
+    .filter((c) => c.startsWith("zoom-"))[0];
+
   let zoom_level = parseInt(current_zoom.split("-")[1]);
-  let new_zoom = zoom_level + offset;
-  if (new_zoom < 0) {
-    new_zoom = 0;
-  } else if (new_zoom > 7) {
-    new_zoom = 7;
+  let new_zoom_level = zoom_level + offset;
+  if (new_zoom_level < 0) {
+    new_zoom_level = 0;
+  } else if (new_zoom_level > 7) {
+    new_zoom_level = 7;
   }
-  main.className = "zoom-" + new_zoom;
-  document.cookie = "zoom=" + new_zoom + ";SameSite=lax";
+  let new_zoom = "zoom-" + new_zoom_level;
+  if (new_zoom != current_zoom) {
+    main.classList.add(new_zoom);
+    main.classList.remove(current_zoom);
+
+    document.cookie = "zoom=" + new_zoom_level + ";SameSite=lax";
+  }
 }

@@ -1,5 +1,57 @@
 @import "tailwindcss";
 
+/* Header */
+header {
+    @apply z-10 h-10 text-[1.7em] align-middle bg-amber-300 fixed top-0 left-0 w-full;
+    #header_line {
+        @apply h-10 text-center relative bg-amber-300 left-0;
+        @apply shadow-amber-800/50 shadow-lg;
+
+        #left_button {
+            @apply absolute left-0 top-0;
+        }
+        #title {
+            @apply px-6 line-clamp-1 whitespace-nowrap;
+        }
+        #menu_trigger {
+            @apply absolute right-0 top-0;
+        }
+    }
+}
+
+/* Zoom for all pages */
+
+main {
+    &.zoom-0 {
+        font-size: x-small;
+    }
+    &.zoom-1 {
+        font-size: small;
+    }
+    &.zoom-2 {
+        font-size: smaller;
+    }
+    &.zoom-3 {
+        font-size: medium;
+    }
+    &.zoom-4 {
+        font-size: large;
+    }
+    &.zoom-5 {
+        font-size: larger;
+    }
+    &.zoom-6 {
+        font-size: x-large;
+    }
+    &.zoom-7 {
+        font-size: xx-large;
+    }
+}
+/* Single Song */
+
+main.single-song {
+    @apply bg-amber-100 p-2;
+}
 .Song .part.part-verse .partname,
 .Song .part.part-chorus .partname,
 .Song .part.part-bridge .partname {
@@ -15,7 +67,7 @@
 }
 
 .Song .artist {
-    text-align: right;
+    @apply text-amber-800 text-right text-sm;
 }
 .Song .tabulatur,
 .Song .chord_grid {
@@ -63,42 +115,16 @@
 }
 
 /* Song list */
-table {
-    display: grid;
-    grid-template-columns: repeat(100, max-content);
-}
-thead,
-tbody,
-tr {
-    display: grid;
-    grid-column: 1 / -1;
-    grid-template-columns: subgrid;
-}
-tr.hidden {
-    display: none !important;
-}
-td,
-th {
-    display: block;
-}
-caption {
-    grid-column: 1 / -1;
-}
-td[cellspan="2"] {
-    grid-column: span 2;
-}
-td[cellspan="3"] {
-    grid-column: span 3;
-}
 
 #songlist.hidePlayedSongs .song.alreadyPlayed {
     display: none;
 }
 
-table.hidePlayedSongs td.column-played,
-table.hidePlayedSongs th.column-played {
-    display: none;
+.svg_container svg {
+    width: 100vw;
 }
+
+/* Wheel of Fortune */
 
 .category_wof {
     > * {
@@ -121,30 +147,37 @@ table.hidePlayedSongs th.column-played {
     @apply bg-amber-100;
 }
 
-main.zoom-0 {
-    font-size: x-small;
+main.song-list {
+    @apply bg-amber-300;
 }
-main.zoom-1 {
-    font-size: small;
-}
-main.zoom-2 {
-    font-size: smaller;
-}
-main.zoom-3 {
-    font-size: medium;
-}
-main.zoom-4 {
-    font-size: larger;
-}
-main.zoom-5 {
-    font-size: large;
-}
-main.zoom-6 {
-    font-size: x-large;
-}
-main.zoom-7 {
-    font-size: xx-large;
-}
-.svg_container svg {
-    width: 100vw;
+div#songlist {
+    @apply flex flex-row flex-wrap p-3;
+
+    .listed-song {
+        @apply grid grid-cols-5 grid-rows-1;
+        @apply min-w-full md:min-w-fit;
+        @apply bg-amber-100 shadow-amber-800/50 shadow-lg;
+        @apply my-2 md:mx-3 p-2 rounded-md;
+
+        .text {
+            @apply col-start-1 col-span-4 row-start-1 row-span-1;
+            .title {
+                @apply font-bold;
+            }
+            .artist {
+                @apply text-amber-800 text-sm;
+            }
+            .played {
+                @apply text-amber-800 font-mono text-sm;
+            }
+        }
+
+        .tags {
+            direction: rtl;
+            @apply col-start-5 col-span-1 row-span-2 row-start-1;
+        }
+    }
+    .listed-song.hidden {
+        display: none !important;
+    }
 }

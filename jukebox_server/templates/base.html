@@ -1,14 +1,11 @@
 {% extends "core.html" %} {% block body_content %}
-<header
-    x-data="{ menu: false }"
-    class="z-10 h-10 text-[1.7em] align-middle bg-amber-200 fixed top-0 left-0 w-full"
->
-    <div class="h-10 text-center relative bg-amber-200 left-0">
-        <span class="absolute left-0">
+<header x-data="{ menu: false }">
+    <div id="header_line">
+        <span id="left_button">
             {% block upper_left_button %} 🔥 {% endblock %}
         </span>
-        {% block title %} Jukebox {% endblock %}
-        <span id="menu_trigger" class="absolute right-0" @click="menu = ! menu">
+        <span id="title"> {% block title %} Jukebox {% endblock %} </span>
+        <span id="menu_trigger" class="" @click="menu = ! menu">
             {% if is_admin %} &nbsp;🍔&nbsp; {% else %} &nbsp;≡&nbsp; {% endif
             %}
         </span>
@@ -76,8 +73,12 @@
         </div>
     </div>
 </header>
-<div id="placeholder_under_header" class="h-11"></div>
-<main id="root_of_all_evil" class="zoom-{{zoom}}">
+<main
+    id="root_of_all_evil"
+    class="{% block mainClass %}{% endblock %} zoom-{{zoom}}"
+>
+    <div id="placeholder_under_header" class="h-11"></div>
+
     {% block content %}{% endblock content %}
 </main>
 {% endblock %}

@@ -1,63 +1,32 @@
-{% extends "base.html" %} {% block title %} Songs {% endblock %} {% block
-content %} {% include "category_wof.html" %}
-<table id="songlist" x-init="maybeApplyHidePlayedSongs()">
-    <tr>
-        <th width="40%">
-            {% match song_list_order %} {% when SongListOrder::TitleAsc %}
-            <a href="?sort=title_desc">Title ↓</a> {% when
-            SongListOrder::TitleDesc %} <a href="?sort=title_asc">Title ↑</a> {%
-            else %} <a href="?sort=title_asc">Title &nbsp;&nbsp;</a>
-            {% endmatch %}
-        </th>
-        <th width="40%">
-            {% match song_list_order %} {% when SongListOrder::ArtistAsc %}
-            <a href="?sort=artist_desc"> Artist ↓</a> {% when
-            SongListOrder::ArtistDesc %}
-            <a href="?sort=artist_asc"> Artist ↑</a> {% else %}
-            <a href="?sort=artist_asc">Artist &nbsp;&nbsp;</a>
-            {% endmatch %}
-        </th>
-        <th class="column-played" width="10%">Played?</th>
-        <th width="10%">Tags</th>
-    </tr>
-    {% for song in songs %} {% if song.played_at != "" %}
-    <tr
+{% extends "base.html" %}
+{% block mainClass %} song-list {% endblock %}
+{% block title %} Songs {% endblock %} {% block
+content %}
+<div id="songlist" x-init="maybeApplyHidePlayedSongs()">
+    {% for song in songs %}
+    <div
         id="song-{{song.id}}"
-        class="align-top song alreadyPlayed text-gray-500 text-ellipsis"
-        href="{{song.link}}"
+        class="listed-song {% if song.played_at != "" %} already-played {% endif %} already-played "
         data-name="{{song.title.to_lowercase()}} -- {{song.artist.to_lowercase()}} "
         data-categories="{% for tag_sign in song.tag_signs %}|{{ tag_sign }}{% endfor %}|"
     >
-        <td class="align-top"><a href="{{song.link}} ">({{song.title}})</a></td>
-        <td class="align-top">({{ song.artist }})</td>
-        <td class="align-top column-played">
-            {{ &song.played_at | time_from_timestamp }}
-        </td>
-        <td class="align-top">
-            {% for tag_sign in song.tag_signs %} {{ tag_sign }} {% endfor %}
-        </td>
-    </tr>
-    {% else %}
-    <tr
-        id="song-{{song.id}}"
-        class="align-top song text-ellipsis"
-        href="{{song.link}}"
-        data-name="{{song.title.to_lowercase()}} -- {{song.artist.to_lowercase()}} "
-        data-categories="{% for tag_sign in song.tag_signs %}|{{ tag_sign }}{% endfor %}|"
-    >
-        <td class="align-top"><a href="{{song.link}} ">{{song.title}}</a></td>
-        <td class="align-top">{{ song.artist }}</td>
-        <td class="align-top column-played">
-            {{ &song.played_at | time_from_timestamp }}
-        </td>
-        <td class="align-top">
-            {% for tag_sign in song.tag_signs %} {{ tag_sign }} {% endfor %}
-        </td>
-    </tr>
-    {% endif %} {% endfor %}
-</table>
+        <a class="text" href="{{song.link}}">
+            <div class="title">{{song.title}}</div>
+            <div class="artist">{{ song.artist }}</div>
+            {% if song.played_at != "" %}
+                <div class="played">(gespielt @{{ &song.played_at | time_from_timestamp }})</>
+            {% endif %}
+        </a>
+        <div class="tags">
+            {% for tag_sign in song.tag_signs %}
+                <span class="tag">{{ tag_sign }}</span>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
 <div
-    class="bg-amber-200 flex flex-row p-1"
+    class="bg-amber-400 flex flex-row p-1"
     x-data="{ search: getCookieValue('search') }"
     x-init="filterTableByText(getCookieValue('search'))"
 >
