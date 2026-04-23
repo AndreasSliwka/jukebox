@@ -2,20 +2,52 @@
 
 /* Header */
 header {
-    @apply z-10 h-10 text-[1.7em] align-middle bg-amber-300 fixed top-0 left-0 w-full;
+    @apply text-[1.7em] align-middle bg-amber-900 text-amber-100 top-0 left-0 w-full;
     #header_line {
-        @apply h-10 text-center relative bg-amber-300 left-0;
+        @apply min-h-10 text-center relative bg-amber-900 left-0;
         @apply shadow-amber-800/50 shadow-lg;
 
-        #left_button {
-            @apply absolute left-0 top-0;
-        }
         #title {
-            @apply px-6 line-clamp-1 whitespace-nowrap;
+            @apply px-6;
         }
-        #menu_trigger {
-            @apply absolute right-0 top-0;
+    }
+}
+
+/* Footer */
+
+.footer_placeholder {
+    @apply h-10;
+}
+footer {
+    @apply fixed h-10 bottom-0 left-0 right-0 w-full;
+    @apply bg-amber-900 text-amber-100;
+    @apply grid grid-cols-6 grid-rows-1;
+    @apply align-middle text-center;
+    #toggle_search,
+    #back_to_song_list {
+        @apply col-start-1 col-span-1 row-start-1;
+    }
+    #search_form {
+        @apply col-start-2 col-span-5 row-start-1;
+        input {
+            @apply w-full;
         }
+    }
+    #toggle_played_songs,
+    #toggle_private_songs {
+        @apply col-start-2 col-span-1 row-start-1;
+    }
+    #show_qr {
+        @apply col-start-3 col-span-1 row-start-1;
+    }
+    #toggle_zoom_selector {
+        @apply col-start-4 col-span-1 row-start-1;
+    }
+    #toggle_chords {
+        @apply col-start-5 col-span-1 row-start-1;
+    }
+    #toggle_tags {
+        @apply col-start-6 col-span-1 row-start-1;
     }
 }
 

@@ -29,10 +29,54 @@
 * create tags 
   * add tags and and tags_on_songs table
   * when loading a song link the song to the tags listed in the tags attribute
-* change default MD format to [NamedPart]
+* change default MD format to {NamedPart}
   * Load and reexport all songs
   * add CLI to tag Songs from TSV
 * create special page that shows QR codes for participants and admins
+* add zoom so people can adapt the font size to their device
 
 ------>&-------------------------------------
-* add zoom so people can adapt the font size to their device
+* make header bar scroll out of screen
+  * upper left button always visible
+
+##### Bottom Toolbar
+### song list
+# song list standard
+|----|----|----|----|----|----|
+| 🔍 | 👻 | QR | ᴬA | C⁷ | 🎲 |
+|----|----|----|----|----|----|
+
+# song list search
+|----|========================||
+| 🔍 | find my love ...       ||
+|----|========================||
+
+# song list played songs checked
+|----||===‖----|----|----|----|
+| 🔍 ‖ 👻 ‖ QR | ᴬA | C⁷ | 🎲 |
+|----||===‖----|----|----|----|
+
+# song list zoom
+|----|----|----|----|----|----|
+|  1...2..(3)..4...5...6...7  |
+|----|----|----|----|----|----|
+
+# song list chords checked
+|----|----|----|----#====#----|
+| 🔍 | 👻 | QR | ᴬA | C⁷ | 🎲 |
+|----|----|----|----#====#----|
+
+# song list categories
+#=========================#
+‖ {🇩🇪 German} {🍹 Party}  ‖
+‖ {🪨 Rock} {💋 Love}    ^‖                        
+‖ {🔨 metal} {🍦 Soft}   #‖
+‖ {🎄 Weihnachten}       v‖----|
+‖ {👶 Kinder}             ‖ 🎲 |
+‖=========================‖----|
+
+### single song
+# nothing checked
+|----|----|----|----|----|----|
+| ↩  | 👻 | QR | ᴬA | C⁷ | 🎲 |
+|----|----|----|----|----|----|

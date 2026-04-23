@@ -48,6 +48,7 @@ async fn service(
         admin_url_svg: sanitized_svg(admin_url.to_string()),
         is_admin: session::is_admin(&request),
         show_private: session::show_private(&request),
+        show_search: false,
         zoom: crate::services::session::zoom_from_session(&request),
     };
     let html = template.render().unwrap();

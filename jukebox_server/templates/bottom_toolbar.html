@@ -1,0 +1,18 @@
+<div
+    class="bg-amber-400 flex flex-row p-1"
+    x-data="{ search: getCookieValue('search') }"
+    x-init="filterTableByText(getCookieValue('search'))"
+>
+    <span>&nbsp;🔍&nbsp;</span>
+    <input
+        id="song_search"
+        type="text"
+        name="search"
+        enterkeyhint="search"
+        placeholder="Finde Lieder! Singe kräftig!"
+        x-model="search"
+        @change="setSearchFilter($event.target.value)"
+        ;
+        class="flex-auto p-0.5 border-amber-900 border-2"
+    />
+</div>

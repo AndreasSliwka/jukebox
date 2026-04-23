@@ -13,6 +13,7 @@ pub struct SongsIndexTemplate {
     pub song_list_order: SongListOrder,
     pub is_admin: bool,
     pub show_private: bool,
+    pub show_search: bool,
     pub all_tags_by_name: HashMap<String, String>,
     pub zoom: u16,
 }
@@ -24,6 +25,7 @@ pub struct SongsTemplate {
     pub played_at: Option<String>,
     pub is_admin: bool,
     pub show_private: bool,
+    pub show_search: bool,
     pub zoom: u16,
 }
 
@@ -34,6 +36,7 @@ pub struct QrCodesTemplate {
     pub admin_url_svg: String,
     pub is_admin: bool,
     pub show_private: bool,
+    pub show_search: bool,
     pub zoom: u16,
 }
 

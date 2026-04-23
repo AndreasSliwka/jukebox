@@ -81,6 +81,7 @@ pub async fn service(
         song_list_order,
         is_admin: services::session::is_admin(&request),
         show_private: services::session::show_private(&request),
+        show_search: true,
         all_tags_by_name: tags_by_name,
         zoom: crate::services::session::zoom_from_session(&request),
     };

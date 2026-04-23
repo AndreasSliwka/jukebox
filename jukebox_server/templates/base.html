@@ -1,84 +1,49 @@
 {% extends "core.html" %} {% block body_content %}
 <header x-data="{ menu: false }">
     <div id="header_line">
-        <span id="left_button">
-            {% block upper_left_button %} 🔥 {% endblock %}
-        </span>
         <span id="title"> {% block title %} Jukebox {% endblock %} </span>
-        <span id="menu_trigger" class="" @click="menu = ! menu">
-            {% if is_admin %} &nbsp;🍔&nbsp; {% else %} &nbsp;≡&nbsp; {% endif
-            %}
-        </span>
-    </div>
-    <div
-        x-show="menu"
-        x-transition.duration.500ms
-        class="bg-amber-200 pl-2 pr-2 border-l-2 border-b-2 float-right"
-    >
-        <div class="menuitem">
-            <label
-                x-data="{ show_chords: getCookieValue('showChords') == 'true'}"
-                ><input
-                    type="checkbox"
-                    name="chords"
-                    x-model="show_chords"
-                    class="hidden"
-                    x-on:change="setCookieValue('showChords', $event.target.checked.toString());maybeApplyShowChords()"
-                />Akkorde anzeigen
-                <span x-show="show_chords">✅</span>
-                <span x-show="!show_chords">🚫</span>
-            </label>
-        </div>
-        <div class="menuitem">
-            <label
-                x-data="{ hide_played_songs: getCookieValue('hidePlayedSongs') == 'true'}"
-                ><input
-                    type="checkbox"
-                    name="chords"
-                    x-model="hide_played_songs"
-                    class="hidden"
-                    x-on:change="setCookieValue('hidePlayedSongs', $event.target.checked.toString());maybeApplyHidePlayedSongs()"
-                />Gespielte Lieder verstecken
-                <span x-show="hide_played_songs">✅</span>
-                <span x-show="!hide_played_songs">🚫</span>
-            </label>
-        </div>
-
-        <div class="menuitem" x-data="{ zoom: {{zoom}} }">
-            <button>
-                <!-- TODO: Zoom button does nothing -->
-                <span x-on:click="changeZoom(-1)" class="btn btn-blue"
-                    >&nbsp;-&nbsp;</span
-                >&nbsp; Z o
-            </button>
-            <button>
-                o m &nbsp;<span x-on:click="changeZoom(+1)" class="btn btn-blue"
-                    >&nbsp;+&nbsp;</span
-                >
-            </button>
-        </div>
-        {% if is_admin %}
-        <div class="menuitem">
-            <a href="/toggle_private"
-                >Private Songs {% if show_private %}
-                <span>✅</span>
-                {% else %}
-                <span>🚫</span>
-                {% endif %}
-            </a>
-        </div>
-        {% endif %}
-        <div class="menuitem">
-            <a href="/qrcode">Show QR Codes</a>
-        </div>
     </div>
 </header>
 <main
     id="root_of_all_evil"
     class="{% block mainClass %}{% endblock %} zoom-{{zoom}}"
 >
-    <div id="placeholder_under_header" class="h-11"></div>
-
     {% block content %}{% endblock content %}
+    <div class="footer_placeholder" />
 </main>
+<footer
+    class="{% if is_admin %}isAdmin{% endif %} {%if show_private %}showPrivate{% endif %}"
+>
+    {% if show_search %}
+    <a id="toggle_search">🔍</a>
+    {% else %}
+    <a id="back_to_song_list" href="/songs">↩</a>
+    {% endif %} {% if is_admin %}
+    <a id="toggle_private_songs">😎</a>
+    {% else %}
+    <a id="toggle_played_songs">👻</a>
+    {% endif %}
+    <a id="show_qr" href="/qrcode">QR</a>
+    <a id="toggle_zoom_selector">ᴬA</a>
+    <a id="toggle_chords">C⁷</a>
+    <a id="toggle_tags">🎲</a>
+    <div
+        id="search_form"
+        class="bg-amber-400"
+        x-data="{ search: getCookieValue('search') }"
+        x-init="filterTableByText(getCookieValue('search'))"
+    >
+        <input
+            id="song_search"
+            type="text"
+            name="search"
+            enterkeyhint="search"
+            placeholder="Find my love ..."
+            x-model="search"
+            @change="setSearchFilter($event.target.value)"
+            ;
+            class="flex-auto p-0.5 border-amber-900 border-2"
+        />
+    </div>
+</footer>
 {% endblock %}
