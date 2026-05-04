@@ -5,7 +5,11 @@ use askama::Template;
 
 #[get("/")]
 async fn service() -> actix_web::Result<impl Responder> {
-    let html = templates::WelcomeTemplate {}.render().unwrap();
+    let html = templates::WelcomeTemplate {
+        dark_background: true,
+    }
+    .render()
+    .unwrap();
 
     Ok(HttpResponse::Ok()
         .content_type(ContentType::html())

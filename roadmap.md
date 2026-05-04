@@ -46,8 +46,8 @@
 | App Name                     | text     | header     | list |
 | list songs                   | boxes    | main       | list |
 | artist list                  | slide in | main       | list |
-| show artists list            | button   | toolbar    | list |
 | toggle search song list      | button   | toolbar    | list |
+| show artists list            | button   | toolbar    | list |
 | show songlist qr             | button   | toolbar    | list |
 | show category slot machine   | button   | toolbar    | list |
 | random three songs  (admin)  | button   | toolbar    | list |

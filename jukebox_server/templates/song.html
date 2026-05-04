@@ -7,7 +7,7 @@ played_at %}
     Lied wurde um {{timestamp | time_from_timestamp}} gespielt
 </div>
 {% endif %}
-<div id="song" class="Song" x-init="maybeApplyShowChords()">
+<div id="song" class="Song" x-init="Chords.maybeShow()">
     <h3 class="artist">von {{song.artist}}</h3>
     {% for block in song.document.blocks %} {% let newline = "\n" %} {% match
     block %} {% when Block::Part(song_part) %}

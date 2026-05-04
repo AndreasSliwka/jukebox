@@ -5,7 +5,7 @@ content %}
 {{ "<scr" | safe }}{{ "ipt>" | safe}}
   all_tags_by_name = {{ all_tags_by_name  | json | safe }};
 {{ "</script>" | safe }}
-<div id="songlist" x-init="maybeApplyHidePlayedSongs()">
+<div id="songlist">
     {% for song in songs %}
     <div
         id="song-{{song.id}}"

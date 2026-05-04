@@ -75,13 +75,14 @@ pub async fn service(
                 played_at: song.played_at_gig,
                 is_admin: crate::services::session::is_admin(&request),
                 show_private: crate::services::session::show_private(&request),
-                show_search: false,
+                dark_background: false,
                 zoom: crate::services::session::zoom_from_session(&request),
                 qr_code_svg: crate::services::qrcode::qr_code_as_svg(
                     &app_url,
                     &song_path,
                     &app_state.cache,
                 ),
+                footer_type: templates::FooterType::SingleSong,
             };
             let html = template.render().unwrap();
             Ok(HttpResponse::Ok()

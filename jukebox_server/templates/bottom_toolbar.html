@@ -1,7 +1,7 @@
 <div
     class="bg-amber-400 flex flex-row p-1"
-    x-data="{ search: getCookieValue('search') }"
-    x-init="filterTableByText(getCookieValue('search'))"
+    x-data="{ search: Cookies.getValue('search') }"
+    x-init="filterSongListByText(Cookies.getValue('search'))"
 >
     <span>&nbsp;🔍&nbsp;</span>
     <input

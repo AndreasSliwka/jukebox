@@ -11,45 +11,88 @@
     {% block content %}{% endblock content %}
     <div class="footer_placeholder" />
 </main>
+{% match footer_type %} {% when FooterType::SongList %}
 <footer
+    id="footer"
     class="{% if is_admin %}isAdmin{% endif %} {%if show_private %}showPrivate{% endif %}"
-    x-data="{showChords: currentShowChords()}"
+    x-data="{search: ''}"
 >
-    {% if show_search %}
-    <a id="toggle_search" class="toolbar-button">🔍</a>
-    {% else %}
-    <a id="back_to_song_list" href="/songs" class="toolbar-button">↩</a>
-    {% endif %} {% if is_admin %}
-    <a id="toggle_private_songs" class="toolbar-button">😎</a>
-    {% else %}
-    <a id="toggle_played_songs" class="toolbar-button">👻</a>
-    {% endif %}
-    <a id="show_qr" href="javascript:showQrOverlay()" class="toolbar-button"
+    <a
+        id="toggle_search"
+        class="toolbar-button at-1-1"
+        href="javascript:Toolbar.toggleSearchForm()"
+        >🔍</a
+    >
+    <a
+        id="toggle_show_artists"
+        class="toolbar-button at-2-1"
+        href="javascript:Toolbar.toggleArtistList()"
+        >🎺</a
+    >
+    <a
+        id="show_qr"
+        href="javascript:Toolbar.showQrOverlay()"
+        class="toolbar-button at-3-1"
         >QR</a
     >
-    <a id="toggle_zoom_selector" class="toolbar-button">ᴬA</a>
-    <a id="toggle_chords" class="toolbar-button">C⁷</a>
-    <a id="toggle_tags" class="toolbar-button">🎲</a>
+    <a
+        id="show_slot_machine"
+        class="toolbar-button at-4-1"
+        href="javascript:Toolbar.showSlotMachine()"
+        >🎲</a
+    >
+    <a
+        id="select_four_random_songs"
+        class="toolbar-button at-5-1"
+        href="javascript:Toolbar.selectSevemRandomSongs()"
+        >🍀</a
+    >
     <div
         id="search_form"
-        class="bg-amber-400"
-        x-data="{ visible: false, search: getCookieValue('search') }"
-        x-show="visible"
-        x-init="filterTableByText(getCookieValue('search'))"
+        class="hidden bg-amber-400"
+        x-init="SongList.filterByName(Cookies.getValue('search'))"
     >
         <input
-            id="song_search"
+            id="search_input"
             type="text"
             name="search"
             enterkeyhint="search"
             placeholder="Find my love ..."
             x-model="search"
-            @change="setSearchFilter($event.target.value)"
+            @change="SongList.setSearchFilter($event.target)"
             ;
             class="flex-auto p-0.5 border-amber-900 border-2"
         />
     </div>
 </footer>
+{% when FooterType::SingleSong %}
+<footer
+    id="footer"
+    class="{% if is_admin %}isAdmin{% endif %} {%if show_private %}showPrivate{% endif %}"
+    x-data="{showChords: Cookies.storedShowChords()}"
+>
+    <a id="back_to_song_list" class="toolbar-button at-1-1" href="/songs">↩</a>
+    <a
+        id="toggle_zoom"
+        class="toolbar-button at-2-1"
+        href="javascript:Toolbar.toggleZoomForm()"
+        >ᴬA</a
+    >
+    <a
+        id="show_qr"
+        href="javascript:Toolbar.showQrOverlay()"
+        class="toolbar-button at-3-1"
+        >QR</a
+    >
+    <a
+        id="toggle_chords"
+        href="javascript:Toolbar.toggleShowChords()"
+        class="toolbar-button at-4-1"
+        :class="{active: Chords.showInline()}"
+        >C7</a
+    >
+</footer>
+{% endmatch %}
 <div
     id="overlay"
     x-data="{visible: false}"
@@ -63,6 +106,7 @@
         <div id="qr_code" class="hidden modal-content">
             {{ qr_code_svg | safe }}
         </div>
+        <div id="zoom" class="hidden modal-content">...</div>
     </div>
 </div>
 {% endblock %}
