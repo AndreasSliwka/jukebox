@@ -39,6 +39,37 @@
 * make header bar scroll out of screen
   * upper left button always visible
 
+# Functionality: 
++------------------------------|----------|------------|------|
+| WHAT                         | HOW      | AREA       | PAGE |
++------------------------------|----------|------------|------|
+| App Name                     | text     | header     | list |
+| list songs                   | boxes    | main       | list |
+| artist list                  | slide in | main       | list |
+| show artists list            | button   | toolbar    | list |
+| toggle search song list      | button   | toolbar    | list |
+| show songlist qr             | button   | toolbar    | list |
+| show category slot machine   | button   | toolbar    | list |
+| random three songs  (admin)  | button   | toolbar    | list |
+| category slot machine        | form     | above tb   | list |
+| search song form             | form     | above tb   | list |
+| QR to song list              | modal    | main       | list |
+| single songs title           | text     | header     | song |
+| single songs lyrics          | text     | main       | song |
+| back to song list            | button   | toolbar    | song |
+| show this song qr            | button   | toolbar    | song |
+| toggle zoom selector         | button   | toolbar    | song |
+| toggle chord visibility      | button   | toolbar    | song |
+| toggle song bookmark         | button   | toolbar    | song |
+| zoom selector                | modal    | above tb   | song |
+| songs categories             | boxes    | main above | song |
+| mark song as played (admin)  | button   | main below | song |
+| link to music.youtube (adm)  | button   | main below | song |
+| QR to specific song          | modal    | main       | song |
+| Admin QR                     | ?        | ?          | ?    |
+| toggle played song display   | xxxxxxxxxxxxxxxxxxxxxxxxxxxx |
++------------------------------|----------|------------|------|
+
 ##### Bottom Toolbar
 ### song list
 # song list standard

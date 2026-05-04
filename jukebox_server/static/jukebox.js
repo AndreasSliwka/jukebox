@@ -1,14 +1,15 @@
 function filter_song_list(field, term) {
-  const song_trs = document
-    .getElementById("songlist")
-    .getElementsByClassName("listed-song");
-  for (const song of song_trs) {
-    if (song.hasAttribute(field)) {
-      const data = song.getAttribute(field);
-      if (data.includes(term)) {
-        song.classList.remove("hidden");
-      } else {
-        song.classList.add("hidden");
+  const songlist = document.getElementById("songlist");
+  if (songlist) {
+    const song_trs = songlist.getElementsByClassName("listed-song");
+    for (const song of song_trs) {
+      if (song.hasAttribute(field)) {
+        const data = song.getAttribute(field);
+        if (data.includes(term)) {
+          song.classList.remove("hidden");
+        } else {
+          song.classList.add("hidden");
+        }
       }
     }
   }
@@ -18,7 +19,7 @@ function filterTableByText(raw_term) {
 
   document.cookie = "search=" + term.replaceAll("'", "\\'") + ";SameSite=lax";
   document.cookie = "category=;SameSite=lax";
-  deselect_category_wof_entries();
+  // deselect_category_wof_entries();
 
   filter_song_list("data-name", raw_term.toLowerCase());
 }
@@ -36,6 +37,10 @@ function getCookieValue(cookieName) {
 
 function setCookieValue(cookieName, value) {
   document.cookie = cookieName + "=" + value + ";SameSite=lax";
+}
+
+function currentShowChords() {
+  return getCookieValue("showChords") == "true";
 }
 
 function maybeApplyShowChords() {
@@ -106,7 +111,7 @@ document.addEventListener("alpine:init", () => {
       document.getElementById("song_search").value = "";
 
       // deselect all category <spans>
-      deselect_category_wof_entries();
+      //  deselect_category_wof_entries();
 
       // select current category <span>
       target.parentElement.classList.add("selected");
@@ -142,4 +147,53 @@ function changeZoom(offset) {
 
     document.cookie = "zoom=" + new_zoom_level + ";SameSite=lax";
   }
+}
+
+function currentWindowDimension() {
+  return "{" + window.innerWidth + "x" + window.innerHeight + "}";
+}
+
+function getCurrentScrollPosition() {
+  let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+  return currentWindowDimension() + "@" + scrollTop;
+}
+
+function storeCurrentScrollPosition() {
+  let position = getCurrentScrollPosition();
+  window.location.hash = position;
+}
+
+document.addEventListener("scrollend", () => {
+  storeCurrentScrollPosition();
+});
+
+screen.orientation.addEventListener("change", () => {
+  storeCurrentScrollPosition();
+});
+
+window.addEventListener("load", () => {
+  const positionFromHash = window.location.hash;
+  if (positionFromHash) {
+    var [storedDimension, storedPosition] = positionFromHash.split("@");
+    if (storedDimension == currentWindowDimension) {
+      document.documentElement.scrollTop = document.body.scrollTop =
+        parseInt(storedPosition);
+    }
+  }
+});
+
+function showOverlay(modal_content_id) {
+  // hide overlay, hide all possibly open elements in the modal,
+  // then show the qr code, then show the overlay
+  let overlay = document.getElementById("overlay");
+  overlay.dispatchEvent(new Event("hide"));
+  for (const content of overlay.getElementsByClassName("modal-content")) {
+    if (content.id != modal_content_id) content.classList.add("hidden");
+  }
+  document.getElementById(modal_content_id).classList.remove("hidden");
+  overlay.dispatchEvent(new Event("show"));
+}
+
+function showQrOverlay() {
+  showOverlay("qr_code");
 }

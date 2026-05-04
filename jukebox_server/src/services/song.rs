@@ -47,10 +47,10 @@ pub async fn service(
         return Ok(redirect);
     }
     let song_id = path.into_inner();
+    let song_path = format!("songs/{}", song_id);
     let maybe_gig_id = gig_id_from_session(&request);
-
-    let mut connection =
-        web::block(move || app_state.pool.get().expect("could not get connection")).await?;
+    let app_url = app_state.base_url.clone();
+    let mut connection = app_state.pool.get().expect("could not get connection");
 
     if let Some(redirect) =
         set_played_at_now_and_redirect(song_id, maybe_gig_id, &request, &mut connection).await
@@ -77,6 +77,11 @@ pub async fn service(
                 show_private: crate::services::session::show_private(&request),
                 show_search: false,
                 zoom: crate::services::session::zoom_from_session(&request),
+                qr_code_svg: crate::services::qrcode::qr_code_as_svg(
+                    &app_url,
+                    &song_path,
+                    &app_state.cache,
+                ),
             };
             let html = template.render().unwrap();
             Ok(HttpResponse::Ok()

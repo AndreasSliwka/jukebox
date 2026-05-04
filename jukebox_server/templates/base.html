@@ -1,5 +1,5 @@
 {% extends "core.html" %} {% block body_content %}
-<header x-data="{ menu: false }">
+<header>
     <div id="header_line">
         <span id="title"> {% block title %} Jukebox {% endblock %} </span>
     </div>
@@ -13,24 +13,28 @@
 </main>
 <footer
     class="{% if is_admin %}isAdmin{% endif %} {%if show_private %}showPrivate{% endif %}"
+    x-data="{showChords: currentShowChords()}"
 >
     {% if show_search %}
-    <a id="toggle_search">🔍</a>
+    <a id="toggle_search" class="toolbar-button">🔍</a>
     {% else %}
-    <a id="back_to_song_list" href="/songs">↩</a>
+    <a id="back_to_song_list" href="/songs" class="toolbar-button">↩</a>
     {% endif %} {% if is_admin %}
-    <a id="toggle_private_songs">😎</a>
+    <a id="toggle_private_songs" class="toolbar-button">😎</a>
     {% else %}
-    <a id="toggle_played_songs">👻</a>
+    <a id="toggle_played_songs" class="toolbar-button">👻</a>
     {% endif %}
-    <a id="show_qr" href="/qrcode">QR</a>
-    <a id="toggle_zoom_selector">ᴬA</a>
-    <a id="toggle_chords">C⁷</a>
-    <a id="toggle_tags">🎲</a>
+    <a id="show_qr" href="javascript:showQrOverlay()" class="toolbar-button"
+        >QR</a
+    >
+    <a id="toggle_zoom_selector" class="toolbar-button">ᴬA</a>
+    <a id="toggle_chords" class="toolbar-button">C⁷</a>
+    <a id="toggle_tags" class="toolbar-button">🎲</a>
     <div
         id="search_form"
         class="bg-amber-400"
-        x-data="{ search: getCookieValue('search') }"
+        x-data="{ visible: false, search: getCookieValue('search') }"
+        x-show="visible"
         x-init="filterTableByText(getCookieValue('search'))"
     >
         <input
@@ -46,4 +50,19 @@
         />
     </div>
 </footer>
+<div
+    id="overlay"
+    x-data="{visible: false}"
+    x-on:click="visible = false"
+    x-on:hide="visible = false"
+    x-on:show="visible = true"
+    x-show="visible"
+>
+    <div id="shadow"></div>
+    <div id="modal" x-on:click.stop.prevent="true;">
+        <div id="qr_code" class="hidden modal-content">
+            {{ qr_code_svg | safe }}
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -4,18 +4,17 @@ use crate::filters;
 use askama::Template;
 use chord_down::{Block, Song};
 use jukebox_db::models::SongWithLinkAndTags;
-use jukebox_db::queries::SongListOrder;
 
 #[derive(Template)]
 #[template(path = "songs_index.html")]
 pub struct SongsIndexTemplate {
     pub songs: Vec<SongWithLinkAndTags>,
-    pub song_list_order: SongListOrder,
     pub is_admin: bool,
     pub show_private: bool,
     pub show_search: bool,
     pub all_tags_by_name: HashMap<String, String>,
     pub zoom: u16,
+    pub qr_code_svg: String,
 }
 
 #[derive(Template)]
@@ -27,6 +26,7 @@ pub struct SongsTemplate {
     pub show_private: bool,
     pub show_search: bool,
     pub zoom: u16,
+    pub qr_code_svg: String,
 }
 
 #[derive(Template)]
@@ -38,6 +38,7 @@ pub struct QrCodesTemplate {
     pub show_private: bool,
     pub show_search: bool,
     pub zoom: u16,
+    pub qr_code_svg: String,
 }
 
 #[derive(Template)]

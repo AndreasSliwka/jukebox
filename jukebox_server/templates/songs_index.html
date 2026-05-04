@@ -2,6 +2,9 @@
 {% block mainClass %} song-list {% endblock %}
 {% block title %} Songs {% endblock %} {% block
 content %}
+{{ "<scr" | safe }}{{ "ipt>" | safe}}
+  all_tags_by_name = {{ all_tags_by_name  | json | safe }};
+{{ "</script>" | safe }}
 <div id="songlist" x-init="maybeApplyHidePlayedSongs()">
     {% for song in songs %}
     <div
@@ -14,7 +17,7 @@ content %}
             <div class="title">{{song.title}}</div>
             <div class="artist">{{ song.artist }}</div>
             {% if song.played_at != "" %}
-                <div class="played">(gespielt @{{ &song.played_at | time_from_timestamp }})</>
+                <div class="played">(gespielt @{{ &song.played_at | time_from_timestamp }})</s>
             {% endif %}
         </a>
         <div class="tags">

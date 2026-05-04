@@ -1,9 +1,11 @@
+use dashmap::DashMap;
 use diesel::prelude::*;
 use diesel::r2d2::{ConnectionManager, Pool};
 use dotenvy::dotenv;
 use jukebox_db;
 use std::collections::HashMap;
 use std::env;
+use std::sync::Arc;
 
 #[derive(Clone)]
 pub struct ServerConfig {
@@ -43,9 +45,10 @@ impl ServerConfig {
 #[derive(Clone, Debug)]
 pub struct AppState {
     pub pool: Pool<ConnectionManager<SqliteConnection>>,
-    pub private_tag_ids: Vec<i32>,
-    pub tags_by_id: HashMap<i32, (String, String, bool)>,
+    pub private_tag_ids: Arc<Vec<i32>>,
+    pub tags_by_id: Arc<HashMap<i32, (String, String, bool)>>,
     pub base_url: url::Url,
+    pub cache: Arc<DashMap<String, String>>,
 }
 
 impl AppState {
@@ -53,15 +56,16 @@ impl AppState {
         dotenv().ok();
         let pool = jukebox_db::create_connection_pool();
         let mut connection = pool.get().expect("could not get connection");
-        let private_tag_ids = jukebox_db::all_private_tag_ids(&mut connection);
-        let tags_by_id = jukebox_db::all_tags_by_id(&mut connection);
+        let private_tag_ids = Arc::new(jukebox_db::all_private_tag_ids(&mut connection));
+        let tags_by_id = Arc::new(jukebox_db::all_tags_by_id(&mut connection));
         let base_url = base_url();
-
+        let cache: Arc<DashMap<String, String>> = Arc::new(DashMap::new());
         Self {
             pool,
             private_tag_ids,
             tags_by_id,
             base_url,
+            cache,
         }
     }
 }

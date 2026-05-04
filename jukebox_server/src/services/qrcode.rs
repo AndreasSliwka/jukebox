@@ -1,9 +1,4 @@
-use crate::services::session;
-use crate::templates;
-use actix_session::SessionExt;
-use actix_web::http::header;
-use actix_web::{HttpRequest, HttpResponse, Responder, get};
-use askama::Template;
+use dashmap::DashMap;
 use qrcode::QrCode;
 use qrcode::render::svg;
 use regex::Regex;
@@ -21,38 +16,15 @@ fn sanitized_svg(source: String) -> String {
     without_background
 }
 
-fn base_url_with(app_state: &crate::types::AppState, path: &str, query: Option<&str>) -> Url {
-    let mut url = app_state.base_url.clone();
+pub fn qr_code_as_svg(url: &Url, path: &str, cache: &DashMap<String, String>) -> String {
+    let mut url = url.clone();
     url.set_path(path);
-    url.set_query(query);
-    url
-}
+    let key = url.to_string();
+    if let Some(svg) = cache.get(&key) {
+        return (*svg.value()).clone();
+    }
+    let svg = sanitized_svg(url.to_string());
+    cache.insert(key, svg.clone());
 
-#[get("/qrcode")]
-async fn service(
-    request: HttpRequest,
-    app_state: actix_web::web::Data<crate::types::AppState>,
-) -> actix_web::Result<impl Responder> {
-    let passkey =
-        crate::services::session::admin_secret_from_session(&request.get_session()).unwrap();
-    let admin_url = base_url_with(
-        &app_state,
-        "admin",
-        Some(format!("passkey={}", passkey).as_str()),
-    );
-    let public_url = base_url_with(&app_state, "songs", None);
-    log::debug!("admin_url = {}", admin_url);
-    log::debug!("public_url = {}", public_url);
-    let template = templates::QrCodesTemplate {
-        public_url_svg: sanitized_svg(public_url.to_string()),
-        admin_url_svg: sanitized_svg(admin_url.to_string()),
-        is_admin: session::is_admin(&request),
-        show_private: session::show_private(&request),
-        show_search: false,
-        zoom: crate::services::session::zoom_from_session(&request),
-    };
-    let html = template.render().unwrap();
-    Ok(HttpResponse::Ok()
-        .content_type(header::ContentType::html())
-        .body(html))
+    svg
 }

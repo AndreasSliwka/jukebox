@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use crate::services;
 use crate::templates::SongsIndexTemplate;
 use crate::types::AppState;
@@ -7,7 +5,9 @@ use actix_web::http::header::ContentType;
 use actix_web::{HttpRequest, HttpResponse, Responder, error, get, web};
 use askama::Template;
 use jukebox_db::{self, SongListOrder, models::SongWithLinkAndTags};
+use log::debug;
 use querystring;
+use std::collections::HashMap;
 
 fn song_list_order(query: &str) -> SongListOrder {
     for (key, value) in querystring::querify(query) {
@@ -47,14 +47,16 @@ pub async fn service(
     let Some(gig_id) = services::session::gig_id_from_session(&request) else {
         return Ok(services::session::redirect_to_start_session());
     };
-
+    let app_url = app_state.base_url.clone();
+    let cache = &app_state.cache;
+    debug!("number of cache entries: {}", cache.len());
     let song_list_order = song_list_order(request.query_string());
     let connection_pool = app_state.pool.clone();
     let show_private = services::session::show_private(&request);
     let private_tag_ids = if show_private {
         vec![]
     } else {
-        app_state.private_tag_ids.clone()
+        (*app_state.private_tag_ids).clone()
     };
     let (songs_without_links, songs_played, tags_by_song) = web::block(move || {
         let mut connection = connection_pool.get().expect("could not get connection");
@@ -74,16 +76,16 @@ pub async fn service(
         .collect();
     let show_private = services::session::show_private(&request);
     let tags_by_name: HashMap<String, String> =
-        tags_by_name(app_state.tags_by_id.clone(), show_private);
+        tags_by_name((*app_state.tags_by_id).clone(), show_private);
 
     let template = SongsIndexTemplate {
         songs: songs_with_links,
-        song_list_order,
         is_admin: services::session::is_admin(&request),
         show_private: services::session::show_private(&request),
         show_search: true,
         all_tags_by_name: tags_by_name,
         zoom: crate::services::session::zoom_from_session(&request),
+        qr_code_svg: crate::services::qrcode::qr_code_as_svg(&app_url, "songs", &cache),
     };
 
     let html = template.render().unwrap();
