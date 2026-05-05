@@ -80,13 +80,10 @@ pub async fn service(
 
     let template = SongsIndexTemplate {
         songs: songs_with_links,
-        is_admin: services::session::is_admin(&request),
-        show_private: services::session::show_private(&request),
         dark_background: true,
         all_tags_by_name: tags_by_name,
         zoom: crate::services::session::zoom_from_session(&request),
         qr_code_svg: crate::services::qrcode::qr_code_as_svg(&app_url, "songs", &cache),
-        footer_type: crate::templates::FooterType::SongList,
     };
 
     let html = template.render().unwrap();

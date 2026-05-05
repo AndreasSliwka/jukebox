@@ -399,6 +399,7 @@ footer {
   grid-template-rows: repeat(2, minmax(0, 1fr));
   text-align: center;
   vertical-align: middle;
+  font-size: medium;
   &.show_search_form {
     bottom: calc(var(--spacing) * 0);
     .toolbar-button {
@@ -433,7 +434,7 @@ footer {
     background-color: var(--color-amber-800);
     padding: calc(var(--spacing) * 2);
     &.active {
-      background-color: var(--color-amber-400);
+      background-color: var(--color-amber-600);
       color: var(--color-amber-800);
     }
   }
@@ -443,13 +444,10 @@ footer {
     grid-row-start: 1;
   }
   #search_form, #zoom_form {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    grid-template-rows: repeat(1, minmax(0, 1fr));
     grid-column: span 6 / span 6;
     grid-column-start: 1;
     grid-row-start: 2;
-    background-color: var(--color-amber-400);
+    background-color: var(--color-amber-600);
     padding: calc(var(--spacing) * 1);
   }
   #search_form {
@@ -462,10 +460,14 @@ footer {
     }
   }
   #zoom_form {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-rows: repeat(1, minmax(0, 1fr));
     label {
       grid-column: span 1 / span 1;
       grid-column-start: 1;
       grid-row-start: 2;
+      font-size: medium;
     }
     #zoom-backdrop {
       grid-column: span 4 / span 4;
@@ -491,8 +493,8 @@ footer {
           border-radius: var(--radius-sm);
           border-style: var(--tw-border-style);
           border-width: 4px;
-          border-color: var(--color-amber-600);
-          background-color: var(--color-amber-600);
+          border-color: var(--color-amber-400);
+          background-color: var(--color-amber-200);
           padding: calc(var(--spacing) * 1);
           border-style: outset;
         }

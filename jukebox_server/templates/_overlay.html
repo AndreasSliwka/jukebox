@@ -1,0 +1,19 @@
+<div
+    id="overlay"
+    x-data="{visible: false}"
+    x-on:click="visible = false"
+    x-on:hide="visible = false"
+    x-on:show="visible = true"
+    x-show="visible"
+>
+    <div id="shadow"></div>
+    <div id="modal" x-on:click.stop.prevent="true;">
+        <div id="qr_code" class="hidden modal-content">
+            {{ qr_code_svg | safe }}
+        </div>
+        <div id="zoom" class="hidden modal-content">...</div>
+        <div id="feeling_lucky" class="hidden modal-content">
+            <h2>Feeling Lucky?</h2>
+        </div>
+    </div>
+</div>

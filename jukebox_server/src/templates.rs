@@ -5,35 +5,26 @@ use askama::Template;
 use chord_down::{Block, Song};
 use jukebox_db::models::SongWithLinkAndTags;
 
-pub enum FooterType {
-    SongList,
-    SingleSong,
-}
-
 #[derive(Template)]
 #[template(path = "songs_index.html")]
 pub struct SongsIndexTemplate {
     pub songs: Vec<SongWithLinkAndTags>,
-    pub is_admin: bool,
-    pub show_private: bool,
     pub dark_background: bool,
     pub all_tags_by_name: HashMap<String, String>,
     pub zoom: u16,
     pub qr_code_svg: String,
-    pub footer_type: FooterType,
 }
 
 #[derive(Template)]
 #[template(path = "song.html")]
 pub struct SongsTemplate {
     pub song: Song,
+    pub song_id: i32,
     pub played_at: Option<String>,
     pub is_admin: bool,
-    pub show_private: bool,
     pub dark_background: bool,
     pub zoom: u16,
     pub qr_code_svg: String,
-    pub footer_type: FooterType,
 }
 
 #[derive(Template)]
@@ -42,11 +33,8 @@ pub struct QrCodesTemplate {
     pub public_url_svg: String,
     pub admin_url_svg: String,
     pub is_admin: bool,
-    pub show_private: bool,
     pub dark_background: bool,
     pub zoom: u16,
-    pub qr_code_svg: String,
-    pub footer_type: FooterType,
 }
 
 #[derive(Template)]

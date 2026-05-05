@@ -269,6 +269,25 @@ Overlay = {
   },
 };
 
+Bookmark = {
+  isMarked(song_id) {
+    let name = "song-" + song_id;
+    let cookie_value = Cookies.getValue("bookmarks");
+    return cookie_value.split(" ").includes(name);
+  },
+  toggle(song_id) {
+    let name = "song-" + song_id;
+    let bookmarked_songs = (Cookies.getValue("bookmarks") || "").split(" ");
+    if (bookmarked_songs.includes(name)) {
+      bookmarked_songs = bookmarked_songs.filter((e) => e != name);
+    } else {
+      bookmarked_songs.push(name);
+    }
+    let new_cookie_value = bookmarked_songs.join(" ");
+    Cookies.setValue("bookmarks", new_cookie_value);
+  },
+};
+
 Toolbar = {
   showQrOverlay() {
     Overlay.show("qr_code");
@@ -350,19 +369,29 @@ Toolbar = {
     this.selectCurrentZoomLevel();
   },
 
-  selectSevenRandomSongs: () => {
+  selectSevenRandomSongs() {
+    this.hideSearchForm();
     Overlay.show("feeling_lucky");
     SongList.selectSevenRandomSongs(() => {
       Overlay.hide();
     });
   },
-  showSlotMachine: () => {
+  showSlotMachine() {
     console.log("STUB! Please implement Toolbar.showSlotMachine()");
   },
-  toggleArtistList: () => {
+  toggleArtistList() {
     console.log("STUB! Please implement Toolbar.toggleArtistList()");
   },
-  toggleShowChords: () => {
+
+  toggleBookmarkSong(song_id) {
+    Bookmark.toggle(song_id);
+    if (Bookmark.isMarked(song_id)) {
+      document.getElementById("bookmark_song").classList.add("active");
+    } else {
+      document.getElementById("bookmark_song").classList.remove("active");
+    }
+  },
+  toggleShowChords() {
     Chords.toggle();
     if (Chords.showInline()) {
       document.getElementById("toggle_chords").classList.add("active");

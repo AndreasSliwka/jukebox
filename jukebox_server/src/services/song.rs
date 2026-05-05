@@ -72,9 +72,9 @@ pub async fn service(
             println!("song.played_at_gig = {:#?}", song.played_at_gig);
             let template = templates::SongsTemplate {
                 song: chord_down_song,
+                song_id: song.id,
                 played_at: song.played_at_gig,
                 is_admin: crate::services::session::is_admin(&request),
-                show_private: crate::services::session::show_private(&request),
                 dark_background: false,
                 zoom: crate::services::session::zoom_from_session(&request),
                 qr_code_svg: crate::services::qrcode::qr_code_as_svg(
@@ -82,7 +82,6 @@ pub async fn service(
                     &song_path,
                     &app_state.cache,
                 ),
-                footer_type: templates::FooterType::SingleSong,
             };
             let html = template.render().unwrap();
             Ok(HttpResponse::Ok()
