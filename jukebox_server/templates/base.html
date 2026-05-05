@@ -44,7 +44,7 @@
     <a
         id="select_four_random_songs"
         class="toolbar-button at-5-1"
-        href="javascript:Toolbar.selectSevemRandomSongs()"
+        href="javascript:Toolbar.selectSevenRandomSongs()"
         >🍀</a
     >
     <div
@@ -66,11 +66,7 @@
     </div>
 </footer>
 {% when FooterType::SingleSong %}
-<footer
-    id="footer"
-    class="{% if is_admin %}isAdmin{% endif %} {%if show_private %}showPrivate{% endif %}"
-    x-data="{showChords: Cookies.storedShowChords()}"
->
+<footer id="footer" class="" x-data="{showChords: Cookies.storedShowChords()}">
     <a id="back_to_song_list" class="toolbar-button at-1-1" href="/songs">↩</a>
     <a
         id="toggle_zoom"
@@ -85,12 +81,32 @@
         >QR</a
     >
     <a
+        id="bookmark_song"
+        href="javascript:Toolbar.toggleBookmarkSong()"
+        class="toolbar-button at-4-1"
+        >💾</a
+    >
+    <a
         id="toggle_chords"
         href="javascript:Toolbar.toggleShowChords()"
         class="toolbar-button at-4-1"
         :class="{active: Chords.showInline()}"
         >C7</a
     >
+    <div id="zoom_form" class="hidden bg-amber-400" x-init="">
+        <label class="at-1-2">Zoom:</label>
+        <div id="zoom-backdrop"><img src="/static/zoom_backdrop.png" /></div>
+        <div class="zoom-levels at-2-2">
+            {% for level in 1..8 %}
+
+            <a
+                href="javascript:Toolbar.changeZoomTo({{level}})"
+                class="zoom-level-choice zoom-{{level}}"
+                >&nbsp;</a
+            >
+            {% endfor %}
+        </div>
+    </div>
 </footer>
 {% endmatch %}
 <div
@@ -107,6 +123,9 @@
             {{ qr_code_svg | safe }}
         </div>
         <div id="zoom" class="hidden modal-content">...</div>
+        <div id="feeling_lucky" class="hidden modal-content">
+            <h2>Feeling Lucky?</h2>
+        </div>
     </div>
 </div>
 {% endblock %}

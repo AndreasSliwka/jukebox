@@ -38,6 +38,15 @@ footer {
             @apply border-b-0;
         }
     }
+    &.show_zoom_form {
+        @apply bottom-0;
+        .toolbar-button {
+            @apply border-b-3;
+        }
+        #toggle_zoom.toolbar-button {
+            @apply border-b-0;
+        }
+    }
     .toolbar-button {
         @apply rounded-lg rounded-b-none border-3 border-b-0 border-amber-900 bg-amber-800;
         @apply p-2;
@@ -50,12 +59,39 @@ footer {
     #back_to_song_list {
         @apply col-start-1 col-span-1 row-start-1;
     }
-    #search_form {
+    #search_form,
+    #zoom_form {
+        @apply grid grid-cols-5 grid-rows-1;
+
         @apply col-start-1 col-span-6 row-start-2 p-1 bg-amber-400;
+    }
+    #search_form {
         input {
             @apply w-full p-1;
             @apply text-amber-800;
             @apply border-0;
+        }
+    }
+    #zoom_form {
+        label {
+            @apply col-start-1 col-span-1 row-start-2;
+        }
+        #zoom-backdrop {
+            @apply col-start-2 col-span-4 w-full h-full;
+            img {
+                @apply h-9 w-full;
+            }
+        }
+        .zoom-levels {
+            @apply col-start-2 col-span-4 grid grid-cols-7 grid-rows-1;
+            a {
+                font-size: x-small;
+
+                &.current-level {
+                    @apply mx-2 my-0 p-1 rounded-sm bg-amber-600 border-4 border-amber-600;
+                    border-style: outset;
+                }
+            }
         }
     }
     #toggle_played_songs,
@@ -133,6 +169,7 @@ main.single-song {
 .Song.showChords .tabulatur,
 .Song.showChords .chord_grid {
     display: block;
+    overflow: scroll;
     @apply bg-amber-100;
 }
 .Song .chordpro {
@@ -246,12 +283,22 @@ div#songlist {
     @apply absolute top-0 bottom-0 left-0 right-0 bg-gray-800 opacity-40;
 }
 #modal {
-    @apply absolute aspect-square top-10 left-2 right-2;
-    @apply p-2 rounded-md border-2 border-amber-200;
+    @apply absolute aspect-square top-30 left-2 right-2;
+    @apply rounded-md border-20 border-amber-800;
     @apply bg-amber-100 shadow-amber-800/50 shadow-lg;
+    .modal-content {
+        @apply h-full;
+    }
 }
 #qr_code {
     img {
         @apply min-w-full;
+    }
+}
+#feeling_lucky {
+    @apply bg-[url('/static/four_leaf_clover.gif')] aspect-square bg-amber-800;
+    background-size: contain;
+    h2 {
+        @apply pt-20 block text-amber-200 text-center text-shadow-lg text-shadow-amber-800 align-middle text-6xl font-bold top-0 bottom-0 h-full;
     }
 }

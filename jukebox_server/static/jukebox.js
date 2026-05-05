@@ -24,6 +24,15 @@ SongList = {
       }
     }
   },
+  show_all_songs() {
+    const songlist = document.getElementById("songlist");
+    if (songlist) {
+      const song_trs = songlist.getElementsByClassName("listed-song");
+      for (const song of song_trs) {
+        song.classList.remove("hidden");
+      }
+    }
+  },
   filterByName(raw_term) {
     let term = raw_term.toLowerCase();
 
@@ -46,19 +55,33 @@ SongList = {
     }
     input.blur();
   },
-  selectSevemRandomSongs() {
-    this.hide_all_songs();
+  selectSevenRandomSongs(andThen = () => {}) {
+    this.show_all_songs();
+
     const songlist = document.getElementById("songlist");
-    const listed_songs = songlist.querySelectorAll(".listed-song");
-    const selected = Array.prototype.slice
-      .call(listed_songs)
+    songlist.scrollIntoView(true);
+    const song_ids = Array.prototype.slice
+      .call(songlist.querySelectorAll(".listed-song"))
+      .map((el) => el.id);
+    selected_ids = song_ids
       .sort(() => 0.5 - Math.random())
       .sort(() => 0.5 - Math.random())
       .sort(() => 0.5 - Math.random())
       .slice(0, 7);
-    for (song of selected) {
-      song.classList.remove("hidden");
+    function drop_next_unselected_id() {
+      if (song_ids.length > 0) {
+        song_id_to_hide = song_ids.pop();
+        if (!selected_ids.includes(song_id_to_hide)) {
+          document.getElementById(song_id_to_hide).classList.add("hidden");
+        }
+        setTimeout(drop_next_unselected_id, 6);
+      } else {
+        console.log("and then!");
+        andThen();
+      }
     }
+
+    drop_next_unselected_id();
   },
 };
 Cookies = {
@@ -156,6 +179,15 @@ function setup_wof(categories_by_name) {
 }
 
 Zoom = {
+  currentZoomFromMainElement() {
+    let main = document.getElementById("root_of_all_evil");
+
+    let current_zoom = main.className
+      .split(" ")
+      .filter((c) => c.startsWith("zoom-"))[0];
+
+    return parseInt(current_zoom.split("-")[1]);
+  },
   changeTo(new_zoom_level) {
     if (new_zoom_level < 0) {
       new_zoom_level = 0;
@@ -163,21 +195,17 @@ Zoom = {
       new_zoom_level = 7;
     }
     let new_zoom = "zoom-" + new_zoom_level;
+    let current_zoom = this.currentZoomFromMainElement();
     if (new_zoom != current_zoom) {
-      main.classList.add(new_zoom);
-      main.classList.remove(current_zoom);
+      let main = document.getElementById("root_of_all_evil");
+      let classes_without_zoom = main.className.replace(/zoom-\d/, "");
+      main.className = classes_without_zoom + new_zoom;
 
       document.cookie = "zoom=" + new_zoom_level + ";SameSite=lax";
     }
   },
   changeBy(offset) {
-    let main = document.getElementById("root_of_all_evil");
-
-    let current_zoom = main.className
-      .split(" ")
-      .filter((c) => c.startsWith("zoom-"))[0];
-
-    let zoom_level = parseInt(current_zoom.split("-")[1]);
+    let zoom_level = this.currentZoomFromMainElement();
     let new_zoom_level = zoom_level + offset;
     this.changeTo(new_zoom_level);
   },
@@ -224,21 +252,26 @@ window.addEventListener("load", () => {
   StickySongList.init();
 });
 
-function showOverlay(modal_content_id) {
-  // hide overlay, hide all possibly open elements in the modal,
-  // then show the qr code, then show the overlay
-  let overlay = document.getElementById("overlay");
-  overlay.dispatchEvent(new Event("hide"));
-  for (const content of overlay.getElementsByClassName("modal-content")) {
-    if (content.id != modal_content_id) content.classList.add("hidden");
-  }
-  document.getElementById(modal_content_id).classList.remove("hidden");
-  overlay.dispatchEvent(new Event("show"));
-}
+Overlay = {
+  show(modal_content_id) {
+    // hide overlay, hide all possibly open elements in the modal,
+    // then show the qr code, then show the overlay
+    let overlay = document.getElementById("overlay");
+    overlay.dispatchEvent(new Event("hide"));
+    for (const content of overlay.getElementsByClassName("modal-content")) {
+      if (content.id != modal_content_id) content.classList.add("hidden");
+    }
+    document.getElementById(modal_content_id).classList.remove("hidden");
+    overlay.dispatchEvent(new Event("show"));
+  },
+  hide() {
+    overlay.dispatchEvent(new Event("hide"));
+  },
+};
 
 Toolbar = {
   showQrOverlay() {
-    showOverlay("qr_code");
+    Overlay.show("qr_code");
   },
   hideSearchForm() {
     footer = document.getElementById("footer");
@@ -271,8 +304,57 @@ Toolbar = {
       this.hideSearchForm();
     }
   },
-  selectSevemRandomSongs: () => {
-    SongList.selectSevemRandomSongs();
+  selectCurrentZoomLevel() {
+    let zoom_level = "zoom-" + Zoom.currentZoomFromMainElement();
+    let choices = document
+      .getElementById("zoom_form")
+      .getElementsByClassName("zoom-level-choice");
+    for (choice of choices) {
+      if (choice.className.includes(zoom_level)) {
+        choice.classList.add("current-level");
+      } else {
+        choice.classList.remove("current-level");
+      }
+    }
+  },
+  showZoomForm() {
+    footer = document.getElementById("footer");
+    toggleZoom = document.getElementById("toggle_zoom");
+    zoomForm = document.getElementById("zoom_form");
+
+    toggleZoom.classList.add("active");
+    zoomForm.classList.remove("hidden");
+    this.selectCurrentZoomLevel();
+    footer.classList.add("show_zoom_form");
+  },
+  hideZoomForm() {
+    footer = document.getElementById("footer");
+    toggleZoom = document.getElementById("toggle_zoom");
+    zoomForm = document.getElementById("zoom_form");
+
+    toggleZoom.classList.remove("active");
+    zoomForm.classList.add("hidden");
+    footer.classList.remove("show_zoom_form");
+  },
+  toggleZoomForm() {
+    zoomForm = document.getElementById("zoom_form");
+    if (zoomForm.className.split(" ").find((c) => c == "hidden")) {
+      this.showZoomForm();
+    } else {
+      this.hideZoomForm();
+    }
+  },
+
+  changeZoomTo(new_level) {
+    Zoom.changeTo(new_level);
+    this.selectCurrentZoomLevel();
+  },
+
+  selectSevenRandomSongs: () => {
+    Overlay.show("feeling_lucky");
+    SongList.selectSevenRandomSongs(() => {
+      Overlay.hide();
+    });
   },
   showSlotMachine: () => {
     console.log("STUB! Please implement Toolbar.showSlotMachine()");
