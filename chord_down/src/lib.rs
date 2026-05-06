@@ -272,6 +272,7 @@ impl Song {
                     .split(',')
                     .map(str::trim)
                     .map(|str| String::from(str))
+                    .filter(|str| str != "")
                     .collect();
                 self.tags.append(&mut new_tags);
             }

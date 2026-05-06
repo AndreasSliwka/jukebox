@@ -61,7 +61,7 @@ fn tag_ids_for_song(
         .iter()
         .map(|wanted| match known_tags.get(wanted.as_str()) {
             None => {
-                println!("Song #{} requests unknown tag {}", song_id, wanted);
+                println!("Song #{} requests unknown tag '{}'", song_id, wanted);
                 None
             }
             Some((id, _unicode)) => Some(id),

@@ -1,0 +1,64 @@
+.Song {
+    .part.part-verse .partname,
+    .part.part-chorus .partname,
+    .part.part-bridge .partname {
+        display: none;
+    }
+
+    .part.part-bridge {
+        @apply ml-4 border-l-2;
+    }
+
+    .part.part-chorus {
+        @apply ml-8 border-l-2 italic;
+    }
+
+    .artist {
+        @apply text-amber-800 text-right text-sm;
+    }
+    .tabulatur,
+    .chord_grid {
+        display: none;
+    }
+    .Song.showChords .tabulatur,
+    .Song.showChords .chord_grid {
+        display: block;
+        overflow: scroll;
+        @apply bg-amber-100;
+    }
+    .chordpro {
+        @apply mb-2;
+        .line {
+            line-height: 1.2;
+            @apply -indent-4 pl-5;
+            * {
+                @apply indent-0 pl-0;
+            }
+        }
+    }
+    /* fragments, chords and lyrics */
+    .fragment {
+        display: inline-flex;
+        flex-direction: column;
+        position: relative;
+    }
+
+    .chord {
+        display: none;
+    }
+
+    &.showChords .with-chords .chord {
+        position: relative;
+        display: inline-block;
+        top: 0;
+        left: 0; /* TODO: fix layout for inline chords */
+        .signature {
+            @apply font-mono bg-amber-200 whitespace-pre;
+        }
+    }
+    &.showChords .with-chords .lyrics {
+        position: relative;
+        bottom: 0;
+        left: 0; /* TODO: fix layout for inline chords */
+    }
+}

@@ -1,0 +1,30 @@
+#overlay {
+    @apply fixed top-0 bottom-0 left-0 right-0;
+}
+#shadow {
+    @apply absolute top-0 bottom-0 left-0 right-0 bg-gray-800 opacity-40;
+}
+#modal {
+    @apply absolute aspect-square top-30 left-2 right-2;
+    @apply rounded-md border-20 border-amber-800;
+    @apply bg-amber-100 shadow-amber-800/50 shadow-lg;
+    .modal-content {
+        @apply h-full;
+    }
+}
+#qr_code {
+    .svg_container svg {
+        width: 100vw;
+    }
+    img {
+        @apply min-w-full;
+    }
+}
+#feeling_lucky {
+    @apply bg-[url('/static/four_leaf_clover.gif')] aspect-square bg-amber-800;
+    background-size: contain;
+    h2 {
+        @apply pt-20 block text-amber-200 text-center text-shadow-lg text-shadow-amber-800 align-middle text-6xl font-bold top-0 bottom-0 h-full;
+    }
+}
+@import "./slotmachine.css";

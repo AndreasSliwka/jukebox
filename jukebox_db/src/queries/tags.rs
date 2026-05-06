@@ -72,9 +72,10 @@ pub fn update_or_create_tag(
 
 fn required_tags() -> Vec<(&'static str, &'static str, bool)> {
     vec![
+        ("Private", "😎", true),
+        ("Checked", "✅", false),
         ("English", "🇬🇧", false),
         ("German", "🇩🇪", false),
-        ("Private", "😎", true),
         ("rockig", "🪨", false),
         ("Metal", "🔨", false),
         ("episch", "🛢", false),
@@ -83,12 +84,12 @@ fn required_tags() -> Vec<(&'static str, &'static str, bool)> {
         ("Soft", "🍦", false),
         ("XMas", "🎄", false),
         ("Children", "👶", false),
-        ("60er", "[60]", false),
-        ("70er", "[70]", false),
-        ("80er", "[80]", false),
-        ("90er", "[90]", false),
-        ("00er", "[00]", false),
-        ("10er", "[10]", false),
+        ("60er", "60s", false),
+        ("70er", "70s", false),
+        ("80er", "80s", false),
+        ("90er", "90s", false),
+        ("00er", "00s", false),
+        ("10er", "10s", false),
     ]
 }
 

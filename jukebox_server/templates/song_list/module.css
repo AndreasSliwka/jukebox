@@ -1,0 +1,34 @@
+main.song-list {
+    @apply bg-amber-300;
+}
+div#songlist {
+    @apply flex flex-row flex-wrap p-3;
+
+    .listed-song {
+        @apply grid grid-cols-5 grid-rows-1;
+        @apply min-w-full md:min-w-fit;
+        @apply bg-amber-100 shadow-amber-800/50 shadow-lg;
+        @apply my-2 md:mx-3 p-2 rounded-md;
+
+        .text {
+            @apply col-start-1 col-span-4 row-start-1 row-span-1;
+            .title {
+                @apply font-bold;
+            }
+            .artist {
+                @apply text-amber-800 text-sm;
+            }
+            .played {
+                @apply text-amber-800 font-mono text-sm;
+            }
+        }
+
+        .tags {
+            direction: rtl;
+            @apply col-start-5 col-span-1 row-span-2 row-start-1;
+        }
+    }
+    .listed-song.hidden {
+        display: none !important;
+    }
+}

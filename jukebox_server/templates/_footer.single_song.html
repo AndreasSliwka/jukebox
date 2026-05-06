@@ -26,18 +26,5 @@
         :class="{active: Chords.showInline()}"
         >C7</a
     >
-    <div id="zoom_form" class="hidden bg-amber-400" x-init="">
-        <label class="at-1-2">Zoom:</label>
-        <div id="zoom-backdrop"><img src="/static/zoom_backdrop.png" /></div>
-        <div class="zoom-levels at-2-2">
-            {% for level in 1..8 %}
-
-            <a
-                href="javascript:Toolbar.changeZoomTo({{level}})"
-                class="zoom-level-choice zoom-{{level}}"
-                >&nbsp;</a
-            >
-            {% endfor %}
-        </div>
-    </div>
+    {% include "zoom/form.html" %}
 </footer>

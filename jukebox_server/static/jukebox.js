@@ -139,44 +139,58 @@ function deselect_category_wof_entries() {
 }
 
 document.addEventListener("alpine:init", () => {
-  Alpine.store("wof", {
-    visible_categories: [],
-    categories_by_name: {},
+  Alpine.store("reels", {
+    all_tags: [
+      "🇬🇧",
+      "🇩🇪",
+      "🪨",
+      "🔨",
+      "🛢",
+      "🍹",
+      "💋",
+      "🍦",
+      "🎄",
+      "👶",
+      "60s",
+      "70s",
+      "80s",
+      "90s",
+      "00s",
+      "10s",
+    ],
 
-    initialize(categories_by_name) {
-      this.categories_by_name = categories_by_name;
+    first: ["?"],
+    second: ["?"],
+    third: ["?"],
+    randomized_tags() {
+      // randomizing the all_tags array every time makes it a bit more random every time
+      this.all_tags.sort(() => 0.5 - Math.random());
+      return this.all_tags.slice();
     },
-    reshuffle() {
-      var keys = Object.keys(this.categories_by_name);
-      var randomized = keys.sort(() => Math.random() - 0.5);
-      var sliced = randomized.slice(0, 3);
-      this.visible_categories = [
-        { name: sliced[0], sign: this.categories_by_name[sliced[0]] },
-        { name: sliced[1], sign: this.categories_by_name[sliced[1]] },
-        { name: sliced[2], sign: this.categories_by_name[sliced[2]] },
-      ];
+    set_up_for_wheelin() {
+      this.first = this.first
+        .slice(0, 1)
+        .concat(this.randomized_tags())
+        .concat(this.randomized_tags())
+        .slice(0, 30);
+      this.second = this.second
+        .slice(0, 1)
+        .concat(this.randomized_tags())
+        .concat(this.randomized_tags())
+        .slice(0, 30);
+      this.third = this.third
+        .slice(0, 1)
+        .concat(this.randomized_tags())
+        .concat(this.randomized_tags())
+        .slice(0, 30);
     },
-    filterListByCategory(target) {
-      // set category cookie, clear search cookie and input
-      document.cookie = "category=" + target.textContent + ";SameSite=lax";
-      document.cookie = "search=;SameSite=lax";
-      document.getElementById("song_search").value = "";
-
-      // deselect all category <spans>
-      //  deselect_category_wof_entries();
-
-      // select current category <span>
-      target.parentElement.classList.add("selected");
-
-      filter_song_list("data-categories", "|" + target.textContent + "|");
+    copy_last_to_first() {
+      this.first[0] = this.first.at(-1);
+      this.second[0] = this.second.at(-1);
+      this.third[0] = this.third.at(-1);
     },
   });
 });
-
-function setup_wof(categories_by_name) {
-  Alpine.store("wof").initialize(categories_by_name);
-  Alpine.store("wof").reshuffle();
-}
 
 Zoom = {
   currentZoomFromMainElement() {
@@ -248,20 +262,24 @@ StickySongList = {
   },
 };
 
-window.addEventListener("load", () => {
-  StickySongList.init();
-});
-
 Overlay = {
   show(modal_content_id) {
     // hide overlay, hide all possibly open elements in the modal,
     // then show the qr code, then show the overlay
     let overlay = document.getElementById("overlay");
+    let modal = document.getElementById("modal");
     overlay.dispatchEvent(new Event("hide"));
     for (const content of overlay.getElementsByClassName("modal-content")) {
       if (content.id != modal_content_id) content.classList.add("hidden");
     }
-    document.getElementById(modal_content_id).classList.remove("hidden");
+    let display = document.getElementById(modal_content_id);
+    display.classList.remove("hidden");
+    if (display.parentElement.id == "modal") {
+      modal.classList.remove("hidden");
+    } else {
+      modal.classList.add("hidden");
+    }
+
     overlay.dispatchEvent(new Event("show"));
   },
   hide() {
@@ -285,6 +303,41 @@ Bookmark = {
     }
     let new_cookie_value = bookmarked_songs.join(" ");
     Cookies.setValue("bookmarks", new_cookie_value);
+  },
+};
+
+Slotmachine = {
+  show() {
+    Overlay.show("slot_machine");
+  },
+  initialize() {
+    Alpine.store("reels").set_up_for_wheelin();
+  },
+  reroll() {
+    let stick = document.getElementById("slotmachine-lever-stick");
+    if (stick.classList.contains("working")) return;
+    let [reel1, reel2, reel3] = document
+      .getElementById("slot_machine")
+      .querySelectorAll("ul");
+    callback = () => {
+      stick.removeEventListener("animationend", callback);
+      Alpine.store("reels").copy_last_to_first();
+      stick.classList.remove("working");
+      reel1.classList.remove("wheelin");
+      reel2.classList.remove("wheelin");
+      reel3.classList.remove("wheelin");
+      Alpine.store("reels").set_up_for_wheelin();
+    };
+    reel2.addEventListener("animationend", callback);
+    stick.classList.add("working");
+    reel1.classList.add("wheelin");
+    reel2.classList.add("wheelin");
+    reel3.classList.add("wheelin");
+  },
+  selectTag(unicode) {
+    if (unicode == "?") return;
+    SongList._hide_filtered_out_songs("data-categories", unicode);
+    Overlay.hide();
   },
 };
 
@@ -377,7 +430,9 @@ Toolbar = {
     });
   },
   showSlotMachine() {
-    console.log("STUB! Please implement Toolbar.showSlotMachine()");
+    this.hideSearchForm();
+    Slotmachine.initialize();
+    Slotmachine.show();
   },
   toggleArtistList() {
     console.log("STUB! Please implement Toolbar.toggleArtistList()");
@@ -400,3 +455,7 @@ Toolbar = {
     }
   },
 };
+
+window.addEventListener("load", () => {
+  StickySongList.init();
+});
