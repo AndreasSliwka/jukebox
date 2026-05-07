@@ -138,60 +138,6 @@ function deselect_category_wof_entries() {
   });
 }
 
-document.addEventListener("alpine:init", () => {
-  Alpine.store("reels", {
-    all_tags: [
-      "🇬🇧",
-      "🇩🇪",
-      "🪨",
-      "🔨",
-      "🛢",
-      "🍹",
-      "💋",
-      "🍦",
-      "🎄",
-      "👶",
-      "60s",
-      "70s",
-      "80s",
-      "90s",
-      "00s",
-      "10s",
-    ],
-
-    first: ["?"],
-    second: ["?"],
-    third: ["?"],
-    randomized_tags() {
-      // randomizing the all_tags array every time makes it a bit more random every time
-      this.all_tags.sort(() => 0.5 - Math.random());
-      return this.all_tags.slice();
-    },
-    set_up_for_wheelin() {
-      this.first = this.first
-        .slice(0, 1)
-        .concat(this.randomized_tags())
-        .concat(this.randomized_tags())
-        .slice(0, 30);
-      this.second = this.second
-        .slice(0, 1)
-        .concat(this.randomized_tags())
-        .concat(this.randomized_tags())
-        .slice(0, 30);
-      this.third = this.third
-        .slice(0, 1)
-        .concat(this.randomized_tags())
-        .concat(this.randomized_tags())
-        .slice(0, 30);
-    },
-    copy_last_to_first() {
-      this.first[0] = this.first.at(-1);
-      this.second[0] = this.second.at(-1);
-      this.third[0] = this.third.at(-1);
-    },
-  });
-});
-
 Zoom = {
   currentZoomFromMainElement() {
     let main = document.getElementById("root_of_all_evil");
@@ -306,6 +252,45 @@ Bookmark = {
   },
 };
 
+document.addEventListener("alpine:init", () => {
+  Alpine.store("reels", {
+    all_tags: "🇬🇧,🇩🇪,🪨,🔨,🛢,🍹,💋,🍦,🎄,👶,60s,70s,80s,90s,00s,10s".split(
+      ",",
+    ),
+
+    first: ["?"],
+    second: ["?"],
+    third: ["?"],
+    randomized_tags() {
+      // randomizing the all_tags array every time makes it a bit more random every time
+      this.all_tags.sort(() => 0.5 - Math.random());
+      return this.all_tags.slice();
+    },
+    set_up_for_wheelin() {
+      this.first = this.first
+        .slice(0, 1)
+        .concat(this.randomized_tags())
+        .concat(this.randomized_tags())
+        .slice(0, 30);
+      this.second = this.second
+        .slice(0, 1)
+        .concat(this.randomized_tags())
+        .concat(this.randomized_tags())
+        .slice(0, 30);
+      this.third = this.third
+        .slice(0, 1)
+        .concat(this.randomized_tags())
+        .concat(this.randomized_tags())
+        .slice(0, 30);
+    },
+    copy_last_to_first() {
+      this.first[0] = this.first.at(-1);
+      this.second[0] = this.second.at(-1);
+      this.third[0] = this.third.at(-1);
+    },
+  });
+});
+
 Slotmachine = {
   show() {
     Overlay.show("slot_machine");
@@ -319,8 +304,10 @@ Slotmachine = {
     let [reel1, reel2, reel3] = document
       .getElementById("slot_machine")
       .querySelectorAll("ul");
+    // we use reel 2 for animation-end, as its the
+    // last animation to be running.
     callback = () => {
-      stick.removeEventListener("animationend", callback);
+      reel2.removeEventListener("animationend", callback);
       Alpine.store("reels").copy_last_to_first();
       stick.classList.remove("working");
       reel1.classList.remove("wheelin");
