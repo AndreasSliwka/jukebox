@@ -3,34 +3,62 @@
 {% block title %} Songs {% endblock %} {% block
 content %}
 {{ "<scr" | safe }}{{ "ipt>" | safe}}
-  all_tags_by_name = {{ all_tags_by_name  | json | safe }};
+    window.addEventListener("alpine:init", () => {
+      all_tags_by_name = {{ all_tags_by_name  | json | safe }};
+      AllSongs.initialize({{ songs | json | safe }});
+      StickySongList.init();
+    });
+
+
+
 {{ "</script>" | safe }}
 <div id="which_category" class="hidden">
     Alle <span class="category"></span> Songs
 </div>
+<div class="bookmarked_container>" x-data="{songs: Bookmark.bookmarkedSongs()}">
+    <template x-if="songs.length">
+        <div class="bookmarked">
+            <template x-for="song in songs" >
+                <a :href="song.link"
+                    :id="song.id"
+                    class="listed-song"
+                >
+                    <div class="text"  style="w-full">
+                        <div class="title" x-text='song.title'></div>
+                        <div class="artist" x-text='song.artist'></div>
+                    </div>
+                    <div class="tags">
+                        <span class="tag">💾</span>
+                    </div>
+                </t>
+            </template>
+        </div>
+    </template>
+</div>
 <div id="songlist">
+
     {% for song in songs %}
-    <div
+    <a href="{{song.link}}"
         id="song-{{song.id}}"
         class="listed-song {% if song.played_at != "" %} already-played {% endif %} already-played "
         data-name="{{song.title.to_lowercase()}} -- {{song.artist.to_lowercase()}} "
         data-categories="{% for tag_sign in song.tag_signs %}|{{ tag_sign }}{% endfor %}|"
     >
-        <a class="text" href="{{song.link}}">
+        <div class="text" >
             <div class="title">{{song.title}}</div>
             <div class="artist">{{ song.artist }}</div>
             {% if song.played_at != "" %}
                 <div class="played">(gespielt @{{ &song.played_at | time_from_timestamp }})</s>
             {% endif %}
-        </a>
+        </div>
         <div class="tags">
             {% for tag_sign in song.tag_signs %}
                 <span class="tag">{{ tag_sign }}</span>
             {% endfor %}
         </div>
-    </div>
+    </a>
     {% endfor %}
-</div>
+</d>
 {% include "_footer.song_list.html" %}
 {% include "overlays/module.html" %}
 {% endblock content %}

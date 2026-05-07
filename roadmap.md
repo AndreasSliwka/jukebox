@@ -39,6 +39,11 @@
 * make header bar scroll out of screen
   * upper left button always visible
 
+# Bugs:
+* Feeling Lucky -> Song -> back sollte wieder auf die lucky seven gehen
+
+
+
 # Functionality: 
 +------------------------------|----------|------------|------|
 | WHAT                         | HOW      | AREA       | PAGE |

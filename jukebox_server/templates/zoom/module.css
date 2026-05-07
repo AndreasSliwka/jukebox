@@ -1,5 +1,5 @@
 main {
-    @apply p-2;
+    @apply p-2 pt-0;
     &.zoom-0 {
         font-size: x-small;
     }

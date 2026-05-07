@@ -1,4 +1,5 @@
 SongList = {
+  showBookmarkedSong() {},
   _hide_filtered_out_songs(field, term) {
     const songlist = document.getElementById("songlist");
     if (songlist) {
@@ -82,6 +83,24 @@ SongList = {
     }
 
     drop_next_unselected_id();
+  },
+};
+AllSongs = {
+  all_songs: [],
+  // data stuff
+  initialize(songs) {
+    this.all_songs = songs.map((song) => {
+      song.id = "song-" + song.id;
+      return song;
+    });
+  },
+  songsByIds(songs_ids) {
+    console.log("songs_ids", songs_ids);
+    console.log("all_songs[0]", this.all_songs[0]);
+    return this.all_songs.filter((song) => songs_ids.includes(song.id));
+  },
+  songById(song_id) {
+    return this.songsByIds([song_id])[0];
   },
 };
 Cookies = {
@@ -235,20 +254,27 @@ Overlay = {
 
 Bookmark = {
   isMarked(song_id) {
-    let name = "song-" + song_id;
-    let cookie_value = Cookies.getValue("bookmarks");
-    return cookie_value.split(" ").includes(name);
+    let handle = "song-" + song_id;
+    return this.bookmarkedSongIds().includes(handle);
   },
   toggle(song_id) {
     let name = "song-" + song_id;
-    let bookmarked_songs = (Cookies.getValue("bookmarks") || "").split(" ");
-    if (bookmarked_songs.includes(name)) {
-      bookmarked_songs = bookmarked_songs.filter((e) => e != name);
+    let bookmarked_song_ids = this.bookmarkedSongIds();
+    if (bookmarked_song_ids.includes(name)) {
+      bookmarked_song_ids = bookmarked_song_ids.filter((e) => e != name);
     } else {
-      bookmarked_songs.push(name);
+      bookmarked_song_ids.push(name);
     }
-    let new_cookie_value = bookmarked_songs.join(" ");
+    let new_cookie_value = bookmarked_song_ids.join(",");
     Cookies.setValue("bookmarks", new_cookie_value);
+  },
+  bookmarkedSongIds() {
+    return (Cookies.getValue("bookmarks") || "").split(",");
+  },
+  bookmarkedSongs() {
+    let song_ids = this.bookmarkedSongIds();
+    all_songs = AllSongs.songsByIds(song_ids);
+    return all_songs;
   },
 };
 
