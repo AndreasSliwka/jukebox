@@ -639,14 +639,14 @@ main {
 main.song-list {
   background-color: var(--color-amber-300);
 }
-div#songlist, .bookmarked {
+#songlist, #bookmarked {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   padding: calc(var(--spacing) * 3);
   .listed-song {
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: repeat(1, minmax(0, 1fr));
     min-width: 100%;
     @media (width >= 48rem) {
@@ -665,8 +665,9 @@ div#songlist, .bookmarked {
     @media (width >= 48rem) {
       margin-inline: calc(var(--spacing) * 3);
     }
+    grid-auto-columns: min-content;
     .text {
-      grid-column: span 4 / span 4;
+      grid-column: span 1 / span 1;
       grid-column-start: 1;
       grid-row: span 1 / span 1;
       grid-row-start: 1;
@@ -691,9 +692,7 @@ div#songlist, .bookmarked {
     .tags {
       direction: rtl;
       grid-column: span 1 / span 1;
-      grid-column-start: 5;
-      grid-row: span 2 / span 2;
-      grid-row-start: 1;
+      grid-column-start: 2;
     }
   }
   .listed-song.hidden {
@@ -704,10 +703,16 @@ div#songlist .listed-song .tags {
   font-size: var(--text-base);
   line-height: var(--tw-leading, var(--text-base--line-height));
 }
-.bookmarked {
+#bookmarked {
   border-bottom-right-radius: var(--radius-lg);
   border-bottom-left-radius: var(--radius-lg);
   background-color: var(--color-amber-600);
+  --tw-shadow: 0 10px 15px -3px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 4px 6px -4px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  --tw-shadow-color: color-mix(in srgb, oklch(47.3% 0.137 46.201) 50%, transparent);
+  @supports (color: color-mix(in lab, red, red)) {
+    --tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-amber-800) 50%, transparent) var(--tw-shadow-alpha), transparent);
+  }
   .listed-song .tags {
     font-size: var(--text-5xl);
     line-height: var(--tw-leading, var(--text-5xl--line-height));
@@ -801,9 +806,6 @@ div#songlist .listed-song .tags {
 }
 #which_category {
   margin-inline: calc(var(--spacing) * 5);
-  margin-top: calc(var(--spacing) * -2);
-  border-style: var(--tw-border-style);
-  border-width: 4px;
   padding-block: calc(var(--spacing) * 2);
   text-align: center;
   font-size: var(--text-xl);
@@ -811,12 +813,17 @@ div#songlist .listed-song .tags {
   background-color: var(--color-amber-200);
   --tw-shadow: 0 10px 15px -3px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 4px 6px -4px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-  --tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-amber-800) 50%, transparent) var(--tw-shadow-alpha), transparent);
+  --tw-shadow-color: color-mix(in srgb, oklch(66.6% 0.179 58.318) 50%, transparent);
+  @supports (color: color-mix(in lab, red, red)) {
+    --tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-amber-600) 50%, transparent) var(--tw-shadow-alpha), transparent);
+  }
   border-bottom-right-radius: var(--radius-xl);
   border-bottom-left-radius: var(--radius-xl);
+  border-style: var(--tw-border-style);
+  border-width: 4px;
   border-top-style: var(--tw-border-style);
   border-top-width: 0px;
-  border-color: var(--color-amber-800);
+  border-color: var(--color-amber-600);
   .category {
     border-radius: var(--radius-md);
     border-color: var(--color-amber-600);

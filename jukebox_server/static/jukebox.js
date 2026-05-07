@@ -369,7 +369,11 @@ Slotmachine = {
   },
   selectTag(unicode) {
     if (unicode == "?") return;
+
+    document.getElementById("which_category");
+
     let category_info = document.getElementById("which_category");
+
     category_info.classList.remove("hidden");
     category_info.getElementsByClassName("category")[0].textContent = unicode;
     SongList._hide_filtered_out_songs("data-categories", unicode);

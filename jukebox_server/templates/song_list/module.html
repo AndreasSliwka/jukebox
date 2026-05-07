@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "../base.html" %}
 {% block mainClass %} song-list {% endblock %}
 {% block title %} Songs {% endblock %} {% block
 content %}
@@ -12,12 +12,10 @@ content %}
 
 
 {{ "</script>" | safe }}
-<div id="which_category" class="hidden">
-    Alle <span class="category"></span> Songs
-</div>
-<div class="bookmarked_container>" x-data="{songs: Bookmark.bookmarkedSongs()}">
+
+<div id="bookmarked_container>" x-data="{songs: Bookmark.bookmarkedSongs()}">
     <template x-if="songs.length">
-        <div class="bookmarked">
+        <div id="bookmarked">
             <template x-for="song in songs" >
                 <a :href="song.link"
                     :id="song.id"
@@ -30,11 +28,16 @@ content %}
                     <div class="tags">
                         <span class="tag">💾</span>
                     </div>
-                </t>
+                </a>
             </template>
         </div>
     </template>
 </div>
+
+<div id="which_category" class="hidden">
+    Alle <span class="category"></span> Songs
+</div>
+
 <div id="songlist">
 
     {% for song in songs %}
@@ -59,6 +62,6 @@ content %}
     </a>
     {% endfor %}
 </d>
-{% include "_footer.song_list.html" %}
-{% include "overlays/module.html" %}
+{% include "_footer.html" %}
+{% include "../overlays/module.html" %}
 {% endblock content %}

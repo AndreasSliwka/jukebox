@@ -17,9 +17,9 @@
     }
 }
 #which_category {
-    @apply -mt-2 mx-5 py-2 text-center text-xl border-4 border-amber-800 border-t-0;
-    @apply bg-amber-200  shadow-amber-800/50 shadow-lg;
-    @apply border-amber-800 border-t-0 rounded-b-xl;
+    @apply mx-5 py-2 text-center text-xl;
+    @apply bg-amber-200  shadow-amber-600/50 shadow-lg;
+    @apply border-4 border-amber-600 border-t-0 border-t-0 rounded-b-xl;
 
     .category {
         @apply bg-amber-600 border-amber-600 rounded-md p-2 py-1;

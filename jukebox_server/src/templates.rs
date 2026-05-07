@@ -6,7 +6,7 @@ use chord_down::{Block, Song};
 use jukebox_db::models::SongWithLinkAndTags;
 
 #[derive(Template)]
-#[template(path = "songs_index.html")]
+#[template(path = "song_list/module.html")]
 pub struct SongsIndexTemplate {
     pub songs: Vec<SongWithLinkAndTags>,
     pub dark_background: bool,
@@ -16,7 +16,7 @@ pub struct SongsIndexTemplate {
 }
 
 #[derive(Template)]
-#[template(path = "song.html")]
+#[template(path = "single_song/module.html")]
 pub struct SongsTemplate {
     pub song: Song,
     pub song_id: i32,
