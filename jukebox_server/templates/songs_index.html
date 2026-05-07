@@ -5,6 +5,9 @@ content %}
 {{ "<scr" | safe }}{{ "ipt>" | safe}}
   all_tags_by_name = {{ all_tags_by_name  | json | safe }};
 {{ "</script>" | safe }}
+<div id="which_category" class="hidden">
+    Alle <span class="category"></span> Songs
+</div>
 <div id="songlist">
     {% for song in songs %}
     <div

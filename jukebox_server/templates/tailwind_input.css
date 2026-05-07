@@ -9,8 +9,10 @@ body {
 /* Header */
 header {
     @apply text-[1.7em] align-middle bg-amber-900 text-amber-100 top-0 left-0 w-full;
+    @apply sticky top-0;
+    z-index: 3;
     #header_line {
-        @apply min-h-10 text-center relative bg-amber-900 left-0;
+        @apply min-h-10 text-center bg-amber-900 left-0;
         @apply shadow-amber-800/50 shadow-lg;
 
         #title {

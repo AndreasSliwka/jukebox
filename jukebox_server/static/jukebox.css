@@ -28,6 +28,8 @@
     --spacing: 0.25rem;
     --text-sm: 0.875rem;
     --text-sm--line-height: calc(1.25 / 0.875);
+    --text-xl: 1.25rem;
+    --text-xl--line-height: calc(1.75 / 1.25);
     --text-2xl: 1.5rem;
     --text-2xl--line-height: calc(2 / 1.5);
     --text-3xl: 1.875rem;
@@ -40,6 +42,7 @@
     --radius-sm: 0.25rem;
     --radius-md: 0.375rem;
     --radius-lg: 0.5rem;
+    --radius-xl: 0.75rem;
     --default-transition-duration: 150ms;
     --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     --default-font-family: var(--font-sans);
@@ -359,15 +362,16 @@ body {
   }
 }
 header {
-  top: calc(var(--spacing) * 0);
   left: calc(var(--spacing) * 0);
   width: 100%;
   background-color: var(--color-amber-900);
   vertical-align: middle;
   font-size: 1.7em;
   color: var(--color-amber-100);
+  position: sticky;
+  top: calc(var(--spacing) * 0);
+  z-index: 3;
   #header_line {
-    position: relative;
     left: calc(var(--spacing) * 0);
     min-height: calc(var(--spacing) * 10);
     background-color: var(--color-amber-900);
@@ -772,6 +776,33 @@ div#songlist {
     top: -580vmin;
   }
 }
+#which_category {
+  margin-inline: calc(var(--spacing) * 5);
+  margin-top: calc(var(--spacing) * -2);
+  border-style: var(--tw-border-style);
+  border-width: 4px;
+  padding-block: calc(var(--spacing) * 2);
+  text-align: center;
+  font-size: var(--text-xl);
+  line-height: var(--tw-leading, var(--text-xl--line-height));
+  background-color: var(--color-amber-200);
+  --tw-shadow: 0 10px 15px -3px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 4px 6px -4px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  --tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-amber-800) 50%, transparent) var(--tw-shadow-alpha), transparent);
+  border-bottom-right-radius: var(--radius-xl);
+  border-bottom-left-radius: var(--radius-xl);
+  border-top-style: var(--tw-border-style);
+  border-top-width: 0px;
+  border-color: var(--color-amber-800);
+  .category {
+    border-radius: var(--radius-md);
+    border-color: var(--color-amber-600);
+    background-color: var(--color-amber-600);
+    padding: calc(var(--spacing) * 2);
+    padding-block: calc(var(--spacing) * 1);
+    border-style: outset;
+  }
+}
 #slot_machine {
   position: relative;
   aspect-ratio: 1/1;
@@ -869,6 +900,7 @@ div#songlist {
         overflow: hidden;
         position: absolute;
         top: 21vmin;
+        background: linear-gradient(#ccc 0%, #fff 40%, #aaa 100%);
         &#reel-1 {
           left: 3vmin;
         }
@@ -905,7 +937,6 @@ div#songlist {
           height: 20vmin;
           border-top: 2px solid white;
           border-bottom: 2px solid #888;
-          background: linear-gradient(#ccc 0%, #fff 40%, #aaa 100%);
           text-shadow: -3px -3px 0px #e0e000, 3px -3px 0px #e0e000, -3px 3px 0px #e0e000, 3px 3px 0px #e0e000;
         }
       }

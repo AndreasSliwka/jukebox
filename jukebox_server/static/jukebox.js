@@ -254,9 +254,29 @@ Bookmark = {
 
 document.addEventListener("alpine:init", () => {
   Alpine.store("reels", {
-    all_tags: "🇬🇧,🇩🇪,🪨,🔨,🛢,🍹,💋,🍦,🎄,👶,60s,70s,80s,90s,00s,10s".split(
-      ",",
-    ),
+    all_tags: [
+      "🇬🇧",
+      "🇩🇪",
+      "🪨",
+      "🔨",
+      "🛢",
+      "🍹",
+      "💋",
+      "🍦",
+      "🎄",
+      "👶",
+      "🍽",
+      "🐞",
+      "🚑",
+      "🎨",
+      "🔥",
+      "60s",
+      "70s",
+      "80s",
+      "90s",
+      "00s",
+      "10s",
+    ],
 
     first: ["?"],
     second: ["?"],
@@ -323,6 +343,9 @@ Slotmachine = {
   },
   selectTag(unicode) {
     if (unicode == "?") return;
+    let category_info = document.getElementById("which_category");
+    category_info.classList.remove("hidden");
+    category_info.getElementsByClassName("category")[0].textContent = unicode;
     SongList._hide_filtered_out_songs("data-categories", unicode);
     Overlay.hide();
   },
@@ -331,6 +354,9 @@ Slotmachine = {
 Toolbar = {
   showQrOverlay() {
     Overlay.show("qr_code");
+  },
+  hideCategoryFilter() {
+    document.getElementById("which_category").classList.add("hidden");
   },
   hideSearchForm() {
     footer = document.getElementById("footer");
@@ -362,6 +388,10 @@ Toolbar = {
     } else {
       this.hideSearchForm();
     }
+  },
+  setSearchFilter(target) {
+    this.hideCategoryFilter();
+    SongList.setSearchFilter(target);
   },
   selectCurrentZoomLevel() {
     let zoom_level = "zoom-" + Zoom.currentZoomFromMainElement();
@@ -411,6 +441,7 @@ Toolbar = {
 
   selectSevenRandomSongs() {
     this.hideSearchForm();
+    this.hideCategoryFilter();
     Overlay.show("feeling_lucky");
     SongList.selectSevenRandomSongs(() => {
       Overlay.hide();

@@ -16,6 +16,17 @@
         top: -580vmin;
     }
 }
+#which_category {
+    @apply -mt-2 mx-5 py-2 text-center text-xl border-4 border-amber-800 border-t-0;
+    @apply bg-amber-200  shadow-amber-800/50 shadow-lg;
+    @apply border-amber-800 border-t-0 rounded-b-xl;
+
+    .category {
+        @apply bg-amber-600 border-amber-600 rounded-md p-2 py-1;
+        border-style: outset;
+    }
+}
+
 #slot_machine {
     position: relative;
     aspect-ratio: 1/1;
@@ -113,6 +124,8 @@
                 overflow: hidden;
                 position: absolute;
                 top: 21vmin;
+                background: linear-gradient(#ccc 0%, #fff 40%, #aaa 100%);
+
                 &#reel-1 {
                     left: 3vmin;
                 }
@@ -149,7 +162,6 @@
                     height: 20vmin;
                     border-top: 2px solid white;
                     border-bottom: 2px solid #888;
-                    background: linear-gradient(#ccc 0%, #fff 40%, #aaa 100%);
                     text-shadow:
                         -3px -3px 0px #e0e000,
                         3px -3px 0px #e0e000,

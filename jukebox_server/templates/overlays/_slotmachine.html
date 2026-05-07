@@ -1,12 +1,12 @@
 <div id="slot_machine" class="modal-content hidden">
-    <div class="lever">
+    <div
+        class="lever"
+        x-data="{}"
+        x-on:click.stop.prevent="Slotmachine.reroll()"
+    >
         <div class="axle"></div>
         <div id="slotmachine-lever-stick" class="stick">
-            <div
-                class="knob"
-                x-data="{}"
-                x-on:click.stop.prevent="Slotmachine.reroll()"
-            ></div>
+            <div class="knob"></div>
         </div>
     </div>
     <div class="casing">
