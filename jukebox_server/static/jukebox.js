@@ -332,14 +332,16 @@ document.addEventListener("alpine:init", () => {
     visible: [],
     update(newCurrentSongs) {
       this.visible = newCurrentSongs.slice();
-      console.log(this.visible);
     },
     allSongs() {
       this.update(AllSongs.all_songs);
     },
-    setTextFilter(term) {
+    setTextFilter(original_term) {
+      let term = original_term.toLowerCase();
       let filtered_songs = AllSongs.all_songs.filter(
-        (song) => song.title.includes(term) || song.artist.includes(term),
+        (song) =>
+          song.title.toLowerCase().includes(term) ||
+          song.artist.toLowerCase().includes(term),
       );
       this.update(filtered_songs);
     },
