@@ -69,12 +69,12 @@ main.show_artists {
         #artist_list {
             overflow: scroll;
             position: fixed;
-            @apply pt-10 pb-10 block w-40 bg-amber-200 p-1 border-l-5 border-amber-400 top-10 right-0 bottom-10;
+            @apply pb-2 px-0 block w-40 bg-amber-200 top-10 right-0 bottom-10;
             overflow-wrap: break-word;
             li {
-                @apply px-2;
+                @apply px-2 border-l-5 border-amber-400;
                 &.selected {
-                    @apply bg-amber-600 text-amber-100;
+                    @apply bg-amber-600 border-amber-600 text-amber-100;
                 }
                 &::after {
                     content: "";

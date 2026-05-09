@@ -552,6 +552,7 @@ Toolbar = {
     document
       .getElementById("root_of_all_evil")
       .classList.remove("show_artists");
+    Alpine.store("songlist").allSongs();
   },
   toggleArtistList() {
     this.hideSearchForm();

@@ -745,17 +745,17 @@ main.show_artists {
       bottom: calc(var(--spacing) * 10);
       display: block;
       width: calc(var(--spacing) * 40);
-      border-left-style: var(--tw-border-style);
-      border-left-width: 5px;
-      border-color: var(--color-amber-400);
       background-color: var(--color-amber-200);
-      padding: calc(var(--spacing) * 1);
-      padding-top: calc(var(--spacing) * 10);
-      padding-bottom: calc(var(--spacing) * 10);
+      padding-inline: calc(var(--spacing) * 0);
+      padding-bottom: calc(var(--spacing) * 2);
       overflow-wrap: break-word;
       li {
+        border-left-style: var(--tw-border-style);
+        border-left-width: 5px;
+        border-color: var(--color-amber-400);
         padding-inline: calc(var(--spacing) * 2);
         &.selected {
+          border-color: var(--color-amber-600);
           background-color: var(--color-amber-600);
           color: var(--color-amber-100);
         }
