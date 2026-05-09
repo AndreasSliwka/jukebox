@@ -57,32 +57,27 @@ SongList = {
     input.blur();
   },
   selectSevenRandomSongs(andThen = () => {}) {
-    this.show_all_songs();
-
-    const songlist = document.getElementById("songlist");
-    songlist.scrollIntoView(true);
-    const song_ids = Array.prototype.slice
-      .call(songlist.querySelectorAll(".listed-song"))
-      .map((el) => el.id);
-    selected_ids = song_ids
-      .sort(() => 0.5 - Math.random())
-      .sort(() => 0.5 - Math.random())
-      .sort(() => 0.5 - Math.random())
+    Alpine.store("songlist").update([]);
+    randomized_songs = AllSongs.all_songs
+      .toSorted(() => 0.5 - Math.random()) // create new copy, dont sort original
+      .sort(() => 0.5 - Math.random());
+    selected_ids = randomized_songs
+      .map((song) => song.id)
+      .toSorted(() => 0.5 - Math.random())
       .slice(0, 7);
-    function drop_next_unselected_id() {
-      if (song_ids.length > 0) {
-        song_id_to_hide = song_ids.pop();
-        if (!selected_ids.includes(song_id_to_hide)) {
-          document.getElementById(song_id_to_hide).classList.add("hidden");
+    function maybe_show_select_song() {
+      if (randomized_songs.length > 0) {
+        let song = randomized_songs.pop();
+        if (selected_ids.includes(song.id)) {
+          Alpine.store("songlist").pushSong(song);
         }
-        setTimeout(drop_next_unselected_id, 6);
+        setTimeout(maybe_show_select_song, 6);
       } else {
-        console.log("and then!");
         andThen();
       }
     }
 
-    drop_next_unselected_id();
+    maybe_show_select_song();
   },
 };
 AllSongs = {
@@ -95,8 +90,6 @@ AllSongs = {
     });
   },
   songsByIds(songs_ids) {
-    console.log("songs_ids", songs_ids);
-    console.log("all_songs[0]", this.all_songs[0]);
     return this.all_songs.filter((song) => songs_ids.includes(song.id));
   },
   songById(song_id) {
@@ -244,11 +237,11 @@ Overlay = {
     } else {
       modal.classList.add("hidden");
     }
-
-    overlay.dispatchEvent(new Event("show"));
+    overlay.classList.remove("hidden");
   },
   hide() {
-    overlay.dispatchEvent(new Event("hide"));
+    Toolbar.onlyActivateToolButton("no such button");
+    overlay.classList.add("hidden");
   },
 };
 
@@ -335,6 +328,31 @@ document.addEventListener("alpine:init", () => {
       this.third[0] = this.third.at(-1);
     },
   });
+  Alpine.store("songlist", {
+    visible: [],
+    update(newCurrentSongs) {
+      this.visible = newCurrentSongs.slice();
+      console.log(this.visible);
+    },
+    allSongs() {
+      this.update(AllSongs.all_songs);
+    },
+    setTextFilter(term) {
+      let filtered_songs = AllSongs.all_songs.filter(
+        (song) => song.title.includes(term) || song.artist.includes(term),
+      );
+      this.update(filtered_songs);
+    },
+    setCategoryFilter(tag) {
+      let filtered_songs = AllSongs.all_songs.filter((song) =>
+        song.tag_signs.includes(tag),
+      );
+      this.update(filtered_songs);
+    },
+    pushSong(song) {
+      this.visible.push(song);
+    },
+  });
 });
 
 Slotmachine = {
@@ -376,8 +394,9 @@ Slotmachine = {
 
     category_info.classList.remove("hidden");
     category_info.getElementsByClassName("category")[0].textContent = unicode;
-    SongList._hide_filtered_out_songs("data-categories", unicode);
+    Alpine.store("songlist").setCategoryFilter(unicode);
     Overlay.hide();
+    Toolbar.onlyActivateToolButton("show_slot_machine");
   },
 };
 
@@ -404,7 +423,9 @@ Toolbar = {
     searchForm = document.getElementById("search_form");
     searchInput = document.getElementById("search_input");
 
-    toggleSearch.classList.add("active");
+    this.onlyActivateToolButton("toggle_search");
+    SongList.show_all_songs();
+
     searchForm.classList.remove("hidden");
     footer.classList.add("show_search_form");
     searchInput.focus();
@@ -417,6 +438,7 @@ Toolbar = {
       this.showSearchForm();
     } else {
       this.hideSearchForm();
+      Alpine.store("songlist").allSongs();
     }
   },
   setSearchFilter(target) {
@@ -468,17 +490,30 @@ Toolbar = {
     Zoom.changeTo(new_level);
     this.selectCurrentZoomLevel();
   },
+  onlyActivateToolButton(button_id) {
+    let buttons = document.querySelectorAll("#footer a.toolbar-button");
 
+    for (tool_button of buttons) {
+      if (tool_button.id == button_id) {
+        tool_button.classList.add("active");
+      } else {
+        tool_button.classList.remove("active");
+      }
+    }
+  },
   selectSevenRandomSongs() {
     this.hideSearchForm();
     this.hideCategoryFilter();
+    this.onlyActivateToolButton("select_four_random_songs");
     Overlay.show("feeling_lucky");
     SongList.selectSevenRandomSongs(() => {
       Overlay.hide();
+      this.onlyActivateToolButton("select_four_random_songs");
     });
   },
   showSlotMachine() {
     this.hideSearchForm();
+    this.onlyActivateToolButton("show_slot_machine");
     Slotmachine.initialize();
     Slotmachine.show();
   },

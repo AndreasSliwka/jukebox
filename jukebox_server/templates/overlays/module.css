@@ -21,7 +21,10 @@
     }
 }
 #feeling_lucky {
-    @apply bg-[url('/static/four_leaf_clover.gif')] aspect-square bg-amber-800;
+    position: absolute;
+    top: 30%;
+    bottom: 30%;
+    @apply bg-[url("/static/four_leaf_clover.gif")] aspect-square;
     background-size: contain;
     h2 {
         @apply pt-20 block text-amber-200 text-center text-shadow-lg text-shadow-amber-800 align-middle text-6xl font-bold top-0 bottom-0 h-full;

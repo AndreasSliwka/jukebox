@@ -6,13 +6,15 @@ main.song-list {
     @apply flex flex-row flex-wrap p-3;
 
     .listed-song {
-        @apply grid grid-cols-2 grid-rows-1;
-        @apply min-w-full md:min-w-fit;
+        @apply block min-w-full;
         @apply bg-amber-100 shadow-amber-800/50 shadow-lg;
-        @apply my-2 md:mx-3 p-2 rounded-md;
-        grid-auto-columns: min-content;
+        @apply my-2 p-2 rounded-md;
+        @apply md:whitespace-nowrap md:mx-3 md:min-w-fit;
         .text {
-            @apply col-start-1 col-span-1 row-start-1 row-span-1;
+            @apply block;
+            margin-right: 5.75em;
+            border-right: 2px groove #fef3c6;
+            padding-right: 0.5em;
             .title {
                 @apply font-bold text-lg;
             }
@@ -25,8 +27,16 @@ main.song-list {
         }
 
         .tags {
-            direction: rtl;
-            @apply col-start-2 col-span-1;
+            height: 100%;
+            float: right;
+            width: 5.25em;
+            /* direction: rtl; */
+            .tag {
+                display: inline-block;
+                margin-right: 0.25em;
+                width: 1.5em;
+                text-align: center;
+            }
         }
     }
     .listed-song.hidden {
@@ -39,7 +49,13 @@ div#songlist .listed-song .tags {
 #bookmarked {
     @apply bg-amber-600 rounded-b-lg shadow-amber-800/50 shadow-lg;
 
-    .listed-song .tags {
-        @apply text-5xl;
+    .listed-song {
+        .text {
+            margin-right: 3.5em;
+        }
+        .tags {
+            width: 1em;
+            @apply text-5xl;
+        }
     }
 }
