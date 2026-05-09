@@ -59,3 +59,46 @@ div#songlist .listed-song .tags {
         }
     }
 }
+#artist_list {
+    display: none;
+    width: 0;
+}
+main.show_artists {
+    @apply pr-0;
+    #songlist_container {
+        #artist_list {
+            overflow: scroll;
+            position: fixed;
+            @apply pt-10 pb-10 block w-40 bg-amber-200 p-1 border-l-5 border-amber-400 top-10 right-0 bottom-10;
+            overflow-wrap: break-word;
+            li {
+                @apply px-2;
+                &.selected {
+                    @apply bg-amber-600 text-amber-100;
+                }
+                &::after {
+                    content: "";
+                    display: block;
+                    border-bottom: 2px inset #ffb900;
+                    &::last-child {
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+    #songlist .listed-song {
+        @apply w-55;
+        min-width: auto;
+        .text {
+            margin-right: 0;
+            border-right: 0;
+        }
+        .artist {
+            display: none;
+        }
+        .tags {
+            display: none;
+        }
+    }
+}

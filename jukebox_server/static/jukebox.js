@@ -82,12 +82,20 @@ SongList = {
 };
 AllSongs = {
   all_songs: [],
+  all_artists: [],
   // data stuff
   initialize(songs) {
     this.all_songs = songs.map((song) => {
       song.id = "song-" + song.id;
       return song;
     });
+    intermediate = songs.reduce(function (acc, song) {
+      acc[song.artist] = 1;
+      return acc;
+    }, {});
+
+    this.all_artists = Object.keys(intermediate).sort();
+    console.log(this.all_artists);
   },
   songsByIds(songs_ids) {
     return this.all_songs.filter((song) => songs_ids.includes(song.id));
@@ -354,9 +362,27 @@ document.addEventListener("alpine:init", () => {
     pushSong(song) {
       this.visible.push(song);
     },
+    filterByArtist(artist) {
+      let filtered_songs = AllSongs.all_songs.filter(
+        (song) => song.artist == artist,
+      );
+      this.update(filtered_songs);
+    },
   });
 });
 
+ArtistList = {
+  filterByArtist(li_element) {
+    let previous_selected_element = document.querySelector(
+      "#songlist_container #artist_list li.selected",
+    );
+    if (previous_selected_element) {
+      previous_selected_element.classList.remove("selected");
+    }
+    li_element.classList?.add("selected");
+    Alpine.store("songlist").filterByArtist(li_element.textContent);
+  },
+};
 Slotmachine = {
   show() {
     Overlay.show("slot_machine");
@@ -434,6 +460,7 @@ Toolbar = {
     searchInput.click();
   },
   toggleSearchForm() {
+    this.hideArtistList();
     searchForm = document.getElementById("search_form");
 
     if (searchForm.className.split(" ").find((c) => c == "hidden")) {
@@ -504,10 +531,11 @@ Toolbar = {
     }
   },
   selectSevenRandomSongs() {
+    Overlay.show("feeling_lucky");
     this.hideSearchForm();
+    this.hideArtistList();
     this.hideCategoryFilter();
     this.onlyActivateToolButton("select_four_random_songs");
-    Overlay.show("feeling_lucky");
     SongList.selectSevenRandomSongs(() => {
       Overlay.hide();
       this.onlyActivateToolButton("select_four_random_songs");
@@ -515,12 +543,21 @@ Toolbar = {
   },
   showSlotMachine() {
     this.hideSearchForm();
+    this.hideArtistList();
     this.onlyActivateToolButton("show_slot_machine");
     Slotmachine.initialize();
     Slotmachine.show();
   },
+  hideArtistList() {
+    document
+      .getElementById("root_of_all_evil")
+      .classList.remove("show_artists");
+  },
   toggleArtistList() {
-    console.log("STUB! Please implement Toolbar.toggleArtistList()");
+    this.hideSearchForm();
+    this.onlyActivateToolButton("toggle_show_artists");
+    document.getElementById("root_of_all_evil").classList.add("show_artists");
+    ArtistList.filterByArtist("");
   },
 
   toggleBookmarkSong(song_id) {

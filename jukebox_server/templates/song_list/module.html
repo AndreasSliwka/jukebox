@@ -41,6 +41,14 @@ content %}
 </div>
 
 <div id="songlist_container" x-data="">
+    <div id="artist_list">
+        <ul>
+            <template x-for="artist in AllSongs.all_artists">
+                <li x-text="artist" @click="ArtistList.filterByArtist($event.target)">
+                </li>
+            </template>
+        </ul>
+    </div>
     <div id="songlist">
         <template x-for="song in $store.songlist.visible" >
             <div
