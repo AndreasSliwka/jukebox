@@ -41,8 +41,7 @@
             enterkeyhint="search"
             placeholder="Find my love ..."
             x-model="search"
-            @input="$store.songlist.setTextFilter($event.target.value)"
-            ;
+            @input="Toolbar.setSearchFilter($event.target.value)"
             class="flex-auto p-0.5 border-amber-900 border-2"
         />
     </div>

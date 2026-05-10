@@ -342,6 +342,7 @@ document.addEventListener("alpine:init", () => {
       this.visible = newCurrentSongs.slice();
     },
     allSongs() {
+      console.log("$store.songlist.allSongs()");
       this.update(AllSongs.all_songs);
     },
     setTextFilter(original_term) {
@@ -452,7 +453,7 @@ Toolbar = {
     searchInput = document.getElementById("search_input");
 
     this.onlyActivateToolButton("toggle_search");
-    SongList.show_all_songs();
+    // SongList.show_all_songs();
 
     searchForm.classList.remove("hidden");
     footer.classList.add("show_search_form");
@@ -472,7 +473,7 @@ Toolbar = {
   },
   setSearchFilter(target) {
     this.hideCategoryFilter();
-    SongList.setSearchFilter(target);
+    Alpine.store("songlist").setTextFilter(target);
   },
   selectCurrentZoomLevel() {
     let zoom_level = "zoom-" + Zoom.currentZoomFromMainElement();
@@ -552,7 +553,7 @@ Toolbar = {
     document
       .getElementById("root_of_all_evil")
       .classList.remove("show_artists");
-    Alpine.store("songlist").allSongs();
+    // Alpine.store("songlist").allSongs();
   },
   toggleArtistList() {
     this.hideSearchForm();
