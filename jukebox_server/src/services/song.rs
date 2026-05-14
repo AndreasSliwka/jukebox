@@ -6,6 +6,7 @@ use actix_web::{HttpRequest, HttpResponse, Responder, get, web};
 use askama::Template;
 use diesel::SqliteConnection;
 use jukebox_db;
+use log::debug;
 use services::session::{gig_id_from_session, is_admin, start_session_unless_present};
 
 async fn set_played_at_now_and_redirect(
@@ -37,37 +38,42 @@ async fn set_played_at_now_and_redirect(
     )
 }
 
-#[get("/songs/{song_id}")]
+#[get("/songs/{song_handle}")]
 pub async fn service(
-    path: web::Path<i32>,
+    path: web::Path<String>,
     app_state: web::Data<AppState>,
     request: HttpRequest,
 ) -> actix_web::Result<impl Responder> {
     if let Some(redirect) = start_session_unless_present(&request) {
         return Ok(redirect);
     }
-    let song_id = path.into_inner();
-    let song_path = format!("songs/{}", song_id);
+    let song_handle = path.into_inner();
+    debug!("song_handle = {}", song_handle);
+    let song_path = format!("songs/{}", song_handle);
+    debug!("song_path = {}", song_path);
     let maybe_gig_id = gig_id_from_session(&request);
     let app_url = app_state.base_url.clone();
     let mut connection = app_state.pool.get().expect("could not get connection");
 
-    if let Some(redirect) =
-        set_played_at_now_and_redirect(song_id, maybe_gig_id, &request, &mut connection).await
-    {
-        return Ok(redirect);
-    }
-
     let song_from_db = web::block(move || {
-        jukebox_db::song_by_id_with_gig_info(&mut connection, song_id, maybe_gig_id)
+        jukebox_db::song_by_handle_with_gig_info(&mut connection, song_handle, maybe_gig_id)
     })
     .await?;
+    debug!("song_from_db = {:#?}", song_from_db);
+    let mut connection = app_state.pool.get().expect("could not get connection");
 
     match song_from_db {
         None => Ok(HttpResponse::SeeOther()
             .append_header(("Location", "/songs"))
             .body("moved on")),
         Some(song) => {
+            if let Some(redirect) =
+                set_played_at_now_and_redirect(song.id, maybe_gig_id, &request, &mut connection)
+                    .await
+            {
+                return Ok(redirect);
+            }
+
             let chord_down_song = chord_down::Song::from_ron(song.serialized_chord_pro);
             println!("song.played_at_gig = {:#?}", song.played_at_gig);
             let template = templates::SongsTemplate {

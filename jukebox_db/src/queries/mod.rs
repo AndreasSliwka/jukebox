@@ -8,7 +8,7 @@ pub use gigs::{
 };
 pub use songs::{
     SongListOrder, all_songs, create_song, delete_all_other_songs, delete_all_songs,
-    song_by_id_with_gig_info, update_or_create_song,
+    song_by_handle_with_gig_info, update_or_create_song,
 };
 pub use tags::{
     all_private_tag_ids, all_tags_by_id, all_tags_by_name, ensure_seed_data_for_tags,

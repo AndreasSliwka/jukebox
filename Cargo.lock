@@ -1320,6 +1320,7 @@ dependencies = [
  "diesel_migrations",
  "dotenvy",
  "log",
+ "regex",
  "ron",
  "serde",
  "serde_json",

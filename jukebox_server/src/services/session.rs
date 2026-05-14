@@ -4,8 +4,8 @@ use actix_session::{Session, SessionExt};
 use actix_session::{SessionMiddleware, storage::CookieSessionStore};
 use actix_web::{HttpRequest, HttpResponse, Responder, cookie::Key, get, web};
 use base64::prelude::*;
-
 use jukebox_db;
+use log::debug;
 
 pub const GIG_ID: &str = "gig.id";
 pub const GIG_ADMIN_SECRET: &str = "gig.admin_secret";
@@ -124,6 +124,7 @@ async fn service(
     request: HttpRequest,
     app_state: web::Data<AppState>,
 ) -> actix_web::Result<impl Responder> {
+    debug!("start_session::service()");
     let maybe_gig = web::block(move || {
         let mut connection = app_state.pool.get().expect("could not get connection");
 
@@ -131,6 +132,7 @@ async fn service(
     })
     .await?;
     let Some(gig) = maybe_gig else {
+        debug!("No gig found");
         return Ok(HttpResponse::SeeOther()
             .append_header(("Location", "/no_shoes_no_shirt"))
             .body("moved on"));

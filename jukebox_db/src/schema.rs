@@ -17,6 +17,7 @@ diesel::table! {
         id -> Integer,
         title -> Text,
         artist -> Text,
+        handle -> Text,
         serialized_chord_pro -> Text,
     }
 }

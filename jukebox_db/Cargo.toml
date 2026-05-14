@@ -14,3 +14,4 @@ serde_json = "1.0.149"
 chrono = "0.4.44"
 diesel_migrations = { version = "2.3.1", features = ["sqlite"] }
 log = "0.4.29"
+regex = "1.12.3"

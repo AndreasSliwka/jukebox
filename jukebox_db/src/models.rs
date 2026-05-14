@@ -1,7 +1,9 @@
 use crate::schema::{gigs, songs, songs_in_gigs, tags, tags_on_songs};
 use diesel::prelude::*;
+use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use std::sync::LazyLock;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Queryable, Selectable, Insertable)]
 #[diesel(table_name = crate::schema::songs)]
@@ -10,6 +12,7 @@ pub struct Song {
     pub id: i32,
     pub title: String,
     pub artist: String,
+    pub handle: String,
     pub serialized_chord_pro: String,
 }
 
@@ -33,6 +36,22 @@ pub struct SimplifiedSong {
     pub id: i32,
     pub title: String,
     pub artist: String,
+    pub handle: String,
+}
+
+fn handle(title: String, artist: String) -> String {
+    static RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"[^-A-Za-z0-9]").unwrap());
+    let title_and_artist = format!("{}--{}", title, artist);
+    let lowercase = title_and_artist.to_lowercase();
+    let no_spaces = lowercase.replace(" ", "-");
+    let handle = RE.replace_all(no_spaces.as_str(), "");
+    handle.into()
+}
+
+impl SimplifiedSong {
+    fn link(&self) -> String {
+        format!("/songs/{}", handle(self.title.clone(), self.artist.clone()))
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -43,9 +62,6 @@ pub struct SongWithLinkAndTags {
     pub link: String,
     pub tag_signs: Vec<String>,
     pub played_at: String,
-}
-fn link_to_song(song_id: i32) -> String {
-    format!("/songs/{}", song_id)
 }
 
 impl SongWithLinkAndTags {
@@ -72,7 +88,7 @@ impl SongWithLinkAndTags {
             id: simplified.id,
             title: simplified.title.clone(),
             artist: simplified.artist.clone(),
-            link: link_to_song(simplified.id),
+            link: simplified.link(),
             tag_signs,
             played_at,
         }
@@ -81,10 +97,22 @@ impl SongWithLinkAndTags {
 
 #[derive(Insertable)]
 #[diesel(table_name = songs)]
-pub struct NewSong<'a> {
-    pub title: &'a str,
-    pub artist: &'a str,
-    pub serialized_chord_pro: &'a str,
+pub struct NewSong {
+    pub title: String,
+    pub artist: String,
+    pub handle: String,
+    pub serialized_chord_pro: String,
+}
+
+impl NewSong {
+    pub fn new(title: &str, artist: &str, chords: &str) -> NewSong {
+        NewSong {
+            title: title.to_string(),
+            artist: artist.to_string(),
+            handle: handle(title.to_string(), artist.to_string()),
+            serialized_chord_pro: chords.to_string(),
+        }
+    }
 }
 
 #[derive(Insertable)]

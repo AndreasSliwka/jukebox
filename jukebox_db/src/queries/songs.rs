@@ -55,6 +55,7 @@ pub fn all_songs(
     .expect("Error loading songs")
 }
 
+#[derive(Debug)]
 pub struct SongWithGigInfo {
     pub id: i32,
     pub title: String,
@@ -85,22 +86,23 @@ pub fn maybe_played_at_gig(
     }
 }
 
-pub fn song_by_id_with_gig_info(
+pub fn song_by_handle_with_gig_info(
     connection: &mut SqliteConnection,
-    song_id: i32,
+    song_handle: String,
     maybe_gig_id: Option<i32>,
 ) -> Option<SongWithGigInfo> {
-    use crate::schema::songs::dsl::*;
+    use crate::schema::songs::dsl;
+    let maybe_song = dsl::songs
+        .filter(dsl::handle.eq(song_handle))
+        .first::<Song>(connection);
 
-    let played_at_gig = maybe_played_at_gig(song_id, maybe_gig_id, connection);
-    let maybe_song = songs.find(song_id).first::<Song>(connection);
     if let Ok(song) = maybe_song {
         Some(SongWithGigInfo {
             id: song.id,
             title: song.title,
             artist: song.artist,
             serialized_chord_pro: song.serialized_chord_pro,
-            played_at_gig,
+            played_at_gig: maybe_played_at_gig(song.id, maybe_gig_id, connection),
         })
     } else {
         None
@@ -129,6 +131,7 @@ fn update_song(song_id: i32, new_song: NewSong, conn: &mut SqliteConnection) -> 
         id: song_id,
         title: new_song.title.to_string(),
         artist: new_song.artist.to_string(),
+        handle: new_song.handle.to_string(),
         serialized_chord_pro: new_song.serialized_chord_pro.to_string(),
     };
     let result = diesel::update(dsl::songs.filter(dsl::id.eq(song.id)))
@@ -166,11 +169,7 @@ pub fn update_or_create_song(
     let _tags = serde_json::to_string(&song.tags).unwrap_or(String::from("[]"));
     let chord_pro = ron::ser::to_string(&song).unwrap();
     let serialized_chord_pro = chord_pro.as_str();
-    let new_song = NewSong {
-        title,
-        artist,
-        serialized_chord_pro,
-    };
+    let new_song = NewSong::new(title, artist, serialized_chord_pro);
 
     if let Some(song) = song_by_title_and_artist(title, artist, conn) {
         update_song(song.id, new_song, conn)
