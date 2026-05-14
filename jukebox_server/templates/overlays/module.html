@@ -12,17 +12,15 @@
                 text: "Finde Lieder, Singe Kräftig!",
                 url: "{{qr_code_url}}",
             };
-            if (navigator.share && navigator.canShare()) {
-                document
-                    .getElementById("qr_code")
-                    .addEventListener("click", async () => {
-                        try {
-                            await navigator.share(shareData);
-                        } catch (err) {
-                            console.log(err);
-                        }
-                    });
-            }
+            document
+                .getElementById("qr_code")
+                .addEventListener("click", async () => {
+                    try {
+                        await navigator.share(shareData);
+                    } catch (err) {
+                        console.log(err);
+                    }
+                });
         })();
 
         // Share must be triggered by "user activation"
