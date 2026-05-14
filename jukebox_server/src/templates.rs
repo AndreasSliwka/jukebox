@@ -13,6 +13,7 @@ pub struct SongsIndexTemplate {
     pub all_tags_by_name: HashMap<String, String>,
     pub zoom: u16,
     pub qr_code_svg: String,
+    pub qr_code_url: String,
 }
 
 #[derive(Template)]
@@ -25,6 +26,7 @@ pub struct SongsTemplate {
     pub dark_background: bool,
     pub zoom: u16,
     pub qr_code_svg: String,
+    pub qr_code_url: String,
 }
 
 #[derive(Template)]

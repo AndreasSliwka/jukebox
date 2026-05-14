@@ -16,9 +16,13 @@ fn sanitized_svg(source: String) -> String {
     without_background
 }
 
-pub fn qr_code_as_svg(url: &Url, path: &str, cache: &DashMap<String, String>) -> String {
-    let mut url = url.clone();
+pub fn full_url(base: &Url, path: &str) -> Url {
+    let mut url = base.clone();
     url.set_path(path);
+    url
+}
+
+pub fn qr_code_as_svg(url: &Url, cache: &DashMap<String, String>) -> String {
     let key = url.to_string();
     if let Some(svg) = cache.get(&key) {
         return (*svg.value()).clone();

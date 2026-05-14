@@ -1,10 +1,32 @@
 <div id="overlay" class="hidden" x-data="" x-on:click="Overlay.hide()">
     <div id="shadow"></div>
     <div id="modal" class="hidden" x-on:click.stop.prevent="true;">
-        <div id="qr_code" class="hidden modal-content">
+        <div id="qr_code" data="{{qr_code_url}}" class="hidden modal-content">
             {{ qr_code_svg | safe }}
         </div>
     </div>
+    <script>
+        (() => {
+            const shareData = {
+                title: "Jukebox",
+                text: "Finde Lieder, Singe Kräftig!",
+                url: "{{qr_code_url}}",
+            };
+            if (navigator.share && navigator.canShare()) {
+                document
+                    .getElementById("qr_code")
+                    .addEventListener("click", async () => {
+                        try {
+                            await navigator.share(shareData);
+                        } catch (err) {
+                            console.log(err);
+                        }
+                    });
+            }
+        })();
+
+        // Share must be triggered by "user activation"
+    </script>
     <div id="feeling_lucky" class="hidden modal-content">
         <h2>Feeling Lucky?</h2>
     </div>

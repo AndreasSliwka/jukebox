@@ -76,6 +76,7 @@ pub async fn service(
 
             let chord_down_song = chord_down::Song::from_ron(song.serialized_chord_pro);
             println!("song.played_at_gig = {:#?}", song.played_at_gig);
+            let page_url = crate::services::qrcode::full_url(&app_url, &song_path);
             let template = templates::SongsTemplate {
                 song: chord_down_song,
                 song_id: song.id,
@@ -83,11 +84,8 @@ pub async fn service(
                 is_admin: crate::services::session::is_admin(&request),
                 dark_background: false,
                 zoom: crate::services::session::zoom_from_session(&request),
-                qr_code_svg: crate::services::qrcode::qr_code_as_svg(
-                    &app_url,
-                    &song_path,
-                    &app_state.cache,
-                ),
+                qr_code_svg: crate::services::qrcode::qr_code_as_svg(&page_url, &app_state.cache),
+                qr_code_url: page_url.to_string(),
             };
             let html = template.render().unwrap();
             Ok(HttpResponse::Ok()

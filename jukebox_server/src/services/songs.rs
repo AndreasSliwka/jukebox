@@ -77,13 +77,14 @@ pub async fn service(
     let show_private = services::session::show_private(&request);
     let tags_by_name: HashMap<String, String> =
         tags_by_name((*app_state.tags_by_id).clone(), show_private);
-
+    let page_url = crate::services::qrcode::full_url(&app_url, "songs");
     let template = SongsIndexTemplate {
         songs: songs_with_links,
         dark_background: true,
         all_tags_by_name: tags_by_name,
         zoom: crate::services::session::zoom_from_session(&request),
-        qr_code_svg: crate::services::qrcode::qr_code_as_svg(&app_url, "songs", &cache),
+        qr_code_svg: crate::services::qrcode::qr_code_as_svg(&page_url, &cache),
+        qr_code_url: page_url.to_string(),
     };
 
     let html = template.render().unwrap();
