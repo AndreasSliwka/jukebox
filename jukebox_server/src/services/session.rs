@@ -6,6 +6,7 @@ use actix_web::{HttpRequest, HttpResponse, Responder, cookie::Key, get, web};
 use base64::prelude::*;
 use jukebox_db;
 use log::debug;
+use serde::Deserialize;
 
 pub const GIG_ID: &str = "gig.id";
 pub const GIG_ADMIN_SECRET: &str = "gig.admin_secret";
@@ -94,15 +95,18 @@ pub fn admin_secret_from_session(session: &Session) -> Option<String> {
     session.get::<String>(GIG_ADMIN_SECRET).unwrap()
 }
 
-pub fn redirect_to_start_session() -> HttpResponse {
+pub fn redirect_to_start_session(request: &HttpRequest) -> HttpResponse {
+    let requested_path = request.path();
+    let redirect_to = format!("/start_session?requested={}", requested_path);
+    debug!("redirect_to_start_session, redirect_to = {}", redirect_to);
     HttpResponse::SeeOther()
-        .append_header(("Location", "/start_session"))
+        .append_header(("Location", redirect_to))
         .body("no session")
 }
 pub fn start_session_unless_present(request: &HttpRequest) -> Option<HttpResponse> {
     match is_present(request) {
         true => None,
-        false => Some(redirect_to_start_session()),
+        false => Some(redirect_to_start_session(request)),
     }
 }
 
@@ -119,10 +123,17 @@ async fn toggle_private_service(request: HttpRequest) -> actix_web::Result<impl 
         .append_header(("Location", "/songs"))
         .body("Session started"));
 }
+
+#[derive(Deserialize, Debug)]
+struct SessionQuery {
+    requested: String,
+}
+
 #[get("/start_session")]
 async fn service(
     request: HttpRequest,
     app_state: web::Data<AppState>,
+    query: web::Query<SessionQuery>,
 ) -> actix_web::Result<impl Responder> {
     debug!("start_session::service()");
     let maybe_gig = web::block(move || {
@@ -147,9 +158,14 @@ async fn service(
     request.get_session().insert(SHOW_PRIVATE, false).unwrap();
     request.get_session().insert(ZOOM, 3).unwrap();
 
-    println!("session = {:#?}", request.get_session().entries());
-
+    debug!("session = {:#?}", request.get_session().entries());
+    debug!("query = {:#?}", query);
+    let redirect_to = if query.requested.chars().count() > 0 {
+        query.requested.as_str()
+    } else {
+        "/songs"
+    };
     return Ok(HttpResponse::SeeOther()
-        .append_header(("Location", "/songs"))
+        .append_header(("Location", redirect_to))
         .body("Session started"));
 }

@@ -45,7 +45,7 @@ pub async fn service(
         return Ok(redirect);
     }
     let Some(gig_id) = services::session::gig_id_from_session(&request) else {
-        return Ok(services::session::redirect_to_start_session());
+        return Ok(services::session::redirect_to_start_session(&request));
     };
     let app_url = app_state.base_url.clone();
     let cache = &app_state.cache;

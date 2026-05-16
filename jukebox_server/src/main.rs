@@ -9,7 +9,6 @@ use env_logger::Env;
 use jukebox_db;
 
 use crate::types::AppState;
-use log;
 
 #[actix_web::main]
 async fn main() -> Result<(), std::io::Error> {
@@ -19,7 +18,7 @@ async fn main() -> Result<(), std::io::Error> {
 
     jukebox_db::run_migrations();
     let app_state = AppState::load();
-    log::debug!("app_state = {:#?}", app_state);
+    // log::debug!("app_state = {:#?}", app_state);
     HttpServer::new(move || {
         App::new()
             .wrap(services::session::middleware(&server_config))
