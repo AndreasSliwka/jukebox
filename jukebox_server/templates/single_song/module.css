@@ -54,6 +54,7 @@
         left: 0; /* TODO: fix layout for inline chords */
         .signature {
             @apply font-mono bg-amber-200 whitespace-pre;
+            margin-right: 0.5em;
         }
     }
     &.showChords .with-chords .lyrics {

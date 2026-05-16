@@ -631,6 +631,7 @@ main {
       background-color: var(--color-amber-200);
       font-family: var(--font-mono);
       white-space: pre;
+      margin-right: 0.5em;
     }
   }
   &.showChords .with-chords .lyrics {
