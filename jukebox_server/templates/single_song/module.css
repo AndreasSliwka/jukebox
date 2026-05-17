@@ -1,4 +1,22 @@
+@keyframes back-to-normal {
+    from {
+        background-color: #e17100;
+    }
+    to {
+        background-color: #fef3c6;
+    }
+}
 .Song {
+    scroll-behavior: smooth;
+    .part {
+        -webkit-user-select: none; /* Safari/Chrome on Android */
+        user-select: none; /* Standard */
+        -webkit-touch-callout: none; /* Prevents the long-press popup menu */
+        -webkit-tap-highlight-color: transparent; /* Removes the click feedback box */
+    }
+    .part.scrollHighlight {
+        animation: 2s 1 normal back-to-normal;
+    }
     .part.part-verse .partname,
     .part.part-chorus .partname,
     .part.part-bridge .partname {
@@ -20,8 +38,8 @@
     .chord_grid {
         display: none;
     }
-    .Song.showChords .tabulatur,
-    .Song.showChords .chord_grid {
+    &.showChords .tabulatur,
+    &.showChords .chord_grid {
         display: block;
         overflow: scroll;
         @apply bg-amber-100;

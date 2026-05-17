@@ -80,6 +80,36 @@ SongList = {
     maybe_show_select_song();
   },
 };
+Song = {
+  last_clicked_id: null,
+  last_click_when: 0,
+  part_clicked(event) {
+    let element = event.target.closest(".chordpro");
+    console.log(event.target);
+    let clicked_when = Date.now();
+    if (
+      element &&
+      element.id == this.last_clicked_id &&
+      this.last_click_when + 500 > clicked_when
+    ) {
+      let highlighted = document.getElementsByClassName("scrollHighlight");
+      for (const part of highlighted) {
+        song.classList.remove("scrollHighlight");
+      }
+      element.scrollIntoView({
+        behaviour: "smooth",
+        block: "start",
+        container: "nearest",
+      });
+      element.classList.add("scrollHighlight");
+
+      this.last_clicked_id = null;
+    } else {
+      this.last_clicked_id = element.id;
+      this.last_click_when = clicked_when;
+    }
+  },
+};
 AllSongs = {
   all_songs: [],
   all_artists: [],

@@ -11,7 +11,11 @@ played_at %}
     <h3 class="artist">von {{song.artist}}</h3>
     {% for block in song.document.blocks %} {% let newline = "\n" %} {% match
     block %} {% when Block::Part(song_part) %}
-    <div class="chordpro part part-{{song_part.name | lower}}">
+    <div
+        id="part-{{loop.index}}"
+        @click="Song.part_clicked(event)"
+        class="chordpro part part-{{song_part.name | lower}}"
+    >
         <!-- {{song_part.name}} -->
         {% for line in song_part.lines %} {% let (has_lyrics, has_chords) =
         line.has_lyrics_has_chords() %}
@@ -37,7 +41,11 @@ played_at %}
     </div>
     <!-- chordpro part -->
     {% when Block::Tabulatur(lines) %}
-    <div class="chordpro tabulatur">
+    <div
+        id="part-{{loop.index}}"
+        @click="Song.part_clicked(event)"
+        class="chordpro tabulatur"
+    >
         <h4>Tabulatur</h4>
         <pre class="">
 {%- for line in lines %}{{- line }}{{ newline }}{% endfor %}</pre
@@ -45,7 +53,11 @@ played_at %}
     </div>
     <!-- chordpro tabulatur -->
     {% when Block::Grid(lines) %}
-    <div class="chordpro chord_grid">
+    <div
+        id="part-{{loop.index}}"
+        @click="Song.part_clicked(event)"
+        class="chordpro chord_grid"
+    >
         <h4>Grid</h4>
         <pre class="">
 {%- for line in lines %}{{- line }}{{ newline }}{% endfor %}</pre

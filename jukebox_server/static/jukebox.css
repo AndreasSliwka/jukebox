@@ -235,6 +235,24 @@
   .left-0 {
     left: calc(var(--spacing) * 0);
   }
+  .container {
+    width: 100%;
+    @media (width >= 40rem) {
+      max-width: 40rem;
+    }
+    @media (width >= 48rem) {
+      max-width: 48rem;
+    }
+    @media (width >= 64rem) {
+      max-width: 64rem;
+    }
+    @media (width >= 80rem) {
+      max-width: 80rem;
+    }
+    @media (width >= 96rem) {
+      max-width: 96rem;
+    }
+  }
   .block {
     display: block;
   }
@@ -573,7 +591,25 @@ main {
     font-size: xx-large;
   }
 }
+@keyframes back-to-normal {
+  from {
+    background-color: #e17100;
+  }
+  to {
+    background-color: #fef3c6;
+  }
+}
 .Song {
+  scroll-behavior: smooth;
+  .part {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .part.scrollHighlight {
+    animation: 2s 1 normal back-to-normal;
+  }
   .part.part-verse .partname, .part.part-chorus .partname, .part.part-bridge .partname {
     display: none;
   }
@@ -597,7 +633,7 @@ main {
   .tabulatur, .chord_grid {
     display: none;
   }
-  .Song.showChords .tabulatur, .Song.showChords .chord_grid {
+  &.showChords .tabulatur, &.showChords .chord_grid {
     display: block;
     overflow: scroll;
     background-color: var(--color-amber-100);
