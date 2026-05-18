@@ -96,11 +96,10 @@ Song = {
       for (const part of highlighted) {
         song.classList.remove("scrollHighlight");
       }
-      element.scrollIntoView({
-        behaviour: "smooth",
-        block: "start",
-        container: "nearest",
-      });
+      target_y = element.getBoundingClientRect().y;
+      target_y -= document.querySelector("header").clientHeight;
+      target_y -= 30;
+      window.scrollTo(0, target_y);
       element.classList.add("scrollHighlight");
 
       this.last_clicked_id = null;
