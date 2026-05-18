@@ -125,7 +125,6 @@ AllSongs = {
     }, {});
 
     this.all_artists = Object.keys(intermediate).sort();
-    console.log(this.all_artists);
   },
   songsByIds(songs_ids) {
     return this.all_songs.filter((song) => songs_ids.includes(song.id));
@@ -446,20 +445,41 @@ Slotmachine = {
   },
   selectTag(unicode) {
     if (unicode == "?") return;
-
-    document.getElementById("which_category");
-
+    Overlay.hide();
+    Header.showWhichCategory(unicode);
+    Toolbar.onlyActivateToolButton("show_slot_machine");
+    Alpine.store("songlist").setCategoryFilter(unicode);
+  },
+};
+Header = {
+  showWhichCategory(unicode) {
     let category_info = document.getElementById("which_category");
 
     category_info.classList.remove("hidden");
     category_info.getElementsByClassName("category")[0].textContent = unicode;
-    Alpine.store("songlist").setCategoryFilter(unicode);
-    Overlay.hide();
-    Toolbar.onlyActivateToolButton("show_slot_machine");
+  },
+  showTitle(text) {
+    document.getElementById("which_category").classList.add("hidden");
+    document.getElementById("title").textContent = text;
   },
 };
-
 Toolbar = {
+  onlyActivateToolButton(button_id) {
+    let buttons = document.querySelectorAll("#footer a.toolbar-button");
+
+    for (tool_button of buttons) {
+      if (tool_button.id == button_id) {
+        tool_button.classList.add("active");
+      } else {
+        tool_button.classList.remove("active");
+      }
+    }
+  },
+  showAllSongs() {
+    this.onlyActivateToolButton("all_songs");
+    Alpine.store("songlist").allSongs();
+    Header.showTitle("Alle Songs");
+  },
   showQrOverlay() {
     Overlay.show("qr_code");
   },
@@ -550,19 +570,10 @@ Toolbar = {
     Zoom.changeTo(new_level);
     this.selectCurrentZoomLevel();
   },
-  onlyActivateToolButton(button_id) {
-    let buttons = document.querySelectorAll("#footer a.toolbar-button");
 
-    for (tool_button of buttons) {
-      if (tool_button.id == button_id) {
-        tool_button.classList.add("active");
-      } else {
-        tool_button.classList.remove("active");
-      }
-    }
-  },
   selectSevenRandomSongs() {
     Overlay.show("feeling_lucky");
+    Header.showTitle("Feeling Lucky?");
     this.hideSearchForm();
     this.hideArtistList();
     this.hideCategoryFilter();

@@ -9,14 +9,23 @@ body {
 /* Header */
 header {
     @apply text-[1.7em] align-middle bg-amber-900 text-amber-100 top-0 left-0 w-full;
-    @apply sticky top-0;
     z-index: 3;
-    #header_line {
-        @apply min-h-10 text-center bg-amber-900 left-0;
+    position: relative;
+    div {
+        @apply min-h-10 text-center bg-amber-900 left-0 right-0;
         @apply shadow-amber-800/50 shadow-lg;
-
+        @apply sticky top-0;
+        @apply px-6;
+        position: absolute;
+    }
+    #header_line {
         #title {
-            @apply px-6;
+        }
+    }
+    #which_category {
+        .category {
+            @apply bg-amber-600 border-amber-600 rounded-md px-2;
+            border-style: outset;
         }
     }
 }
@@ -29,7 +38,7 @@ header {
 footer {
     @apply fixed h-24 -bottom-12 left-0 right-0 w-full;
     @apply text-amber-100;
-    @apply grid grid-cols-5 grid-rows-2;
+    @apply grid grid-cols-6 grid-rows-2;
     @apply align-middle text-center;
     font-size: medium;
     &.show_search_form {
@@ -59,11 +68,6 @@ footer {
             @apply bg-amber-600  text-amber-800;
         }
     }
-
-    #toggle_search,
-    #back_to_song_list {
-        @apply col-start-1 col-span-1 row-start-1;
-    }
     #search_form,
     #zoom_form {
         @apply col-start-1 col-span-6 row-start-2 p-1 bg-amber-600;
@@ -72,7 +76,7 @@ footer {
         input {
             @apply w-full m-0 p-0 px-2;
             @apply text-amber-100;
-            @apply border-1;
+            @apply border;
             font-size: x-large;
         }
     }

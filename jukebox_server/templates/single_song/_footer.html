@@ -22,9 +22,15 @@
     <a
         id="toggle_chords"
         href="javascript:Toolbar.toggleShowChords()"
-        class="toolbar-button at-4-1"
+        class="toolbar-button at-5-1"
         :class="{active: Chords.showInline()}"
         >C7</a
+    >
+    <a
+        id="being_admin"
+        href="javascript:Toolbar.becomeAdmin()"
+        class="toolbar-button at-6-1"
+        >🪛</a
     >
     {% include "zoom/form.html" %}
 </footer>

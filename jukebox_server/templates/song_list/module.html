@@ -1,6 +1,6 @@
 {% extends "../base.html" %}
 {% block mainClass %} song-list {% endblock %}
-{% block title %} Songs {% endblock %} {% block
+{% block title %} Alle Songs {% endblock %} {% block
 content %}
 {{ "<scr" | safe }}{{ "ipt>" | safe}}
     window.addEventListener("alpine:init", () => {
@@ -36,9 +36,6 @@ content %}
     </template>
 </div>
 
-<div id="which_category" class="hidden">
-    Alle <span class="category"></span> Songs
-</div>
 
 <div id="songlist_container" x-data="">
     <div id="artist_list">

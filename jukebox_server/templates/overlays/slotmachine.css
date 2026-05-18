@@ -16,16 +16,6 @@
         top: -580vmin;
     }
 }
-#which_category {
-    @apply mx-5 py-2 text-center text-xl;
-    @apply bg-amber-200  shadow-amber-600/50 shadow-lg;
-    @apply border-4 border-amber-600 border-t-0 border-t-0 rounded-b-xl;
-
-    .category {
-        @apply bg-amber-600 border-amber-600 rounded-md p-2 py-1;
-        border-style: outset;
-    }
-}
 
 #slot_machine {
     position: relative;
