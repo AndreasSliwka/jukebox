@@ -1,7 +1,7 @@
 <div id="zoom_form" class="hidden bg-amber-400" x-init="">
     <label class="at-1-2">Zoom:</label>
     <div id="zoom-backdrop"><img src="/static/zoom_backdrop.png" /></div>
-    <div class="zoom-levels at-2-2">
+    <div id="zoom_slider" class="zoom-levels at-2-2">
         {% for level in 1..8 %}
 
         <a
@@ -11,4 +11,24 @@
         >
         {% endfor %}
     </div>
+    <script>
+        window.addEventListener("load", () => {
+            document
+                .getElementById("zoom_slider")
+                .addEventListener("touchmove", (event) => {
+                    event.preventDefault();
+                    let current_touch = event.touches[0];
+                    touched_element = document.elementFromPoint(
+                        current_touch.clientX,
+                        current_touch.clientY,
+                    );
+                    match = touched_element.className.match(/\bzoom-(\d)\b/);
+
+                    if (match) {
+                        new_zoom_level = parseInt(match[1]);
+                        Toolbar.changeZoomTo(new_zoom_level);
+                    }
+                });
+        });
+    </script>
 </div>
