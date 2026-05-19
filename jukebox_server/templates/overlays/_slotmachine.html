@@ -1,8 +1,10 @@
 <div id="slot_machine" class="modal-content hidden">
     <div
+        id="slot_machine_lever"
         class="lever"
         x-data="{}"
         x-on:click.stop.prevent="Slotmachine.reroll()"
+        x-on:touchmove.stop.prevent="Slotmachine.reroll()"
     >
         <div class="axle"></div>
         <div id="slotmachine-lever-stick" class="stick">

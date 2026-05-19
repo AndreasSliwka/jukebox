@@ -502,7 +502,6 @@ Toolbar = {
     searchInput = document.getElementById("search_input");
 
     this.onlyActivateToolButton("toggle_search");
-    // SongList.show_all_songs();
 
     searchForm.classList.remove("hidden");
     footer.classList.add("show_search_form");
