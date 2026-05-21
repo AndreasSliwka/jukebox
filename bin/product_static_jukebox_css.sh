@@ -1,8 +1,8 @@
 #!/bin/bash
 set -x
 set -e
-cd /Users/andreassliwka/src/jukebox/
-/opt/homebrew/bin/tailwindcss\
+cd `git rev-parse --show-toplevel`
+tailwindcss\
    -i jukebox_server/templates/tailwind_input.css\
    -o jukebox_server/static/jukebox.css \
    -c jukebox_server/static

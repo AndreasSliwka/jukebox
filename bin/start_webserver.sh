@@ -1,5 +1,6 @@
 #!/bin/bash
-cd /Users/andreassliwka/src/jukebox/jukebox_server
+cd `git rev-parse --show-toplevel`
+cd ./jukebox_server
 cargo run --bin jukebox_server
-cd /Users/andreassliwka/src/jukebox
+cd ..
 git grep TODO:

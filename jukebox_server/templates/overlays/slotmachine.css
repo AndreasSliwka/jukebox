@@ -1,9 +1,11 @@
 @keyframes down-and-up {
     0%,
     100% {
+        top: 26vmin;
         height: 30vmin;
     }
     80% {
+        top: 46vmin;
         height: 10vmin;
     }
 }
@@ -38,7 +40,7 @@
             left: 80vmin;
             width: 5vmin;
             height: 30vmin;
-            bottom: 34vmin;
+            top: 26vmin;
             border: 2vmin outset #e0e000;
             background-color: #e0e000;
             border-radius: 0 0 2vmin 2vmin;
