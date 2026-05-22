@@ -70,7 +70,7 @@ main.show_artists {
             overflow: scroll;
             position: fixed;
             @apply pb-2 px-0 block w-40 bg-amber-200 top-10 right-0 bottom-10;
-            overflow-wrap: break-word;
+            overflow-wrap: break-word text-sm;
             li {
                 @apply px-2 border-l-5 border-amber-400;
                 &.selected {
