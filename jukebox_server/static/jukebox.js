@@ -1,4 +1,4 @@
-AtticSongList = {
+class AtticSongList {
   // companion object to <div id='songlist'>, which contains
   filterByName(raw_term) {
     let term = raw_term.toLowerCase();
@@ -10,7 +10,7 @@ AtticSongList = {
     if (raw_term == "") {
       Toolbar.hideSearchForm();
     }
-  },
+  }
   setSearchFilter(input) {
     const term = input.value;
     if (term.startsWith("admin:")) {
@@ -21,11 +21,14 @@ AtticSongList = {
       this.filterByName(term);
     }
     input.blur();
-  },
-};
-Song = {
-  last_clicked_id: null,
-  last_click_when: 0,
+  }
+}
+AtticSongList = new AtticSongList();
+
+class Song {
+  last_clicked_id = null;
+  last_click_when = 0;
+
   part_clicked(event) {
     let element = event.target.closest(".chordpro");
     console.log(event.target);
@@ -50,32 +53,37 @@ Song = {
       this.last_clicked_id = element.id;
       this.last_click_when = clicked_when;
     }
-  },
-};
-AllSongs = {
-  all_songs: [],
-  all_artists: [],
+  }
+}
+Song = new Song();
+
+class AllSongs {
+  all_songs = [];
+  all_artists = [];
+
   // data stuff
   initialize(songs) {
     this.all_songs = songs.map((song) => {
       song.id = "song-" + song.id;
       return song;
     });
-    intermediate = songs.reduce(function (acc, song) {
+    let intermediate = songs.reduce(function (acc, song) {
       acc[song.artist] = 1;
       return acc;
     }, {});
 
     this.all_artists = Object.keys(intermediate).sort();
-  },
+  }
   songsByIds(songs_ids) {
     return this.all_songs.filter((song) => songs_ids.includes(song.id));
-  },
+  }
   songById(song_id) {
     return this.songsByIds([song_id])[0];
-  },
-};
-Cookies = {
+  }
+}
+AllSongs = new AllSongs();
+
+class Cookies {
   getValue(cookieName) {
     let match = document.cookie.match(new RegExp(cookieName + "=([^;]*)(;|$)"));
     let value;
@@ -85,20 +93,20 @@ Cookies = {
       value = "";
     }
     return value;
-  },
-
+  }
   setValue(cookieName, value) {
     document.cookie = cookieName + "=" + value + ";SameSite=lax";
-  },
+  }
   storedShowChords() {
     return this.getValue("showChords") == "true";
-  },
-};
+  }
+}
+Cookies = new Cookies();
 
-Chords = {
+class Chords {
   showInline() {
     return Cookies.getValue("showChords") == "true";
-  },
+  }
   toggle() {
     if (this.showInline()) {
       Cookies.setValue("showChords", "false");
@@ -106,7 +114,7 @@ Chords = {
       Cookies.setValue("showChords", "true");
     }
     this.maybeShow();
-  },
+  }
   maybeShow() {
     let song = window.document.getElementById("song");
     if (song) {
@@ -116,8 +124,9 @@ Chords = {
         song.classList.remove("showChords");
       }
     }
-  },
-};
+  }
+}
+Chords = new Chords();
 
 function deselect_category_wof_entries() {
   Array.from(
@@ -129,7 +138,7 @@ function deselect_category_wof_entries() {
   });
 }
 
-Zoom = {
+class Zoom {
   currentZoomFromMainElement() {
     let main = document.getElementById("root_of_all_evil");
 
@@ -138,7 +147,7 @@ Zoom = {
       .filter((c) => c.startsWith("zoom-"))[0];
 
     return parseInt(current_zoom.split("-")[1]);
-  },
+  }
   changeTo(new_zoom_level) {
     if (new_zoom_level < 0) {
       new_zoom_level = 0;
@@ -154,29 +163,28 @@ Zoom = {
 
       document.cookie = "zoom=" + new_zoom_level + ";SameSite=lax";
     }
-  },
+  }
   changeBy(offset) {
     let zoom_level = this.currentZoomFromMainElement();
     let new_zoom_level = zoom_level + offset;
     this.changeTo(new_zoom_level);
-  },
-};
+  }
+}
+Zoom = new Zoom();
 
-StickySongList = {
+class StickySongList {
   currentWindowDimension() {
     return "{" + window.innerWidth + "x" + window.innerHeight + "}";
-  },
-
+  }
   getCurrentScrollPosition() {
     let scrollTop =
       document.documentElement.scrollTop || document.body.scrollTop;
     return this.currentWindowDimension() + "@" + scrollTop;
-  },
-
+  }
   storeCurrentScrollPosition() {
     let position = this.getCurrentScrollPosition();
     window.location.hash = position;
-  },
+  }
   maybeScrollToPositionInLocationHash() {
     const positionFromHash = window.location.hash;
     if (positionFromHash) {
@@ -186,7 +194,7 @@ StickySongList = {
           parseInt(storedPosition);
       }
     }
-  },
+  }
   init() {
     document.addEventListener("scrollend", () => {
       this.storeCurrentScrollPosition();
@@ -196,10 +204,11 @@ StickySongList = {
       this.storeCurrentScrollPosition();
     });
     this.maybeScrollToPositionInLocationHash();
-  },
-};
+  }
+}
+StickySongList = new StickySongList();
 
-Overlay = {
+class Overlay {
   show(modal_content_id) {
     // hide overlay, hide all possibly open elements in the modal,
     // then show the qr code, then show the overlay
@@ -217,18 +226,19 @@ Overlay = {
       modal.classList.add("hidden");
     }
     overlay.classList.remove("hidden");
-  },
+  }
   hide() {
     Toolbar.onlyActivateToolButton("no such button");
     overlay.classList.add("hidden");
-  },
-};
+  }
+}
+Overlay = new Overlay();
 
-Bookmark = {
+class Bookmark {
   isMarked(song_id) {
     let handle = "song-" + song_id;
     return this.bookmarkedSongIds().includes(handle);
-  },
+  }
   toggle(song_id) {
     let name = "song-" + song_id;
     let bookmarked_song_ids = this.bookmarkedSongIds();
@@ -239,16 +249,17 @@ Bookmark = {
     }
     let new_cookie_value = bookmarked_song_ids.join(",");
     Cookies.setValue("bookmarks", new_cookie_value);
-  },
+  }
   bookmarkedSongIds() {
     return (Cookies.getValue("bookmarks") || "").split(",");
-  },
+  }
   bookmarkedSongs() {
     let song_ids = this.bookmarkedSongIds();
-    all_songs = AllSongs.songsByIds(song_ids);
+    let all_songs = AllSongs.songsByIds(song_ids);
     return all_songs;
-  },
-};
+  }
+}
+Bookmark = new Bookmark();
 
 document.addEventListener("alpine:init", () => {
   Alpine.store("reels", {
@@ -368,7 +379,7 @@ document.addEventListener("alpine:init", () => {
   });
 });
 
-ArtistList = {
+class ArtistList {
   filterByArtist(li_element) {
     let previous_selected_element = document.querySelector(
       "#songlist_container #artist_list li.selected",
@@ -378,15 +389,17 @@ ArtistList = {
     }
     li_element.classList?.add("selected");
     Alpine.store("songlist").filterByArtist(li_element.textContent);
-  },
-};
-Slotmachine = {
+  }
+}
+ArtistList = new ArtistList();
+
+class Slotmachine {
   show() {
     Overlay.show("slot_machine");
-  },
+  }
   initialize() {
     Alpine.store("reels").set_up_for_wheelin();
-  },
+  }
   reroll() {
     let stick = document.getElementById("slotmachine-lever-stick");
     if (stick.classList.contains("working")) return;
@@ -395,7 +408,7 @@ Slotmachine = {
       .querySelectorAll("ul");
     // we use reel 2 for animation-end, as its the
     // last animation to be running.
-    callback = () => {
+    let callback = () => {
       reel2.removeEventListener("animationend", callback);
       Alpine.store("reels").copy_last_to_first();
       stick.classList.remove("working");
@@ -409,65 +422,69 @@ Slotmachine = {
     reel1.classList.add("wheelin");
     reel2.classList.add("wheelin");
     reel3.classList.add("wheelin");
-  },
+  }
   selectTag(unicode) {
     if (unicode == "?") return;
     Overlay.hide();
     Header.showWhichCategory(unicode);
     Toolbar.onlyActivateToolButton("show_slot_machine");
     Alpine.store("songlist").setCategoryFilter(unicode);
-  },
-};
-Header = {
+  }
+}
+Slotmachine = new Slotmachine();
+
+class Header {
   showWhichCategory(unicode) {
     let category_info = document.getElementById("which_category");
 
     category_info.classList.remove("hidden");
     category_info.getElementsByClassName("category")[0].textContent = unicode;
-  },
+  }
   showTitle(text) {
     document.getElementById("which_category").classList.add("hidden");
     document.getElementById("title").textContent = text;
-  },
-};
-Toolbar = {
+  }
+}
+Header = new Header();
+
+class Toolbar {
   onlyActivateToolButton(button_id) {
     let buttons = document.querySelectorAll("#footer a.toolbar-button");
 
-    for (tool_button of buttons) {
+    for (let tool_button of buttons) {
       if (tool_button.id == button_id) {
         tool_button.classList.add("active");
       } else {
         tool_button.classList.remove("active");
       }
     }
-  },
+  }
   showAllSongs() {
     this.onlyActivateToolButton("all_songs");
     Alpine.store("songlist").allSongs();
     Header.showTitle("Alle Songs");
-  },
+  }
   showQrOverlay() {
     Overlay.show("qr_code");
-  },
+  }
   hideCategoryFilter() {
     document.getElementById("which_category").classList.add("hidden");
-  },
+  }
   hideSearchForm() {
-    footer = document.getElementById("footer");
-    toggleSearch = document.getElementById("toggle_search");
-    searchForm = document.getElementById("search_form");
-    searchInput = document.getElementById("search_input");
+    let footer = document.getElementById("footer");
+    let toggleSearch = document.getElementById("toggle_search");
+    let searchForm = document.getElementById("search_form");
+    let searchInput = document.getElementById("search_input");
 
     toggleSearch.classList.remove("active");
     searchForm.classList.add("hidden");
     footer.classList.remove("show_search_form");
-  },
+  }
   showSearchForm() {
-    footer = document.getElementById("footer");
-    toggleSearch = document.getElementById("toggle_search");
-    searchForm = document.getElementById("search_form");
-    searchInput = document.getElementById("search_input");
+    let footer = document.getElementById("footer");
+    let toggleSearch = document.getElementById("toggle_search");
+    let searchForm = document.getElementById("search_form");
+    let searchInput = document.getElementById("search_input");
 
     this.onlyActivateToolButton("toggle_search");
 
@@ -475,10 +492,10 @@ Toolbar = {
     footer.classList.add("show_search_form");
     searchInput.focus();
     searchInput.click();
-  },
+  }
   toggleSearchForm() {
     this.hideArtistList();
-    searchForm = document.getElementById("search_form");
+    let searchForm = document.getElementById("search_form");
 
     if (searchForm.className.split(" ").find((c) => c == "hidden")) {
       this.showSearchForm();
@@ -486,57 +503,55 @@ Toolbar = {
       this.hideSearchForm();
       Alpine.store("songlist").allSongs();
     }
-  },
+  }
   setSearchFilter(target) {
     this.hideCategoryFilter();
     Alpine.store("songlist").setTextFilter(target);
-  },
+  }
   selectCurrentZoomLevel() {
     let zoom_level = "zoom-" + Zoom.currentZoomFromMainElement();
     let choices = document
       .getElementById("zoom_form")
       .getElementsByClassName("zoom-level-choice");
-    for (choice of choices) {
+    for (let choice of choices) {
       if (choice.className.includes(zoom_level)) {
         choice.classList.add("current-level");
       } else {
         choice.classList.remove("current-level");
       }
     }
-  },
+  }
   showZoomForm() {
-    footer = document.getElementById("footer");
-    toggleZoom = document.getElementById("toggle_zoom");
-    zoomForm = document.getElementById("zoom_form");
+    let footer = document.getElementById("footer");
+    let toggleZoom = document.getElementById("toggle_zoom");
+    let zoomForm = document.getElementById("zoom_form");
 
     toggleZoom.classList.add("active");
     zoomForm.classList.remove("hidden");
     this.selectCurrentZoomLevel();
     footer.classList.add("show_zoom_form");
-  },
+  }
   hideZoomForm() {
-    footer = document.getElementById("footer");
-    toggleZoom = document.getElementById("toggle_zoom");
-    zoomForm = document.getElementById("zoom_form");
+    let footer = document.getElementById("footer");
+    let toggleZoom = document.getElementById("toggle_zoom");
+    let zoomForm = document.getElementById("zoom_form");
 
     toggleZoom.classList.remove("active");
     zoomForm.classList.add("hidden");
     footer.classList.remove("show_zoom_form");
-  },
+  }
   toggleZoomForm() {
-    zoomForm = document.getElementById("zoom_form");
+    let zoomForm = document.getElementById("zoom_form");
     if (zoomForm.className.split(" ").find((c) => c == "hidden")) {
       this.showZoomForm();
     } else {
       this.hideZoomForm();
     }
-  },
-
+  }
   changeZoomTo(new_level) {
     Zoom.changeTo(new_level);
     this.selectCurrentZoomLevel();
-  },
-
+  }
   selectSevenRandomSongs() {
     Overlay.show("feeling_lucky");
     Header.showTitle("Feeling Lucky?");
@@ -548,27 +563,26 @@ Toolbar = {
       Overlay.hide();
       this.onlyActivateToolButton("select_four_random_songs");
     });
-  },
+  }
   showSlotMachine() {
     this.hideSearchForm();
     this.hideArtistList();
     this.onlyActivateToolButton("show_slot_machine");
     Slotmachine.initialize();
     Slotmachine.show();
-  },
+  }
   hideArtistList() {
     document
       .getElementById("root_of_all_evil")
       .classList.remove("show_artists");
     // Alpine.store("songlist").allSongs();
-  },
+  }
   toggleArtistList() {
     this.hideSearchForm();
     this.onlyActivateToolButton("toggle_show_artists");
     document.getElementById("root_of_all_evil").classList.add("show_artists");
     ArtistList.filterByArtist("");
-  },
-
+  }
   toggleBookmarkSong(song_id) {
     Bookmark.toggle(song_id);
     if (Bookmark.isMarked(song_id)) {
@@ -576,7 +590,7 @@ Toolbar = {
     } else {
       document.getElementById("bookmark_song").classList.remove("active");
     }
-  },
+  }
   toggleShowChords() {
     Chords.toggle();
     if (Chords.showInline()) {
@@ -584,8 +598,9 @@ Toolbar = {
     } else {
       document.getElementById("toggle_chords").classList.remove("active");
     }
-  },
-};
+  }
+}
+Toolbar = new Toolbar();
 
 window.addEventListener("load", () => {
   StickySongList.init();
