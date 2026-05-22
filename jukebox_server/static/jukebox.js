@@ -1,39 +1,5 @@
-SongList = {
-  showBookmarkedSong() {},
-  _hide_filtered_out_songs(field, term) {
-    const songlist = document.getElementById("songlist");
-    if (songlist) {
-      const song_trs = songlist.getElementsByClassName("listed-song");
-      for (const song of song_trs) {
-        if (song.hasAttribute(field)) {
-          const data = song.getAttribute(field);
-          if (data.includes(term)) {
-            song.classList.remove("hidden");
-          } else {
-            song.classList.add("hidden");
-          }
-        }
-      }
-    }
-  },
-  hide_all_songs() {
-    const songlist = document.getElementById("songlist");
-    if (songlist) {
-      const song_trs = songlist.getElementsByClassName("listed-song");
-      for (const song of song_trs) {
-        song.classList.add("hidden");
-      }
-    }
-  },
-  show_all_songs() {
-    const songlist = document.getElementById("songlist");
-    if (songlist) {
-      const song_trs = songlist.getElementsByClassName("listed-song");
-      for (const song of song_trs) {
-        song.classList.remove("hidden");
-      }
-    }
-  },
+AtticSongList = {
+  // companion object to <div id='songlist'>, which contains
   filterByName(raw_term) {
     let term = raw_term.toLowerCase();
 
@@ -55,29 +21,6 @@ SongList = {
       this.filterByName(term);
     }
     input.blur();
-  },
-  selectSevenRandomSongs(andThen = () => {}) {
-    Alpine.store("songlist").update([]);
-    randomized_songs = AllSongs.all_songs
-      .toSorted(() => 0.5 - Math.random()) // create new copy, dont sort original
-      .sort(() => 0.5 - Math.random());
-    selected_ids = randomized_songs
-      .map((song) => song.id)
-      .toSorted(() => 0.5 - Math.random())
-      .slice(0, 7);
-    function maybe_show_select_song() {
-      if (randomized_songs.length > 0) {
-        let song = randomized_songs.pop();
-        if (selected_ids.includes(song.id)) {
-          Alpine.store("songlist").pushSong(song);
-        }
-        setTimeout(maybe_show_select_song, 6);
-      } else {
-        andThen();
-      }
-    }
-
-    maybe_show_select_song();
   },
 };
 Song = {
@@ -397,6 +340,31 @@ document.addEventListener("alpine:init", () => {
       );
       this.update(filtered_songs);
     },
+
+    selectSevenRandomSongs(andThen = () => {}) {
+      this.update([]);
+      const store = this;
+      randomized_songs = AllSongs.all_songs
+        .toSorted(() => 0.5 - Math.random())
+        .sort(() => 0.5 - Math.random());
+      selected_ids = randomized_songs
+        .map((song) => song.id)
+        .toSorted(() => 0.5 - Math.random())
+        .slice(0, 7);
+      function maybe_show_select_song() {
+        if (randomized_songs.length > 0) {
+          let song = randomized_songs.pop();
+          if (selected_ids.includes(song.id)) {
+            store.pushSong(song);
+          }
+          setTimeout(maybe_show_select_song, 6);
+        } else {
+          andThen();
+        }
+      }
+
+      maybe_show_select_song();
+    },
   });
 });
 
@@ -576,7 +544,7 @@ Toolbar = {
     this.hideArtistList();
     this.hideCategoryFilter();
     this.onlyActivateToolButton("select_four_random_songs");
-    SongList.selectSevenRandomSongs(() => {
+    Alpine.store("songlist").selectSevenRandomSongs(() => {
       Overlay.hide();
       this.onlyActivateToolButton("select_four_random_songs");
     });
