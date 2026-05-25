@@ -78,7 +78,7 @@ fn next_line(lines: &mut io::Lines<io::BufReader<fs::File>>) -> Option<Vec<Strin
     Some(entries)
 }
 
-fn load_tags_and_songs(filename: String) -> (Tags, Vec<TaggedSong>) {
+fn load_tags_and_songs_from_tsv(filename: String) -> (Tags, Vec<TaggedSong>) {
     let mut tag_names: Vec<String> = vec![];
     let mut songs: Vec<TaggedSong> = vec![];
 
@@ -121,7 +121,7 @@ fn find_tagged_song(
 fn main() {
     let filename = get_file_from_command_line();
 
-    let (tags, tagged_songs) = load_tags_and_songs(filename);
+    let (tags, tagged_songs) = load_tags_and_songs_from_tsv(filename);
     println!("Found these tags: {:?}", tags.names);
 
     let songs_dir = get_songs_directory_from_environment();

@@ -101,7 +101,6 @@ fn required_tags() -> Vec<(&'static str, &'static str, bool, bool)> {
         ("10er", "10s", false, false),
         ("20er", "20s", false, false),
         ("rickrolling", "🏹", false, true),
-        ("rickrollingsink", "🎯", false, true),
     ]
 }
 

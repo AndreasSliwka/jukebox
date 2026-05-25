@@ -1,9 +1,9 @@
 use crate::models::{NewSong, SimplifiedSong, Song};
 use chord_down;
-use diesel::debug_query;
 use diesel::prelude::*;
-use diesel::sqlite::Sqlite;
-use log::debug;
+// use diesel::debug_query;
+// use diesel::sqlite::Sqlite;
+// use log::debug;
 use ron;
 use serde::{Deserialize, Serialize};
 
