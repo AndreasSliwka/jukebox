@@ -9,6 +9,19 @@ use jukebox_db;
 use log::debug;
 use services::session::{gig_id_from_session, is_admin, start_session_unless_present};
 
+const ORIGINAL_SONG_LINK: &str = "never-gonna-give-you-up--rick-astley";
+
+fn maybe_rickroll_to_original(song: &chord_down::Song) -> Option<HttpResponse> {
+    if !song.tags.contains(&"rickrolling".to_string()) {
+        return None;
+    }
+    Some(
+        HttpResponse::SeeOther()
+            .append_header(("Location", ORIGINAL_SONG_LINK))
+            .body("Rick will never!"),
+    )
+}
+
 async fn set_played_at_now_and_redirect(
     song_id: i32,
     maybe_gig_id: Option<i32>,
@@ -48,9 +61,7 @@ pub async fn service(
         return Ok(redirect);
     }
     let song_handle = path.into_inner();
-    debug!("song_handle = {}", song_handle);
     let song_path = format!("songs/{}", song_handle);
-    debug!("song_path = {}", song_path);
     let maybe_gig_id = gig_id_from_session(&request);
     let app_url = app_state.base_url.clone();
     let mut connection = app_state.pool.get().expect("could not get connection");
@@ -75,7 +86,11 @@ pub async fn service(
             }
 
             let chord_down_song = chord_down::Song::from_ron(song.serialized_chord_pro);
-            println!("song.played_at_gig = {:#?}", song.played_at_gig);
+            if let Some(redirect) = maybe_rickroll_to_original(&chord_down_song) {
+                return Ok(redirect);
+            }
+            debug!("song.played_at_gig = {:#?}", song.played_at_gig);
+            debug!("tags = {:#?}", chord_down_song.tags);
             let page_url = crate::services::qrcode::full_url(&app_url, &song_path);
             let template = templates::SongsTemplate {
                 song: chord_down_song,

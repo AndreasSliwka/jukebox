@@ -69,7 +69,7 @@ impl SongWithLinkAndTags {
         simplified: &SimplifiedSong,
         songs_played: &HashMap<i32, Option<String>>,
         tags_by_song: &HashMap<i32, Vec<i32>>,
-        all_tags: &HashMap<i32, (String, String, bool)>,
+        all_tags: &HashMap<i32, (String, String, bool, bool)>,
     ) -> Self {
         let played_at = match songs_played.get(&simplified.id).clone() {
             None => String::from(""),
@@ -82,6 +82,7 @@ impl SongWithLinkAndTags {
             .get(&simplified.id)
             .unwrap_or(&vec![])
             .iter()
+            .filter(|tag_id| all_tags.get(tag_id).unwrap().3 == false)
             .map(|tag_id| all_tags.get(tag_id).unwrap().1.clone())
             .collect();
         Self {
@@ -145,6 +146,7 @@ pub struct Tag {
     pub name: String,
     pub unicode: String,
     pub private: i32,
+    pub hidden_tag: i32,
 }
 
 #[derive(Insertable)]
@@ -153,6 +155,7 @@ pub struct NewTag<'a> {
     pub name: &'a str,
     pub unicode: &'a str,
     pub private: i32,
+    pub hidden_tag: i32,
 }
 
 #[derive(Insertable, HasQuery)]

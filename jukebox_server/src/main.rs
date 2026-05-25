@@ -31,7 +31,7 @@ async fn main() -> Result<(), std::io::Error> {
             .service(services::session::toggle_private_service)
             .service(services::no_shoes_no_shirt::service)
             .service(services::song::service)
-            .service(services::songs::service)
+            .service(services::song_list::service)
     })
     .bind(binding)?
     .run()

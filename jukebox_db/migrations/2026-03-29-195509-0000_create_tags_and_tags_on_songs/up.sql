@@ -3,7 +3,8 @@ CREATE TABLE tags (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     name VARCHAR NOT NULL,
     unicode VARCHAR NOT NULL,
-    private INTEGER not null -- actually its a boolean
+    private INTEGER not null, -- actually its a boolean
+    hidden_tag INTEGER not null -- this one too
 );
 
 CREATE TABLE tags_on_songs (

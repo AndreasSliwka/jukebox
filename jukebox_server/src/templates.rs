@@ -7,7 +7,7 @@ use jukebox_db::models::SongWithLinkAndTags;
 
 #[derive(Template)]
 #[template(path = "song_list/module.html")]
-pub struct SongsIndexTemplate {
+pub struct SongListIndexTemplate {
     pub songs: Vec<SongWithLinkAndTags>,
     pub dark_background: bool,
     pub all_tags_by_name: HashMap<String, String>,

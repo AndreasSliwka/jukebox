@@ -41,6 +41,7 @@ pub fn create_tag(
     name: &str,
     unicode: &str,
     private: i32,
+    hidden_tag: i32,
     connection: &mut SqliteConnection,
 ) -> Tag {
     use crate::schema::tags;
@@ -48,6 +49,7 @@ pub fn create_tag(
         name,
         unicode,
         private,
+        hidden_tag,
     };
 
     diesel::insert_into(tags::table)
@@ -61,49 +63,53 @@ pub fn update_or_create_tag(
     name: &str,
     unicode: &str,
     private: i32,
+    hidden_tag: i32,
     connection: &mut SqliteConnection,
 ) -> Tag {
     if let Some(tag) = tag_by_name(name, connection) {
         update_tag(tag.id, name, unicode, private, connection)
     } else {
-        create_tag(name, unicode, private, connection)
+        create_tag(name, unicode, private, hidden_tag, connection)
     }
 }
 
-fn required_tags() -> Vec<(&'static str, &'static str, bool)> {
+fn required_tags() -> Vec<(&'static str, &'static str, bool, bool)> {
     vec![
-        ("Private", "😎", true),
-        ("Checked", "✅", false),
-        ("English", "🇬🇧", false),
-        ("German", "🇩🇪", false),
-        ("rockig", "🪨", false),
-        ("Metal", "🔨", false),
-        ("episch", "🛢", false),
-        ("party", "🍹", false),
-        ("Liebe", "💋", false),
-        ("Soft", "🍦", false),
-        ("XMas", "🎄", false),
-        ("Children", "👶", false),
-        ("Essen+Trinken", "🍽", false),
-	("Beatles", "🐞", false),
-	("Ärzte", "🚑", false),
-	("Farben", "🎨", false),
-	("Lagerfeuer", "🔥", false),
-        ("50er", "50s", false),
-        ("60er", "60s", false),
-        ("70er", "70s", false),
-        ("80er", "80s", false),
-        ("90er", "90s", false),
-        ("00er", "00s", false),
-        ("10er", "10s", false),
-        ("20er", "20s", false),
+        ("Private", "😎", true, false),
+        ("Checked", "✅", false, true),
+        ("English", "🇬🇧", false, false),
+        ("German", "🇩🇪", false, false),
+        ("rockig", "🪨", false, false),
+        ("Metal", "🔨", false, false),
+        ("episch", "🛢", false, false),
+        ("party", "🍹", false, false),
+        ("Liebe", "💋", false, false),
+        ("Soft", "🍦", false, false),
+        ("XMas", "🎄", false, false),
+        ("Children", "👶", false, false),
+        ("Essen+Trinken", "🍽", false, false),
+        ("Beatles", "🐞", false, false),
+        ("Ärzte", "🚑", false, false),
+        ("Farben", "🎨", false, false),
+        ("Lagerfeuer", "🔥", false, false),
+        ("50er", "50s", false, false),
+        ("60er", "60s", false, false),
+        ("70er", "70s", false, false),
+        ("80er", "80s", false, false),
+        ("90er", "90s", false, false),
+        ("00er", "00s", false, false),
+        ("10er", "10s", false, false),
+        ("20er", "20s", false, false),
+        ("rickrolling", "🏹", false, true),
+        ("rickrollingsink", "🎯", false, true),
     ]
 }
 
 pub fn ensure_seed_data_for_tags(connection: &mut SqliteConnection) -> () {
-    for (name, unicode, private) in required_tags() {
+    for (name, unicode, private, hidden_tag) in required_tags() {
         let private_as_int = if private { 1 } else { 0 };
-        update_or_create_tag(name, unicode, private_as_int, connection);
+        let hidden_tag_as_int = if hidden_tag { 1 } else { 0 };
+        update_or_create_tag(name, unicode, private_as_int, hidden_tag_as_int, connection);
     }
 }
 
@@ -116,13 +122,20 @@ pub fn all_tags_by_name(connection: &mut SqliteConnection) -> HashMap<String, (i
     them_tags
 }
 
-pub fn all_tags_by_id(connection: &mut SqliteConnection) -> HashMap<i32, (String, String, bool)> {
-    let mut them_tags: HashMap<i32, (String, String, bool)> = HashMap::new();
+pub fn all_tags_by_id(
+    connection: &mut SqliteConnection,
+) -> HashMap<i32, (String, String, bool, bool)> {
+    let mut them_tags: HashMap<i32, (String, String, bool, bool)> = HashMap::new();
 
     for tag in Tag::query().load(connection).unwrap() {
         them_tags.insert(
             tag.id,
-            (tag.name.to_lowercase(), tag.unicode, tag.private == 1),
+            (
+                tag.name.to_lowercase(),
+                tag.unicode,
+                tag.private == 1,
+                tag.hidden_tag == 1,
+            ),
         );
     }
     them_tags

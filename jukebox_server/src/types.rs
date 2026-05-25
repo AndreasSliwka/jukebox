@@ -46,7 +46,7 @@ impl ServerConfig {
 pub struct AppState {
     pub pool: Pool<ConnectionManager<SqliteConnection>>,
     pub private_tag_ids: Arc<Vec<i32>>,
-    pub tags_by_id: Arc<HashMap<i32, (String, String, bool)>>,
+    pub tags_by_id: Arc<HashMap<i32, (String, String, bool, bool)>>,
     pub base_url: url::Url,
     pub cache: Arc<DashMap<String, String>>,
 }

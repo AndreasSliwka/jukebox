@@ -1,11 +1,11 @@
 use crate::services;
-use crate::templates::SongsIndexTemplate;
+use crate::templates::SongListIndexTemplate;
 use crate::types::AppState;
 use actix_web::http::header::ContentType;
 use actix_web::{HttpRequest, HttpResponse, Responder, error, get, web};
 use askama::Template;
 use jukebox_db::{self, SongListOrder, models::SongWithLinkAndTags};
-use log::debug;
+// use log::debug;
 use querystring;
 use std::collections::HashMap;
 
@@ -24,12 +24,12 @@ fn song_list_order(query: &str) -> SongListOrder {
 }
 
 fn tags_by_name(
-    tags_by_id: HashMap<i32, (String, String, bool)>,
+    tags_by_id: HashMap<i32, (String, String, bool, bool)>,
     show_private: bool,
 ) -> HashMap<String, String> {
     let mut tags: HashMap<String, String> = HashMap::new();
-    for (name, sign, is_private) in tags_by_id.into_values() {
-        if show_private || !is_private {
+    for (name, sign, is_private, is_hidden_tag) in tags_by_id.into_values() {
+        if !is_hidden_tag && (show_private || !is_private) {
             tags.insert(name, sign);
         }
     }
@@ -49,7 +49,7 @@ pub async fn service(
     };
     let app_url = app_state.base_url.clone();
     let cache = &app_state.cache;
-    debug!("number of cache entries: {}", cache.len());
+    // debug!("number of cache entries: {}", cache.len());
     let song_list_order = song_list_order(request.query_string());
     let connection_pool = app_state.pool.clone();
     let show_private = services::session::show_private(&request);
@@ -78,7 +78,7 @@ pub async fn service(
     let tags_by_name: HashMap<String, String> =
         tags_by_name((*app_state.tags_by_id).clone(), show_private);
     let page_url = crate::services::qrcode::full_url(&app_url, "songs");
-    let template = SongsIndexTemplate {
+    let template = SongListIndexTemplate {
         songs: songs_with_links,
         dark_background: true,
         all_tags_by_name: tags_by_name,

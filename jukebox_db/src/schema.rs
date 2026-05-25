@@ -36,6 +36,7 @@ diesel::table! {
         name -> Text,
         unicode -> Text,
         private -> Integer,
+        hidden_tag -> Integer,
     }
 }
 
