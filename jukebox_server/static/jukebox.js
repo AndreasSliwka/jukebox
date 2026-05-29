@@ -510,7 +510,7 @@ class SongListToolbar extends Toolbar {
         this.showSearchForm(info);
         break;
       case this.states.ArtistList:
-        this.toggleArtistList(info);
+        this.showArtistList(info);
         break;
       case this.states.SlotMachine:
         this.showSlotMachine(info);
@@ -524,6 +524,9 @@ class SongListToolbar extends Toolbar {
   }
   showAllSongs() {
     this.current_state = this.states.AllSongs;
+    this.hideSearchForm();
+    this.hideArtistList();
+    this.hideCategoryFilter();
     this.onlyActivateToolButton("all_songs");
     Alpine.store("songlist").allSongs();
     Header.showTitle("Alle Songs");
@@ -583,6 +586,7 @@ class SongListToolbar extends Toolbar {
   showSlotMachine() {
     this.hideSearchForm();
     this.hideArtistList();
+    this.hideCategoryFilter();
     this.onlyActivateToolButton("show_slot_machine");
     Slotmachine.initialize();
     Slotmachine.show();
@@ -593,8 +597,7 @@ class SongListToolbar extends Toolbar {
       .classList.remove("show_artists");
     // Alpine.store("songlist").allSongs();
   }
-  toggleArtistList(preloaded_artist = "") {
-    console.log("toggleArtistList", preloaded_artist);
+  showArtistList(preloaded_artist = "") {
     this.hideSearchForm();
     this.hideCategoryFilter();
     this.onlyActivateToolButton("toggle_show_artists");
