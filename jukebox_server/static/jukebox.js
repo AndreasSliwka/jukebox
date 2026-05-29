@@ -264,38 +264,19 @@ class ReelsStore {
   // TODO: refactor to make this an initialisation paramter.
   // TODO: The initialisation can than be called from rust produced code,
   // TODO: thus being always up-to-date.
-  all_tags: [
-    "🇬🇧",
-    "🇩🇪",
-    "🪨",
-    "🔨",
-    "🛢",
-    "🍹",
-    "💋",
-    "🍦",
-    "🎄",
-    "👶",
-    "🍽",
-    "🐞",
-    "🚑",
-    "🎨",
-    "🔥",
-    "60s",
-    "70s",
-    "80s",
-    "90s",
-    "00s",
-    "10s",
-  ],
+  all_tags = [];
 
-  first: ["?"],
-  second: ["?"],
-  third: ["?"],
+  first = ["?"];
+  second = ["?"];
+  third = ["?"];
+  setAllTags(allTags) {
+    this.all_tags = allTags;
+  }
   randomized_tags() {
     // randomizing the all_tags array every time makes it a bit more random every time
     this.all_tags.sort(() => 0.5 - Math.random());
     return this.all_tags.slice();
-  },
+  }
   set_up_for_wheelin() {
     this.first = this.first
       .slice(0, 1)
@@ -312,24 +293,23 @@ class ReelsStore {
       .concat(this.randomized_tags())
       .concat(this.randomized_tags())
       .slice(0, 30);
-  },
+  }
   copy_last_to_first() {
     this.first[0] = this.first.at(-1);
     this.second[0] = this.second.at(-1);
     this.third[0] = this.third.at(-1);
-  },
+  }
 }
 
-
 class SongListStore {
-  visible: [],
+  visible = [];
   update(newCurrentSongs) {
     this.visible = newCurrentSongs.slice();
-  },
+  }
   allSongs() {
     console.log("$store.songlist.allSongs()");
     this.update(AllSongs.all_songs);
-  },
+  }
   setTextFilter(original_term) {
     let term = original_term.toLowerCase();
     let filtered_songs = AllSongs.all_songs.filter(
@@ -338,22 +318,22 @@ class SongListStore {
         song.artist.toLowerCase().includes(term),
     );
     this.update(filtered_songs);
-  },
+  }
   setCategoryFilter(tag) {
     let filtered_songs = AllSongs.all_songs.filter((song) =>
       song.tag_signs.includes(tag),
     );
     this.update(filtered_songs);
-  },
+  }
   pushSong(song) {
     this.visible.push(song);
-  },
+  }
   filterByArtist(artist) {
     let filtered_songs = AllSongs.all_songs.filter(
       (song) => song.artist == artist,
     );
     this.update(filtered_songs);
-  },
+  }
 
   selectSevenRandomSongs(andThen = () => {}) {
     this.update([]);
@@ -378,11 +358,11 @@ class SongListStore {
     }
 
     maybe_show_select_song();
-  },
+  }
 }
 document.addEventListener("alpine:init", () => {
-  Alpine.store("reels", new ReelsStore() );
-  Alpine.store("songlist", new SongListStore() );
+  Alpine.store("reels", new ReelsStore());
+  Alpine.store("songlist", new SongListStore());
 });
 
 class ArtistList {
