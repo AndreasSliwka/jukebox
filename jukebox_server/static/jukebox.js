@@ -260,123 +260,129 @@ class Bookmark {
   }
 }
 Bookmark = new Bookmark();
+class ReelsStore {
+  // TODO: refactor to make this an initialisation paramter.
+  // TODO: The initialisation can than be called from rust produced code,
+  // TODO: thus being always up-to-date.
+  all_tags: [
+    "🇬🇧",
+    "🇩🇪",
+    "🪨",
+    "🔨",
+    "🛢",
+    "🍹",
+    "💋",
+    "🍦",
+    "🎄",
+    "👶",
+    "🍽",
+    "🐞",
+    "🚑",
+    "🎨",
+    "🔥",
+    "60s",
+    "70s",
+    "80s",
+    "90s",
+    "00s",
+    "10s",
+  ],
 
-document.addEventListener("alpine:init", () => {
-  Alpine.store("reels", {
-    all_tags: [
-      "🇬🇧",
-      "🇩🇪",
-      "🪨",
-      "🔨",
-      "🛢",
-      "🍹",
-      "💋",
-      "🍦",
-      "🎄",
-      "👶",
-      "🍽",
-      "🐞",
-      "🚑",
-      "🎨",
-      "🔥",
-      "60s",
-      "70s",
-      "80s",
-      "90s",
-      "00s",
-      "10s",
-    ],
+  first: ["?"],
+  second: ["?"],
+  third: ["?"],
+  randomized_tags() {
+    // randomizing the all_tags array every time makes it a bit more random every time
+    this.all_tags.sort(() => 0.5 - Math.random());
+    return this.all_tags.slice();
+  },
+  set_up_for_wheelin() {
+    this.first = this.first
+      .slice(0, 1)
+      .concat(this.randomized_tags())
+      .concat(this.randomized_tags())
+      .slice(0, 30);
+    this.second = this.second
+      .slice(0, 1)
+      .concat(this.randomized_tags())
+      .concat(this.randomized_tags())
+      .slice(0, 30);
+    this.third = this.third
+      .slice(0, 1)
+      .concat(this.randomized_tags())
+      .concat(this.randomized_tags())
+      .slice(0, 30);
+  },
+  copy_last_to_first() {
+    this.first[0] = this.first.at(-1);
+    this.second[0] = this.second.at(-1);
+    this.third[0] = this.third.at(-1);
+  },
+}
 
-    first: ["?"],
-    second: ["?"],
-    third: ["?"],
-    randomized_tags() {
-      // randomizing the all_tags array every time makes it a bit more random every time
-      this.all_tags.sort(() => 0.5 - Math.random());
-      return this.all_tags.slice();
-    },
-    set_up_for_wheelin() {
-      this.first = this.first
-        .slice(0, 1)
-        .concat(this.randomized_tags())
-        .concat(this.randomized_tags())
-        .slice(0, 30);
-      this.second = this.second
-        .slice(0, 1)
-        .concat(this.randomized_tags())
-        .concat(this.randomized_tags())
-        .slice(0, 30);
-      this.third = this.third
-        .slice(0, 1)
-        .concat(this.randomized_tags())
-        .concat(this.randomized_tags())
-        .slice(0, 30);
-    },
-    copy_last_to_first() {
-      this.first[0] = this.first.at(-1);
-      this.second[0] = this.second.at(-1);
-      this.third[0] = this.third.at(-1);
-    },
-  });
-  Alpine.store("songlist", {
-    visible: [],
-    update(newCurrentSongs) {
-      this.visible = newCurrentSongs.slice();
-    },
-    allSongs() {
-      console.log("$store.songlist.allSongs()");
-      this.update(AllSongs.all_songs);
-    },
-    setTextFilter(original_term) {
-      let term = original_term.toLowerCase();
-      let filtered_songs = AllSongs.all_songs.filter(
-        (song) =>
-          song.title.toLowerCase().includes(term) ||
-          song.artist.toLowerCase().includes(term),
-      );
-      this.update(filtered_songs);
-    },
-    setCategoryFilter(tag) {
-      let filtered_songs = AllSongs.all_songs.filter((song) =>
-        song.tag_signs.includes(tag),
-      );
-      this.update(filtered_songs);
-    },
-    pushSong(song) {
-      this.visible.push(song);
-    },
-    filterByArtist(artist) {
-      let filtered_songs = AllSongs.all_songs.filter(
-        (song) => song.artist == artist,
-      );
-      this.update(filtered_songs);
-    },
 
-    selectSevenRandomSongs(andThen = () => {}) {
-      this.update([]);
-      const store = this;
-      randomized_songs = AllSongs.all_songs
-        .toSorted(() => 0.5 - Math.random())
-        .sort(() => 0.5 - Math.random());
-      selected_ids = randomized_songs
-        .map((song) => song.id)
-        .toSorted(() => 0.5 - Math.random())
-        .slice(0, 7);
-      function maybe_show_select_song() {
-        if (randomized_songs.length > 0) {
-          let song = randomized_songs.pop();
-          if (selected_ids.includes(song.id)) {
-            store.pushSong(song);
-          }
-          setTimeout(maybe_show_select_song, 6);
-        } else {
-          andThen();
+class SongListStore {
+  visible: [],
+  update(newCurrentSongs) {
+    this.visible = newCurrentSongs.slice();
+  },
+  allSongs() {
+    console.log("$store.songlist.allSongs()");
+    this.update(AllSongs.all_songs);
+  },
+  setTextFilter(original_term) {
+    let term = original_term.toLowerCase();
+    let filtered_songs = AllSongs.all_songs.filter(
+      (song) =>
+        song.title.toLowerCase().includes(term) ||
+        song.artist.toLowerCase().includes(term),
+    );
+    this.update(filtered_songs);
+  },
+  setCategoryFilter(tag) {
+    let filtered_songs = AllSongs.all_songs.filter((song) =>
+      song.tag_signs.includes(tag),
+    );
+    this.update(filtered_songs);
+  },
+  pushSong(song) {
+    this.visible.push(song);
+  },
+  filterByArtist(artist) {
+    let filtered_songs = AllSongs.all_songs.filter(
+      (song) => song.artist == artist,
+    );
+    this.update(filtered_songs);
+  },
+
+  selectSevenRandomSongs(andThen = () => {}) {
+    this.update([]);
+    const store = this;
+    randomized_songs = AllSongs.all_songs
+      .toSorted(() => 0.5 - Math.random())
+      .sort(() => 0.5 - Math.random());
+    selected_ids = randomized_songs
+      .map((song) => song.id)
+      .toSorted(() => 0.5 - Math.random())
+      .slice(0, 7);
+    function maybe_show_select_song() {
+      if (randomized_songs.length > 0) {
+        let song = randomized_songs.pop();
+        if (selected_ids.includes(song.id)) {
+          store.pushSong(song);
         }
+        setTimeout(maybe_show_select_song, 6);
+      } else {
+        andThen();
       }
+    }
 
-      maybe_show_select_song();
-    },
-  });
+    maybe_show_select_song();
+  },
+}
+document.addEventListener("alpine:init", () => {
+  Alpine.store("reels", new ReelsStore() );
+  Alpine.store("songlist", new SongListStore() );
 });
 
 class ArtistList {
