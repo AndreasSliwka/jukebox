@@ -2,19 +2,19 @@
     <a
         id="all_songs"
         class="toolbar-button at-1-1 active"
-        href="javascript:Toolbar.showAllSongs()"
+        href="javascript:SongListToolbar.switchToState(SongListToolbar.states.AllSongs)"
         >🌍</a
     >
     <a
         id="toggle_search"
         class="toolbar-button at-2-1"
-        href="javascript:Toolbar.toggleSearchForm()"
+        href="javascript:SongListToolbar.switchToState(SongListToolbar.states.Search)"
         >🔍</a
     >
     <a
         id="toggle_show_artists"
         class="toolbar-button at-3-1"
-        href="javascript:Toolbar.toggleArtistList()"
+        href="javascript:SongListToolbar.switchToState(SongListToolbar.states.ArtistList)"
         >🎺</a
     >
     <a
@@ -26,13 +26,13 @@
     <a
         id="show_slot_machine"
         class="toolbar-button at-5-1"
-        href="javascript:Toolbar.showSlotMachine()"
+        href="javascript:SongListToolbar.switchToState(SongListToolbar.states.SlotMachine)"
         >🌞</a
     >
     <a
-        id="select_four_random_songs"
+        id="select_seven_random_songs"
         class="toolbar-button at-6-1"
-        href="javascript:Toolbar.selectSevenRandomSongs()"
+        href="javascript:SongListToolbar.switchToState(SongListToolbar.states.SevenRandomSongs)"
         >🍀</a
     >
     <div id="search_form" class="hidden bg-amber-400">
@@ -43,7 +43,7 @@
             enterkeyhint="search"
             placeholder="Find my love ..."
             x-model="search"
-            @input="Toolbar.setSearchFilter($event.target.value)"
+            @input="SongListToolbar.setSearchFilter($event.target.value)"
             class="flex-auto p-0.5 border-amber-900 border-2"
         />
     </div>

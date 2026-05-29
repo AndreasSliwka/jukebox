@@ -8,7 +8,7 @@ class AtticSongList {
     // deselect_category_wof_entries();
     this._hide_filtered_out_songs("data-name", raw_term.toLowerCase());
     if (raw_term == "") {
-      Toolbar.hideSearchForm();
+      SongListToolbar.hideSearchForm();
     }
   }
   setSearchFilter(input) {
@@ -228,6 +228,8 @@ class Overlay {
     overlay.classList.remove("hidden");
   }
   hide() {
+    let overlay = document.getElementById("overlay");
+
     Toolbar.onlyActivateToolButton("no such button");
     overlay.classList.add("hidden");
   }
@@ -329,22 +331,30 @@ class SongListStore {
     this.visible.push(song);
   }
   filterByArtist(artist) {
+    console.log("$store.songlist.filterByArtist()", artist);
     let filtered_songs = AllSongs.all_songs.filter(
       (song) => song.artist == artist,
     );
     this.update(filtered_songs);
   }
 
-  selectSevenRandomSongs(andThen = () => {}) {
+  selectSevenRandomSongs(andThen = () => {}, prepicked_songs = "") {
     this.update([]);
     const store = this;
-    randomized_songs = AllSongs.all_songs
+    var selected_ids;
+    const randomized_songs = AllSongs.all_songs
       .toSorted(() => 0.5 - Math.random())
       .sort(() => 0.5 - Math.random());
-    selected_ids = randomized_songs
-      .map((song) => song.id)
-      .toSorted(() => 0.5 - Math.random())
-      .slice(0, 7);
+
+    if (prepicked_songs) {
+      selected_ids = prepicked_songs.split(",");
+    } else {
+      selected_ids = randomized_songs
+        .map((song) => song.id)
+        .toSorted(() => 0.5 - Math.random())
+        .slice(0, 7);
+    }
+
     function maybe_show_select_song() {
       if (randomized_songs.length > 0) {
         let song = randomized_songs.pop();
@@ -366,15 +376,22 @@ document.addEventListener("alpine:init", () => {
 });
 
 class ArtistList {
-  filterByArtist(li_element) {
+  filterByArtist(artist_name) {
     let previous_selected_element = document.querySelector(
       "#songlist_container #artist_list li.selected",
     );
     if (previous_selected_element) {
       previous_selected_element.classList.remove("selected");
     }
-    li_element.classList?.add("selected");
-    Alpine.store("songlist").filterByArtist(li_element.textContent);
+    const li_element = [].slice
+      .call(document.querySelectorAll("#songlist_container #artist_list li"))
+      .filter(function (el) {
+        return el.textContent === artist_name;
+      })[0];
+    console.log("li_element", li_element);
+    li_element?.classList.add("selected");
+    li_element?.scrollIntoView({ behavior: "instant" });
+    Alpine.store("songlist").filterByArtist(artist_name);
   }
 }
 ArtistList = new ArtistList();
@@ -413,7 +430,7 @@ class Slotmachine {
     if (unicode == "?") return;
     Overlay.hide();
     Header.showWhichCategory(unicode);
-    Toolbar.onlyActivateToolButton("show_slot_machine");
+    SongListToolbar.onlyActivateToolButton("show_slot_machine");
     Alpine.store("songlist").setCategoryFilter(unicode);
   }
 }
@@ -445,42 +462,98 @@ class Toolbar {
       }
     }
   }
-  showAllSongs() {
-    this.onlyActivateToolButton("all_songs");
-    Alpine.store("songlist").allSongs();
-    Header.showTitle("Alle Songs");
-  }
   showQrOverlay() {
     Overlay.show("qr_code");
   }
+}
+
+class SongListToolbar extends Toolbar {
+  states = {
+    AllSongs: "Alle Songs",
+    Search: "Suche",
+    ArtistList: "Künstler",
+    SlotMachine: "Slot Machine",
+    SevenRandomSongs: "7 zufällige Songs",
+  };
+  current_state = this.states.AllSongs;
   hideCategoryFilter() {
     document.getElementById("which_category").classList.add("hidden");
+  }
+  parseStateFromUrl() {
+    const url = new URL(window.location.href);
+    const searchParams = url.searchParams.get("search");
+    if (searchParams) {
+      return this.switchToState(this.states.Search, searchParams);
+    }
+    const artist = url.searchParams.get("artist");
+    if (artist) {
+      return this.switchToState(this.states.ArtistList, artist);
+    }
+    const slots = url.searchParams.get("slots");
+    if (slots) {
+      return this.switchToState(this.states.SlotMachine, slots);
+    }
+    const randomSongs = url.searchParams.get("random_songs");
+    if (randomSongs) {
+      return this.switchToState(this.states.SevenRandomSongs, randomSongs);
+    }
+
+    this.switchToState(this.states.AllSongs);
+  }
+  switchToState(state, info = "") {
+    console.log("switch SongListToolbar to state", state);
+    switch (state) {
+      case this.states.AllSongs:
+        this.showAllSongs(); // no additional info :-)
+        break;
+      case this.states.Search:
+        this.showSearchForm(info);
+        break;
+      case this.states.ArtistList:
+        this.toggleArtistList(info);
+        break;
+      case this.states.SlotMachine:
+        this.showSlotMachine(info);
+        break;
+      case this.states.SevenRandomSongs:
+        this.selectSevenRandomSongs(info);
+        break;
+      default:
+        return;
+    }
+  }
+  showAllSongs() {
+    this.current_state = this.states.AllSongs;
+    this.onlyActivateToolButton("all_songs");
+    Alpine.store("songlist").allSongs();
+    Header.showTitle("Alle Songs");
   }
   hideSearchForm() {
     let footer = document.getElementById("footer");
     let toggleSearch = document.getElementById("toggle_search");
     let searchForm = document.getElementById("search_form");
-    let searchInput = document.getElementById("search_input");
 
     toggleSearch.classList.remove("active");
     searchForm.classList.add("hidden");
     footer.classList.remove("show_search_form");
+    this.showAllSongs();
   }
-  showSearchForm() {
+  showSearchForm(preloaded_search_term = "") {
     let footer = document.getElementById("footer");
-    let toggleSearch = document.getElementById("toggle_search");
     let searchForm = document.getElementById("search_form");
     let searchInput = document.getElementById("search_input");
-
+    this.hideArtistList();
+    this.hideCategoryFilter();
     this.onlyActivateToolButton("toggle_search");
 
     searchForm.classList.remove("hidden");
     footer.classList.add("show_search_form");
     searchInput.focus();
     searchInput.click();
+    searchInput.value = preloaded_search_term;
+    this.setSearchFilter(preloaded_search_term);
   }
   toggleSearchForm() {
-    this.hideArtistList();
     let searchForm = document.getElementById("search_form");
 
     if (searchForm.className.split(" ").find((c) => c == "hidden")) {
@@ -491,22 +564,46 @@ class Toolbar {
     }
   }
   setSearchFilter(target) {
-    this.hideCategoryFilter();
+    // called by changes from the search input
     Alpine.store("songlist").setTextFilter(target);
   }
-  selectCurrentZoomLevel() {
-    let zoom_level = "zoom-" + Zoom.currentZoomFromMainElement();
-    let choices = document
-      .getElementById("zoom_form")
-      .getElementsByClassName("zoom-level-choice");
-    for (let choice of choices) {
-      if (choice.className.includes(zoom_level)) {
-        choice.classList.add("current-level");
-      } else {
-        choice.classList.remove("current-level");
-      }
-    }
+
+  selectSevenRandomSongs(prepicked_songs) {
+    Overlay.show("feeling_lucky");
+    Header.showTitle("Feeling Lucky?");
+    this.hideSearchForm();
+    this.hideArtistList();
+    this.hideCategoryFilter();
+    this.onlyActivateToolButton("select_seven_random_songs");
+    Alpine.store("songlist").selectSevenRandomSongs(() => {
+      Overlay.hide();
+      this.onlyActivateToolButton("select_seven_random_songs");
+    }, prepicked_songs);
   }
+  showSlotMachine() {
+    this.hideSearchForm();
+    this.hideArtistList();
+    this.onlyActivateToolButton("show_slot_machine");
+    Slotmachine.initialize();
+    Slotmachine.show();
+  }
+  hideArtistList() {
+    document
+      .getElementById("root_of_all_evil")
+      .classList.remove("show_artists");
+    // Alpine.store("songlist").allSongs();
+  }
+  toggleArtistList(preloaded_artist = "") {
+    console.log("toggleArtistList", preloaded_artist);
+    this.hideSearchForm();
+    this.hideCategoryFilter();
+    this.onlyActivateToolButton("toggle_show_artists");
+    document.getElementById("root_of_all_evil").classList.add("show_artists");
+    ArtistList.filterByArtist(preloaded_artist);
+  }
+}
+
+class SingleSongToolbar extends Toolbar {
   showZoomForm() {
     let footer = document.getElementById("footer");
     let toggleZoom = document.getElementById("toggle_zoom");
@@ -526,6 +623,7 @@ class Toolbar {
     zoomForm.classList.add("hidden");
     footer.classList.remove("show_zoom_form");
   }
+
   toggleZoomForm() {
     let zoomForm = document.getElementById("zoom_form");
     if (zoomForm.className.split(" ").find((c) => c == "hidden")) {
@@ -538,36 +636,18 @@ class Toolbar {
     Zoom.changeTo(new_level);
     this.selectCurrentZoomLevel();
   }
-  selectSevenRandomSongs() {
-    Overlay.show("feeling_lucky");
-    Header.showTitle("Feeling Lucky?");
-    this.hideSearchForm();
-    this.hideArtistList();
-    this.hideCategoryFilter();
-    this.onlyActivateToolButton("select_four_random_songs");
-    Alpine.store("songlist").selectSevenRandomSongs(() => {
-      Overlay.hide();
-      this.onlyActivateToolButton("select_four_random_songs");
-    });
-  }
-  showSlotMachine() {
-    this.hideSearchForm();
-    this.hideArtistList();
-    this.onlyActivateToolButton("show_slot_machine");
-    Slotmachine.initialize();
-    Slotmachine.show();
-  }
-  hideArtistList() {
-    document
-      .getElementById("root_of_all_evil")
-      .classList.remove("show_artists");
-    // Alpine.store("songlist").allSongs();
-  }
-  toggleArtistList() {
-    this.hideSearchForm();
-    this.onlyActivateToolButton("toggle_show_artists");
-    document.getElementById("root_of_all_evil").classList.add("show_artists");
-    ArtistList.filterByArtist("");
+  selectCurrentZoomLevel() {
+    let zoom_level = "zoom-" + Zoom.currentZoomFromMainElement();
+    let choices = document
+      .getElementById("zoom_form")
+      .getElementsByClassName("zoom-level-choice");
+    for (let choice of choices) {
+      if (choice.className.includes(zoom_level)) {
+        choice.classList.add("current-level");
+      } else {
+        choice.classList.remove("current-level");
+      }
+    }
   }
   toggleBookmarkSong(song_id) {
     Bookmark.toggle(song_id);
@@ -586,7 +666,10 @@ class Toolbar {
     }
   }
 }
+
 Toolbar = new Toolbar();
+SongListToolbar = new SongListToolbar();
+SingleSongToolbar = new SingleSongToolbar();
 
 window.addEventListener("load", () => {
   StickySongList.init();

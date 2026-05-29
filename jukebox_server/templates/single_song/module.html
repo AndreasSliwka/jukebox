@@ -8,7 +8,9 @@ played_at %}
 </div>
 {% endif %}
 <div id="song" class="Song" x-init="Chords.maybeShow()">
-    <h3 class="artist">von {{song.artist}}</h3>
+    <a href="/songs?artist={{song.artist}}" class="artist"
+        >von {{song.artist}}</a
+    >
     {% for block in song.document.blocks %} {% let newline = "\n" %} {% match
     block %} {% when Block::Part(song_part) %}
     <div

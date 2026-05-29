@@ -32,7 +32,7 @@
     }
 
     .artist {
-        @apply text-amber-800 text-right text-sm;
+        @apply text-amber-800 text-right text-sm block;
     }
     .tabulatur,
     .chord_grid {
