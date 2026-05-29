@@ -539,7 +539,6 @@ class SongListToolbar extends Toolbar {
     toggleSearch.classList.remove("active");
     searchForm.classList.add("hidden");
     footer.classList.remove("show_search_form");
-    this.showAllSongs();
   }
   showSearchForm(preloaded_search_term = "") {
     let footer = document.getElementById("footer");
@@ -555,16 +554,6 @@ class SongListToolbar extends Toolbar {
     searchInput.click();
     searchInput.value = preloaded_search_term;
     this.setSearchFilter(preloaded_search_term);
-  }
-  toggleSearchForm() {
-    let searchForm = document.getElementById("search_form");
-
-    if (searchForm.className.split(" ").find((c) => c == "hidden")) {
-      this.showSearchForm();
-    } else {
-      this.hideSearchForm();
-      Alpine.store("songlist").allSongs();
-    }
   }
   setSearchFilter(target) {
     // called by changes from the search input
@@ -587,7 +576,7 @@ class SongListToolbar extends Toolbar {
     this.hideSearchForm();
     this.hideArtistList();
     this.hideCategoryFilter();
-    this.onlyActivateToolButton("show_slot_machine");
+    // this.onlyActivateToolButton("show_slot_machine");
     Slotmachine.initialize();
     Slotmachine.show();
   }
