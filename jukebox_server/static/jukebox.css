@@ -636,6 +636,15 @@ main {
   .chord {
     display: none;
   }
+  .line {
+    display: none;
+  }
+  .line.with-lyrics {
+    display: block;
+  }
+  &.showChords .line.with-chords {
+    display: block;
+  }
   &.showChords .with-chords .chord {
     position: relative;
     display: inline-block;
