@@ -358,12 +358,11 @@
 }
 body {
   background-color: var(--color-amber-100);
-  &.dark_background {
-    background-color: var(--color-amber-300);
-    background-image: url(/static/DEV-Background.png);
-  }
   &.dev {
     background-image: url(/static/DEV-Background.png);
+  }
+  &.dark_background {
+    background-color: var(--color-amber-300);
   }
 }
 header {

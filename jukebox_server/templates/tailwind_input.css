@@ -2,12 +2,11 @@
 
 body {
     @apply bg-amber-100;
-    &.dark_background {
-        @apply bg-amber-300;
-        background-image: url(/static/DEV-Background.png);
-    }
     &.dev {
         background-image: url(/static/DEV-Background.png);
+    }
+    &.dark_background {
+        @apply bg-amber-300;
     }
 }
 /* Header */
