@@ -1,30 +1,3 @@
-class AtticSongList {
-  // companion object to <div id='songlist'>, which contains
-  filterByName(raw_term) {
-    let term = raw_term.toLowerCase();
-
-    document.cookie = "search=" + term.replaceAll("'", "\\'") + ";SameSite=lax";
-    document.cookie = "category=;SameSite=lax";
-    // deselect_category_wof_entries();
-    this._hide_filtered_out_songs("data-name", raw_term.toLowerCase());
-    if (raw_term == "") {
-      SongListToolbar.hideSearchForm();
-    }
-  }
-  setSearchFilter(input) {
-    const term = input.value;
-    if (term.startsWith("admin:")) {
-      let passkey = term.replace(/^admin:/, "");
-      let endpoint = window.location.origin + "/admin?passkey=" + passkey;
-      window.location.href = endpoint;
-    } else {
-      this.filterByName(term);
-    }
-    input.blur();
-  }
-}
-AtticSongList = new AtticSongList();
-
 class Song {
   last_clicked_id = null;
   last_click_when = 0;
@@ -330,6 +303,9 @@ class SongListStore {
   pushSong(song) {
     this.visible.push(song);
   }
+  visibleSongIds() {
+    return this.visible.map((song) => song.id);
+  }
   filterByArtist(artist) {
     console.log("$store.songlist.filterByArtist()", artist);
     let filtered_songs = AllSongs.all_songs.filter(
@@ -504,7 +480,7 @@ class SongListToolbar extends Toolbar {
     console.log("switch SongListToolbar to state", state);
     switch (state) {
       case this.states.AllSongs:
-        this.showAllSongs(); // no additional info :-)
+        this.showAllSongs();
         break;
       case this.states.Search:
         this.showSearchForm(info);
@@ -530,6 +506,7 @@ class SongListToolbar extends Toolbar {
     this.onlyActivateToolButton("all_songs");
     Alpine.store("songlist").allSongs();
     Header.showTitle("Alle Songs");
+    history.replaceState({}, "unused");
   }
   hideSearchForm() {
     let footer = document.getElementById("footer");
@@ -555,9 +532,11 @@ class SongListToolbar extends Toolbar {
     searchInput.value = preloaded_search_term;
     this.setSearchFilter(preloaded_search_term);
   }
-  setSearchFilter(target) {
+  setSearchFilter(original_term) {
     // called by changes from the search input
-    Alpine.store("songlist").setTextFilter(target);
+    Alpine.store("songlist").setTextFilter(original_term);
+    history.replaceState({ search: original_term }, "unused", "/songs");
+    console.log(history.state);
   }
 
   selectSevenRandomSongs(prepicked_songs) {
@@ -570,6 +549,11 @@ class SongListToolbar extends Toolbar {
     Alpine.store("songlist").selectSevenRandomSongs(() => {
       Overlay.hide();
       this.onlyActivateToolButton("select_seven_random_songs");
+      history.replaceState(
+        { random_songs: Alpine.store("songlist").visibleSongIds() },
+        "unused",
+        "/songs",
+      );
     }, prepicked_songs);
   }
   showSlotMachine() {
