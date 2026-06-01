@@ -18,11 +18,10 @@
             .artist {
                 @apply text-amber-800 text-sm;
             }
-            .played {
+            .played-at {
                 @apply text-amber-800 font-mono text-sm;
             }
         }
-
         .tags {
             height: 100%;
             float: right;
@@ -35,6 +34,9 @@
                 text-align: center;
             }
         }
+    }
+    .listed-song.played {
+        @apply opacity-70 shadow-none;
     }
     .listed-song.hidden {
         display: none !important;

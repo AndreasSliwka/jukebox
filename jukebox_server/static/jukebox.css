@@ -709,7 +709,7 @@ main {
         line-height: var(--tw-leading, var(--text-sm--line-height));
         color: var(--color-amber-800);
       }
-      .played {
+      .played-at {
         font-family: var(--font-mono);
         font-size: var(--text-sm);
         line-height: var(--tw-leading, var(--text-sm--line-height));
@@ -727,6 +727,11 @@ main {
         text-align: center;
       }
     }
+  }
+  .listed-song.played {
+    opacity: 70%;
+    --tw-shadow: 0 0 #0000;
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
   .listed-song.hidden {
     display: none !important;

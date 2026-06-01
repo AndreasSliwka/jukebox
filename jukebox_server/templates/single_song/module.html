@@ -86,7 +86,7 @@ played_at %}
     </a>
     {% else %} {% endmatch %}<span>&nbsp;</span> {% if let None = played_at %}
     <a
-        href="?add_to_setlist=1"
+        href="javascript:Song.markAsPlayed()"
         class="btn bg-amber-950 text-white font-bold py-2 px-4 rounded-full"
     >
         ♬ Abhaken

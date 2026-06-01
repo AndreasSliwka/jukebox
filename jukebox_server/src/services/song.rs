@@ -22,33 +22,30 @@ fn maybe_rickroll_to_original(song: &chord_down::Song) -> Option<HttpResponse> {
     )
 }
 
-async fn set_played_at_now_and_redirect(
+fn set_played_at_now(
     song_id: i32,
     maybe_gig_id: Option<i32>,
     request: &HttpRequest,
     connection: &mut SqliteConnection,
-) -> Option<HttpResponse> {
+) -> bool {
     if !is_admin(&request) {
-        return None;
+        return false;
     }
     let mut song_to_be_added_to_gig = false;
     for (key, _value) in querystring::querify(request.query_string()) {
+        debug!("  Request query {}: {}", key, _value);
         if key == "add_to_setlist" {
             song_to_be_added_to_gig = true;
         }
     }
     if !song_to_be_added_to_gig {
-        return None;
+        return false;
     };
 
     if let Some(gig_id) = maybe_gig_id {
         jukebox_db::add_song_to_gig(song_id, gig_id, connection);
     };
-    Some(
-        HttpResponse::SeeOther()
-            .append_header(("Location", request.path()))
-            .body("no session"),
-    )
+    true
 }
 
 #[get("/songs/{song_handle}")]
@@ -78,19 +75,17 @@ pub async fn service(
             .append_header(("Location", "/songs"))
             .body("moved on")),
         Some(song) => {
-            if let Some(redirect) =
-                set_played_at_now_and_redirect(song.id, maybe_gig_id, &request, &mut connection)
-                    .await
-            {
-                return Ok(redirect);
+            if set_played_at_now(song.id, maybe_gig_id, &request, &mut connection) {
+                debug!("Song marked as played^");
+                return Ok(HttpResponse::Ok()
+                    .content_type(ContentType::plaintext())
+                    .body("well played."));
             }
 
             let chord_down_song = chord_down::Song::from_ron(song.serialized_chord_pro);
             if let Some(redirect) = maybe_rickroll_to_original(&chord_down_song) {
                 return Ok(redirect);
             }
-            debug!("song.played_at_gig = {:#?}", song.played_at_gig);
-            debug!("tags = {:#?}", chord_down_song.tags);
             let page_url = crate::services::qrcode::full_url(&app_url, &song_path);
             let template = templates::SongsTemplate {
                 song: chord_down_song,

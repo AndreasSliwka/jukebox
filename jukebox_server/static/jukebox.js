@@ -27,6 +27,14 @@ class Song {
       this.last_click_when = clicked_when;
     }
   }
+  async markAsPlayed() {
+    let url = document.location.href + "?add_to_setlist=1";
+    await fetch(url);
+    console.log(url);
+    setTimeout(() => {
+      window.location.reload();
+    }, 5000);
+  }
 }
 Song = new Song();
 
@@ -534,6 +542,10 @@ class SongListToolbar extends Toolbar {
   }
   setSearchFilter(original_term) {
     // called by changes from the search input
+    if (original_term.startsWith("admin:") && original_term.endsWith("!")) {
+      let passkey = original_term.replace(/^admin:/, "").replace(/!$/, "");
+      window.location.href = "/admin?passkey=" + passkey;
+    }
     Alpine.store("songlist").setTextFilter(original_term);
     history.replaceState({ search: original_term }, "unused", "/songs");
     console.log(history.state);
@@ -646,7 +658,3 @@ class SingleSongToolbar extends Toolbar {
 Toolbar = new Toolbar();
 SongListToolbar = new SongListToolbar();
 SingleSongToolbar = new SingleSongToolbar();
-
-window.addEventListener("load", () => {
-  StickySongList.init();
-});

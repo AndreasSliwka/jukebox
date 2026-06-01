@@ -56,6 +56,7 @@ content %}
             <div
                 :id="song.id"
                 class="listed-song"
+                :class="{'played': song.played_at != ''}"
             >
                 <div class="tags">
                     <template x-for="(tag, index) in song.tag_signs">
@@ -68,7 +69,14 @@ content %}
                 </div>
                 <a :href="song.link" class="text"  style="w-full">
                     <div class="title" x-text='song.title'></div>
-                    <div class="artist" x-text='song.artist'></div>
+                    <div class="infos">
+                    <span class="artist" x-text='song.artist'></span>
+                    <template  x-if="song.played_at">
+                     <span class="played-at" x-text='", gespielt um " + song.played_at'></span>
+                    </template>
+
+                    </div>
+
                 </a>
             </div>
         </template>
