@@ -49,6 +49,7 @@ pub struct AppState {
     pub tags_by_id: Arc<HashMap<i32, (String, String, bool, bool)>>,
     pub base_url: url::Url,
     pub cache: Arc<DashMap<String, String>>,
+    pub mode: Arc<String>,
 }
 
 impl AppState {
@@ -60,12 +61,22 @@ impl AppState {
         let tags_by_id = Arc::new(jukebox_db::all_tags_by_id(&mut connection));
         let base_url = base_url();
         let cache: Arc<DashMap<String, String>> = Arc::new(DashMap::new());
+        let mode: Arc<String> = Arc::new(
+            env::var("MODE")
+                .expect("Set MODE [dev|prod] in Environment or .env")
+                .to_string(),
+        );
         Self {
             pool,
             private_tag_ids,
             tags_by_id,
             base_url,
             cache,
+            mode,
         }
+    }
+
+    pub fn is_dev_mode(&self) -> bool {
+        *self.mode == String::from("dev")
     }
 }

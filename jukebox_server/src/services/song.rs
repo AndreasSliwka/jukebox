@@ -101,6 +101,7 @@ pub async fn service(
                 zoom: crate::services::session::zoom_from_session(&request),
                 qr_code_svg: crate::services::qrcode::qr_code_as_svg(&page_url, &app_state.cache),
                 qr_code_url: page_url.to_string(),
+                is_dev_mode: app_state.is_dev_mode(),
             };
             let html = template.render().unwrap();
             Ok(HttpResponse::Ok()

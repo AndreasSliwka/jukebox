@@ -8,7 +8,9 @@
         <script defer src="/static/jukebox.js"></script>
         <script defer src="/static/alpine_3.15.8.js"></script>
     </head>
-    <body class="{% if dark_background %} dark_background {% endif %}">
+    <body
+        class="{% if is_dev_mode %} dev {% endif %} {% if dark_background %} dark_background {% endif %}"
+    >
         {% block body_content %} Loading ... {% endblock %}
     </body>
 </html>

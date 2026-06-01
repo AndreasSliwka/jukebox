@@ -14,6 +14,7 @@ pub struct SongListIndexTemplate {
     pub zoom: u16,
     pub qr_code_svg: String,
     pub qr_code_url: String,
+    pub is_dev_mode: bool,
 }
 
 #[derive(Template)]
@@ -27,6 +28,7 @@ pub struct SongsTemplate {
     pub zoom: u16,
     pub qr_code_svg: String,
     pub qr_code_url: String,
+    pub is_dev_mode: bool,
 }
 
 #[derive(Template)]
@@ -37,12 +39,14 @@ pub struct QrCodesTemplate {
     pub is_admin: bool,
     pub dark_background: bool,
     pub zoom: u16,
+    pub is_dev_mode: bool,
 }
 
 #[derive(Template)]
 #[template(path = "welcome.html")]
 pub struct WelcomeTemplate {
     pub dark_background: bool,
+    pub is_dev_mode: bool,
 }
 
 #[derive(Template)]
