@@ -1,6 +1,3 @@
-main.song-list {
-    @apply bg-amber-300;
-}
 #songlist,
 #bookmarked {
     @apply flex flex-row flex-wrap p-3;

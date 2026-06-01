@@ -666,9 +666,6 @@ main {
     left: 0;
   }
 }
-main.song-list {
-  background-color: var(--color-amber-300);
-}
 #songlist, #bookmarked {
   display: flex;
   flex-direction: row;
