@@ -9,7 +9,7 @@
         <script defer src="/static/alpine_3.15.8.js"></script>
     </head>
     <body
-        class="{% if is_dev_mode %} dev {% endif %} {% if dark_background %} dark_background {% endif %}"
+        class="{% if is_dev_mode %} dev {% endif %} {% if dark_background %} dark_background {% endif %} {% if is_admin %} admin {% endif %}"
     >
         {% block body_content %} Loading ... {% endblock %}
     </body>

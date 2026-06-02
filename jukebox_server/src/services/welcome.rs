@@ -9,6 +9,7 @@ async fn service(app_state: web::Data<AppState>) -> actix_web::Result<impl Respo
     let html = templates::WelcomeTemplate {
         dark_background: true,
         is_dev_mode: app_state.is_dev_mode(),
+        is_admin: false,
     }
     .render()
     .unwrap();

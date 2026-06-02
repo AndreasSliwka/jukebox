@@ -86,6 +86,7 @@ pub async fn service(
         qr_code_svg: crate::services::qrcode::qr_code_as_svg(&page_url, &cache),
         qr_code_url: page_url.to_string(),
         is_dev_mode: app_state.is_dev_mode(),
+        is_admin: crate::services::session::is_admin(&request),
     };
 
     let html = template.render().unwrap();

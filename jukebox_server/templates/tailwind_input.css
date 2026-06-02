@@ -106,22 +106,6 @@ footer {
             }
         }
     }
-    #toggle_played_songs,
-    #toggle_private_songs {
-        @apply col-start-2 col-span-1 row-start-1;
-    }
-    #show_qr {
-        @apply col-start-3 col-span-1 row-start-1;
-    }
-    #toggle_zoom_selector {
-        @apply col-start-4 col-span-1 row-start-1;
-    }
-    #toggle_chords {
-        @apply col-start-5 col-span-1 row-start-1;
-    }
-    #toggle_tags {
-        @apply col-start-6 col-span-1 row-start-1;
-    }
 }
 
 /* Zoom for all pages */
