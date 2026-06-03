@@ -1,13 +1,14 @@
 use crate::services;
 use crate::templates;
 use crate::types::AppState;
+use actix_session::SessionExt;
 use actix_web::http::header::ContentType;
 use actix_web::{HttpRequest, HttpResponse, Responder, get, web};
 use askama::Template;
 use diesel::SqliteConnection;
 use jukebox_db;
-use log::debug;
-use services::session::{gig_id_from_session, is_admin, start_session_unless_present};
+use log::{debug, info};
+use services::session;
 
 const ORIGINAL_SONG_LINK: &str = "never-gonna-give-you-up--rick-astley";
 
@@ -24,27 +25,41 @@ fn maybe_rickroll_to_original(song: &chord_down::Song) -> Option<HttpResponse> {
 
 fn set_played_at_now(
     song_id: i32,
-    maybe_gig_id: Option<i32>,
+    gig_id: i32,
     request: &HttpRequest,
     connection: &mut SqliteConnection,
 ) -> bool {
-    if !is_admin(&request) {
+    if !session::is_admin(&request) {
+        return false;
+    }
+    if jukebox_db::is_default_gig(gig_id, connection) {
+        debug!(
+            "Could not set played_at for song {} in default_gig ",
+            song_id
+        );
         return false;
     }
     let mut song_to_be_added_to_gig = false;
-    for (key, _value) in querystring::querify(request.query_string()) {
-        debug!("  Request query {}: {}", key, _value);
+    let mut add_to_setlist = false;
+    for (key, value) in querystring::querify(request.query_string()) {
+        debug!("  Request query {}: {}", key, value);
         if key == "add_to_setlist" {
             song_to_be_added_to_gig = true;
+            if value == "1" {
+                add_to_setlist = true;
+            }
         }
     }
     if !song_to_be_added_to_gig {
         return false;
     };
 
-    if let Some(gig_id) = maybe_gig_id {
+    info!("Marking song {} as played in gig {}", song_id, gig_id);
+    if add_to_setlist {
         jukebox_db::add_song_to_gig(song_id, gig_id, connection);
-    };
+    } else {
+        jukebox_db::remove_song_from_gig(song_id, gig_id, connection);
+    }
     true
 }
 
@@ -54,20 +69,20 @@ pub async fn service(
     app_state: web::Data<AppState>,
     request: HttpRequest,
 ) -> actix_web::Result<impl Responder> {
-    if let Some(redirect) = start_session_unless_present(&request) {
-        return Ok(redirect);
-    }
     let song_handle = path.into_inner();
     let song_path = format!("songs/{}", song_handle);
-    let maybe_gig_id = gig_id_from_session(&request);
+    let connection_pool = app_state.pool.clone();
+    let gig_id = session::gig_id_from_session_or_db(
+        &mut request.get_session(),
+        &mut connection_pool.get().unwrap(),
+    );
     let app_url = app_state.base_url.clone();
     let mut connection = app_state.pool.get().expect("could not get connection");
 
     let song_from_db = web::block(move || {
-        jukebox_db::song_by_handle_with_gig_info(&mut connection, song_handle, maybe_gig_id)
+        jukebox_db::song_by_handle_with_gig_info(&mut connection, song_handle, gig_id)
     })
     .await?;
-    debug!("song_from_db = {:#?}", song_from_db);
     let mut connection = app_state.pool.get().expect("could not get connection");
 
     match song_from_db {
@@ -75,8 +90,8 @@ pub async fn service(
             .append_header(("Location", "/songs"))
             .body("moved on")),
         Some(song) => {
-            if set_played_at_now(song.id, maybe_gig_id, &request, &mut connection) {
-                debug!("Song marked as played^");
+            if set_played_at_now(song.id, gig_id, &request, &mut connection) {
+                debug!("Song marked as played");
                 return Ok(HttpResponse::Ok()
                     .content_type(ContentType::plaintext())
                     .body("well played."));

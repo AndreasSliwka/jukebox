@@ -6,14 +6,16 @@ fn main() {
     let mut connection = jukebox_db::establish_single_connection();
     let iso_format = "%Y-%m-%dT%H:%M:%S";
     let now = Local::now().naive_local();
-    let then = now.checked_add_months(Months::new(1)).unwrap();
+    let then = now.checked_add_months(Months::new(1200)).unwrap();
     let new_gig = NewGig {
         name: String::from("The default Gig in the Sky"),
         location: String::from("Auf der Bune am Bolzplatz"),
         date_start: now.format(iso_format).to_string(),
         date_end: then.format(iso_format).to_string(),
         admin_secret: String::from("very_secret"),
-        notes: Some(String::from("Warme Jacke wär gut, weil abends wirds kühl")),
+        notes: String::from("Warme Jacke wär gut, weil abends wirds kühl"),
+        default_gig: 1,
+        show_private: 0,
     };
     save_new_gig(new_gig, &mut connection);
 }

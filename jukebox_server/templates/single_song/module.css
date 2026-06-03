@@ -90,3 +90,17 @@
         left: 0; /* TODO: fix layout for inline chords */
     }
 }
+.single-song {
+    .magic-unplay {
+        background-image: url("/static/rainbow.gif");
+        display: none;
+    }
+    .played {
+        .magic-unplay {
+            display: inline-block;
+        }
+        .mark-as-played {
+            display: none;
+        }
+    }
+}

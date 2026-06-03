@@ -5,15 +5,6 @@ use diesel::prelude::*;
 // use diesel::sqlite::Sqlite;
 // use log::debug;
 use ron;
-use serde::{Deserialize, Serialize};
-
-#[derive(Clone, Copy, Serialize, Deserialize)]
-pub enum SongListOrder {
-    TitleAsc,
-    TitleDesc,
-    ArtistAsc,
-    ArtistDesc,
-}
 
 fn excepted_songs(except_tags: Vec<i32>, connection: &mut SqliteConnection) -> Vec<i32> {
     use crate::schema::tags_on_songs::dsl::*;
@@ -24,36 +15,15 @@ fn excepted_songs(except_tags: Vec<i32>, connection: &mut SqliteConnection) -> V
     query.load(connection).unwrap()
 }
 
-pub fn all_songs(
-    connection: &mut SqliteConnection,
-    order: SongListOrder,
-    except_tags: Vec<i32>,
-    search: Option<String>,
-) -> Vec<SimplifiedSong> {
+pub fn all_songs(connection: &mut SqliteConnection, except_tags: Vec<i32>) -> Vec<SimplifiedSong> {
     use crate::schema::songs::dsl::*;
     let excepted_song_ids = excepted_songs(except_tags, connection);
     let query = SimplifiedSong::query().filter(diesel::dsl::not(id.eq_any(excepted_song_ids)));
-    let query = if let Some(term) = search {
-        query.filter(title.like(format!("%{}%", term)))
-    } else {
-        query.filter(title.like(String::from("%")))
-    };
-    // debug!("All Songs query: {}", debug_query::<Sqlite, _>(&query));
-    match order {
-        SongListOrder::TitleDesc => query
-            .order(crate::schema::songs::title.desc())
-            .load(connection),
-        SongListOrder::TitleAsc => query
-            .order(crate::schema::songs::title.asc())
-            .load(connection),
-        SongListOrder::ArtistAsc => query
-            .order(crate::schema::songs::artist.asc())
-            .load(connection),
-        SongListOrder::ArtistDesc => query
-            .order(crate::schema::songs::artist.desc())
-            .load(connection),
-    }
-    .expect("Error loading songs")
+
+    query
+        .order(crate::schema::songs::title.asc())
+        .load(connection)
+        .expect("Error loading songs")
 }
 
 #[derive(Debug)]
@@ -67,13 +37,11 @@ pub struct SongWithGigInfo {
 
 pub fn maybe_played_at_gig(
     song_id: i32,
-    maybe_gig_id: Option<i32>,
+    gig_id: i32,
     connection: &mut SqliteConnection,
 ) -> Option<String> {
     use crate::schema::songs_in_gigs::dsl;
-    let Some(gig_id) = maybe_gig_id else {
-        return None;
-    };
+
     let query = dsl::songs_in_gigs
         .select(dsl::played_at)
         .filter(dsl::gig_id.eq(gig_id))
@@ -90,7 +58,7 @@ pub fn maybe_played_at_gig(
 pub fn song_by_handle_with_gig_info(
     connection: &mut SqliteConnection,
     song_handle: String,
-    maybe_gig_id: Option<i32>,
+    gig_id: i32,
 ) -> Option<SongWithGigInfo> {
     use crate::schema::songs::dsl;
     let maybe_song = dsl::songs
@@ -103,7 +71,7 @@ pub fn song_by_handle_with_gig_info(
             title: song.title,
             artist: song.artist,
             serialized_chord_pro: song.serialized_chord_pro,
-            played_at_gig: maybe_played_at_gig(song.id, maybe_gig_id, connection),
+            played_at_gig: maybe_played_at_gig(song.id, gig_id, connection),
         })
     } else {
         None
@@ -192,4 +160,13 @@ pub fn delete_all_songs(conn: &mut SqliteConnection) -> () {
     use crate::schema::songs::dsl::*;
 
     let _ = diesel::delete(songs).execute(conn);
+}
+
+pub fn all_listed_songs(connection: &mut SqliteConnection, ids: Vec<i32>) -> Vec<SimplifiedSong> {
+    use crate::schema::songs::dsl::*;
+    SimplifiedSong::query()
+        .order(crate::schema::songs::title.desc())
+        .filter(id.eq_any(ids))
+        .load(connection)
+        .expect("Error loading songs")
 }

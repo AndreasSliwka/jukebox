@@ -75,7 +75,9 @@ played_at %}
     {% endmatch %} {% endfor %}
 </div>
 {% if is_admin %}
-<div class="bg-amber-200 flex flex-row p-1">
+<div
+    class="bg-amber-200 flex flex-row p-1 {% if let Some(_) = played_at %} played {% endif %}"
+>
     {% match song.ytmusic_id %} {% when Some(ytmusic_id) %}
     <a
         class="btn bg-red-600 text-white font-bold py-2 px-4 rounded-full"
@@ -86,11 +88,20 @@ played_at %}
     </a>
     {% else %} {% endmatch %}<span>&nbsp;</span> {% if let None = played_at %}
     <a
-        href="javascript:Song.markAsPlayed()"
-        class="btn bg-amber-950 text-white font-bold py-2 px-4 rounded-full"
+        x-data="{}"
+        @click="Song.markAsPlayed(event.target, 1)"
+        class="mark-as-played bg-amber-950 text-white font-bold py-2 px-4 rounded-full"
     >
-        ♬ Abhaken
+        <span class="icon">♬</span> Abhaken
+    </a>
+    {% endif %}
+    <a
+        x-data="{}"
+        @click="Song.markAsPlayed(event.target, 0)"
+        class="magic-unplay text-white font-bold py-2 px-4 rounded-full"
+    >
+        <span class="icon">♬</span> Enthaken
     </a>
 </div>
-{% endif %} {% endif %}{% include "_footer.html" %} {% include
-"../overlays/module.html" %} {% endblock content %}
+{% endif %}{% include "_footer.html" %} {% include "../overlays/module.html" %}
+{% endblock content %}

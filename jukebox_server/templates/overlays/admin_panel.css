@@ -1,0 +1,105 @@
+#admin_panel {
+    @apply bg-amber-200 border-solid  border-amber-400 absolute;
+    border-width: 1vh;
+    top: 20vh;
+    bottom: 10vh;
+    right: 5vh;
+    left: 5vh;
+    .header {
+        position: absolute;
+        top: -6vh;
+        font-size: 4vh;
+        height: 6vh;
+        left: 6vh;
+        text-align: center;
+        text-shadow: 2px 2px 0px oklch(82.8% 0.189 84.429);
+        width: 32vh;
+        border-width: 1vh;
+        border-bottom: 0px;
+        @apply bg-amber-200 border-solid border-amber-400;
+    }
+
+    form {
+        @apply absolute top-0 left-0 right-0 bottom-0;
+        overflow: scroll;
+        &.errors {
+            fieldset.error {
+                @apply bg-amber-300;
+                textarea {
+                    outline: 2px solid red;
+                }
+            }
+        }
+        fieldset {
+            @apply grid grid-cols-4 grid-rows-1;
+            label {
+                @apply col-span-1;
+            }
+            input,
+            button,
+            .gig-info {
+                @apply col-span-3;
+            }
+        }
+        ul.played-songs {
+            @apply bg-amber-100;
+            li {
+                border-bottom: 1px solid #fee685;
+            }
+        }
+        button.back-to-gig-list {
+            @apply absolute top-0 right-0 p-1 px-3 bg-amber-100 border-amber-400 rounded-bl-xl text-xl;
+        }
+    }
+    .call-to-action {
+        @apply p-1 px-3 mr-3 bg-amber-400 border-amber-400 rounded-xl;
+        border-style: outset;
+    }
+    ul#all-gigs {
+        position: absolute;
+        @apply bg-amber-100;
+        top: 17vh;
+        bottom: 1vh;
+        left: 1vw;
+        right: 1vw;
+        overflow: scroll;
+        li {
+            h3 {
+                @apply font-bold;
+            }
+            h4 {
+                @apply ml-2;
+            }
+            @apply border-amber-200;
+            border-bottom: 1px solid #fee685;
+        }
+        li.default {
+            @apply bg-amber-400;
+        }
+    }
+}
+#admin_qr_code {
+    position: relative;
+
+    h3 {
+        position: absolute;
+        top: -6vh;
+        font-size: 4vh;
+        height: 8vh;
+        left: 6vh;
+        text-align: center;
+        color: black;
+
+        text-shadow:
+            2px 2px 0px white,
+            -2px -2px 0px white;
+        width: 32vh;
+        background-image: url("/static/rainbow.gif");
+        background-size: contain;
+        @apply text-4xl;
+    }
+    @apply absolute top-0 bottom-0 left-0 right-0 bg-amber-100;
+    .svg-container {
+        margin-top: 4vh;
+    }
+}

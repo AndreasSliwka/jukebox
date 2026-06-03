@@ -107,6 +107,12 @@ footer {
         }
     }
 }
+.single-song #footer {
+    @apply grid grid-cols-5 grid-rows-2;
+}
+.admin .single-song #footer {
+    @apply grid grid-cols-6 grid-rows-2;
+}
 
 /* Zoom for all pages */
 @import "./zoom/module.css";

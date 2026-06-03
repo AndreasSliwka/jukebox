@@ -16,7 +16,7 @@ pub struct Song {
     pub serialized_chord_pro: String,
 }
 
-#[derive(Debug, Clone, Insertable, HasQuery)]
+#[derive(Debug, Clone, Insertable, Serialize, AsChangeset, Deserialize, HasQuery)]
 #[diesel(table_name = crate::schema::gigs)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct Gig {
@@ -26,7 +26,40 @@ pub struct Gig {
     pub date_start: String,
     pub date_end: String,
     pub admin_secret: String,
-    pub notes: Option<String>,
+    pub notes: String,
+    pub default_gig: i32,
+    pub show_private: i32,
+}
+
+#[derive(Debug, Serialize)]
+pub struct GigWithPlayedSongs {
+    pub id: i32,
+    pub name: String,
+    pub location: String,
+    pub date_start: String,
+    pub date_end: String,
+    pub admin_secret: String,
+    pub notes: String,
+    pub default_gig: i32,
+    pub show_private: i32,
+    pub played_song_ids: Vec<String>,
+}
+
+impl GigWithPlayedSongs {
+    pub fn from(gig: &Gig, played_song_ids: Vec<String>) -> Self {
+        Self {
+            id: gig.id,
+            name: gig.name.clone(),
+            location: gig.location.clone(),
+            date_start: gig.date_start.clone(),
+            date_end: gig.date_end.clone(),
+            admin_secret: gig.admin_secret.clone(),
+            notes: gig.notes.clone(),
+            default_gig: gig.default_gig,
+            show_private: gig.show_private,
+            played_song_ids,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, HasQuery)]
@@ -64,7 +97,7 @@ pub struct SongWithLinkAndTags {
     pub played_at: String,
 }
 
-fn only_hours_and_minutes(played_at: String) -> String {
+fn _only_hours_and_minutes(played_at: String) -> String {
     // 2026-06-01T13:15:22.328178
     static HOURS_AND_MINUTES: LazyLock<Regex> =
         LazyLock::new(|| Regex::new(r".*T(..:..).*").unwrap());
@@ -77,16 +110,13 @@ fn only_hours_and_minutes(played_at: String) -> String {
 impl SongWithLinkAndTags {
     pub fn from(
         simplified: &SimplifiedSong,
-        songs_played: &HashMap<i32, Option<String>>,
+        songs_played: &HashMap<i32, String>,
         tags_by_song: &HashMap<i32, Vec<i32>>,
         all_tags: &HashMap<i32, (String, String, bool, bool)>,
     ) -> Self {
-        let played_at = match songs_played.get(&simplified.id).clone() {
-            None => String::from(""),
-            Some(option_ref) => match option_ref {
-                None => String::from(""),
-                Some(string_ref) => only_hours_and_minutes(string_ref.as_str().to_string()),
-            },
+        let played_at: &str = match songs_played.get(&simplified.id).clone() {
+            None => "",
+            Some(played_at) => played_at.as_str(),
         };
         let tag_signs = tags_by_song
             .get(&simplified.id)
@@ -101,7 +131,7 @@ impl SongWithLinkAndTags {
             artist: simplified.artist.clone(),
             link: simplified.link(),
             tag_signs,
-            played_at,
+            played_at: String::from(played_at),
         }
     }
 }
@@ -126,7 +156,7 @@ impl NewSong {
     }
 }
 
-#[derive(Insertable)]
+#[derive(Insertable, Debug, Deserialize, Serialize)]
 #[diesel(table_name = gigs)]
 pub struct NewGig {
     pub name: String,
@@ -134,7 +164,9 @@ pub struct NewGig {
     pub date_start: String,
     pub date_end: String,
     pub admin_secret: String,
-    pub notes: Option<String>,
+    pub notes: String,
+    pub default_gig: i32,
+    pub show_private: i32,
 }
 
 #[derive(Insertable, Selectable, Queryable, Debug)]

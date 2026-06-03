@@ -1,4 +1,5 @@
 pub mod admin;
+pub mod gigs;
 pub mod no_shoes_no_shirt;
 pub mod qrcode;
 pub mod session;

@@ -17,9 +17,6 @@ fn validate_passkey(passkey: &str, session: &Session) {
 
 #[get("/admin")]
 async fn service(request: HttpRequest) -> actix_web::Result<impl Responder> {
-    if let Some(redirect) = crate::services::session::start_session_unless_present(&request) {
-        return Ok(redirect);
-    }
     for (key, value) in querystring::querify(request.query_string()) {
         if key == "passkey" {
             let session = request.get_session();

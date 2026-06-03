@@ -27,13 +27,18 @@ class Song {
       this.last_click_when = clicked_when;
     }
   }
-  async markAsPlayed() {
-    let url = document.location.href + "?add_to_setlist=1";
+  async markAsPlayed(button, value) {
+    console.log(button);
+    button.disabled = true;
+    let url = document.location.href + "?add_to_setlist=" + value;
     await fetch(url);
-    console.log(url);
     setTimeout(() => {
-      window.location.reload();
-    }, 5000);
+      if (value == 1) {
+        button.parentElement.classList.add("played");
+      } else {
+        button.parentElement.classList.remove("played");
+      }
+    }, 1000);
   }
 }
 Song = new Song();
@@ -190,14 +195,16 @@ class StickySongList {
 StickySongList = new StickySongList();
 
 class Overlay {
-  show(modal_content_id) {
+  show(modal_content_id, hide_others = true) {
     // hide overlay, hide all possibly open elements in the modal,
     // then show the qr code, then show the overlay
     let overlay = document.getElementById("overlay");
     let modal = document.getElementById("modal");
     overlay.dispatchEvent(new Event("hide"));
-    for (const content of overlay.getElementsByClassName("modal-content")) {
-      if (content.id != modal_content_id) content.classList.add("hidden");
+    if (hide_others) {
+      for (const content of overlay.getElementsByClassName("modal-content")) {
+        if (content.id != modal_content_id) content.classList.add("hidden");
+      }
     }
     let display = document.getElementById(modal_content_id);
     display.classList.remove("hidden");
@@ -213,6 +220,18 @@ class Overlay {
 
     Toolbar.onlyActivateToolButton("no such button");
     overlay.classList.add("hidden");
+  }
+  async showAdminQR(gig_id) {
+    const response = await fetch(`/gigs/${gig_id}/admin_qr`);
+    const qr_code = await response.json();
+    console.log("qr_code ", qr_code);
+    Alpine.store("gigs").qr_code = qr_code;
+    const modal = document.getElementById("admin_qr_code");
+    modal.classList.remove("hidden");
+  }
+  hideAdminQR() {
+    const modal = document.getElementById("admin_qr_code");
+    modal.classList.add("hidden");
   }
 }
 Overlay = new Overlay();
@@ -321,7 +340,15 @@ class SongListStore {
     );
     this.update(filtered_songs);
   }
-
+  filterPlayedSongs(played) {
+    let filtered_songs = AllSongs.all_songs
+      .filter((song) => song.played_at != "")
+      .toSorted((a, b) => a.played_at.localeCompare(b.played_at));
+    console.log(
+      filtered_songs.map((song) => [song.id, song.title, song.played_at]),
+    );
+    this.update(filtered_songs);
+  }
   selectSevenRandomSongs(andThen = () => {}, prepicked_songs = "") {
     this.update([]);
     const store = this;
@@ -354,9 +381,182 @@ class SongListStore {
     maybe_show_select_song();
   }
 }
+class Secret {
+  static zahlen = [
+    "zwei",
+    "drei",
+    "vier",
+    "fuenf",
+    "sechs",
+    "sieben",
+    "acht",
+    "neun",
+    "zehn",
+    "elf",
+  ];
+  static farben = [
+    "rote",
+    "gruene",
+    "blaue",
+    "gelbe",
+    "violette",
+    "braune",
+    "schwarze",
+    "weisse",
+    "graue",
+    "orange",
+  ];
+  static tiere = [
+    "enten",
+    "schweine",
+    "hunde",
+    "katzen",
+    "maeuse",
+    "fische",
+    "alpacas",
+  ];
+  static random_secret() {
+    return (
+      Secret.zahlen[Math.floor(Math.random() * Secret.zahlen.length)] +
+      "-" +
+      Secret.farben[Math.floor(Math.random() * Secret.farben.length)] +
+      "-" +
+      Secret.tiere[Math.floor(Math.random() * Secret.tiere.length)]
+    );
+  }
+}
+class GigsStore {
+  selected_gig = null;
+  all_gigs = [];
+  last_click_when = false;
+  qr_code = {};
+  can_edit_gig = false;
+  selectGig(gig_id) {
+    let original = this.all_gigs.find((gig) => gig.id === gig_id);
+    let gig = JSON.parse(JSON.stringify(original));
+    gig.errors = {};
+    gig.show_private = gig.show_private == 1;
+    gig.default_gig = gig.default_gig == 1;
+
+    this.selected_gig = gig;
+    this.can_edit_gig = gig.id === this.all_gigs[0].id && !gig.default_gig;
+  }
+  unselectGig() {
+    this.selected_gig = null;
+  }
+  createNewGig() {
+    this.selected_gig = {
+      id: "none",
+      name: "",
+      location: "",
+      date_start: "",
+      date_end: "",
+      admin_secret: Secret.random_secret(),
+      notes: "",
+      show_private: false,
+      default_gig: false,
+      errors: {},
+    };
+    this.can_edit_gig = true;
+    console.log("create new gig", this.selected_gig);
+  }
+  async parseResponse(response) {
+    const json = await response.json();
+    console.log("reponse JSON = ", json);
+    this.all_gigs = json.all_gigs;
+    if (json.updated_gig) {
+      this.selected_gig = json.updated_gig;
+      this.selected_gig.errors = {};
+    } else if (json.current_gig) {
+      this.selected_gig = json.current_gig;
+      this.selected_gig.errors = {};
+    }
+    console.log("updated_gig = ", this.selected_gig);
+
+    this.last_gig_not_finished = this.all_gigs[0].date_end === "";
+    this.can_edit_gig =
+      this.selected_gig &&
+      this.selected_gig.id === this.all_gigs[0].id &&
+      !this.selected_gig.default_gig;
+    console.log("can_edit_gig = ", this.can_edit_gig);
+  }
+  async loadGigs() {
+    const response = await fetch("/gigs");
+    console.log("loadGigs received response", response);
+    await this.parseResponse(response);
+  }
+  gig_has_errors() {
+    this.selected_gig.name = document.getElementById("gig-name").value;
+    this.selected_gig.location = document.getElementById("gig-location").value;
+    this.selected_gig.notes = document.getElementById("gig-notes").value;
+    this.selected_gig.errors = {};
+    if (this.selected_gig.name == "") {
+      this.selected_gig.errors.name = "Name darf nicht leer sein";
+    }
+    if (Object.keys(this.selected_gig.errors).length) {
+      console.log(
+        "gig_has_errors: errors = ",
+        Object.keys(this.selected_gig.errors),
+      );
+      return true;
+    }
+    return false;
+  }
+  async transmitGig(method = "POST") {
+    const gig = JSON.parse(JSON.stringify(this.selected_gig));
+    gig.show_private = gig.show_private ? 1 : 0;
+    gig.default_gig = gig.default_gig ? 1 : 0;
+    const response = await fetch("/gigs", {
+      method: method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(gig),
+    });
+    await this.parseResponse(response);
+  }
+  async startSelectedGig() {
+    if (this.gig_has_errors()) {
+      return;
+    }
+
+    this.selected_gig.date_start = "now";
+    let method = "POST";
+    if (this.selected_gig.id === "none") {
+      method = "PUT";
+    }
+    await this.transmitGig(method);
+  }
+  async stopSelectedGig() {
+    if (this.gig_has_errors()) {
+      return;
+    }
+
+    this.selected_gig.date_end = "now";
+    await this.transmitGig();
+  }
+  async unstopSelectedGig() {
+    if (this.gig_has_errors()) {
+      return;
+    }
+
+    this.selected_gig.date_end = "";
+    await this.transmitGig();
+  }
+  async songsPlayedInSelectedGig() {
+    const response = await fetch(`/gig/${this.selected_gig.id}/songs`);
+    console.log(response);
+    const json = await response.json();
+    console.log("songsPlayedInSelectedGig = ", json);
+    this.selected_gig.songs = json;
+    return json;
+  }
+}
+
 document.addEventListener("alpine:init", () => {
   Alpine.store("reels", new ReelsStore());
   Alpine.store("songlist", new SongListStore());
+  Alpine.store("gigs", new GigsStore());
 });
 
 class ArtistList {
@@ -376,6 +576,7 @@ class ArtistList {
     li_element?.classList.add("selected");
     li_element?.scrollIntoView({ behavior: "instant" });
     Alpine.store("songlist").filterByArtist(artist_name);
+    Header.showWhichCategory(artist_name);
   }
 }
 ArtistList = new ArtistList();
@@ -422,6 +623,7 @@ Slotmachine = new Slotmachine();
 
 class Header {
   showWhichCategory(unicode) {
+    if (!unicode) return;
     let category_info = document.getElementById("which_category");
 
     category_info.classList.remove("hidden");
@@ -449,62 +651,79 @@ class Toolbar {
   showQrOverlay() {
     Overlay.show("qr_code");
   }
+  showAdminPanel() {
+    Alpine.store("gigs").loadGigs();
+    Overlay.show("admin_panel");
+  }
 }
 
 class SongListToolbar extends Toolbar {
   states = {
-    AllSongs: "Alle Songs",
-    Search: "Suche",
-    ArtistList: "Künstler",
-    SlotMachine: "Slot Machine",
-    SevenRandomSongs: "7 zufällige Songs",
+    AllSongs: "all",
+    Search: "search",
+    ArtistList: "artistList",
+    PlayedSongs: "playedSongs",
+    SlotMachine: "slotMachine",
+    SevenRandomSongs: "randomSongs",
   };
   current_state = this.states.AllSongs;
   hideCategoryFilter() {
     document.getElementById("which_category").classList.add("hidden");
   }
-  parseStateFromUrl() {
+  parseStateFromUrlOrCookie() {
+    console.log("SongListToolbar.parseStateFromUrlOrCookie");
     const url = new URL(window.location.href);
-    const searchParams = url.searchParams.get("search");
-    if (searchParams) {
-      return this.switchToState(this.states.Search, searchParams);
-    }
-    const artist = url.searchParams.get("artist");
-    if (artist) {
-      return this.switchToState(this.states.ArtistList, artist);
-    }
-    const slots = url.searchParams.get("slots");
-    if (slots) {
-      return this.switchToState(this.states.SlotMachine, slots);
-    }
-    const randomSongs = url.searchParams.get("random_songs");
-    if (randomSongs) {
-      return this.switchToState(this.states.SevenRandomSongs, randomSongs);
-    }
+    if (url.searchParams.size != 0) {
+      let state = url.searchParams.keys().next().value;
+      let specifics = url.searchParams.get(state);
 
-    this.switchToState(this.states.AllSongs);
+      return this.switchToState(state, specifics);
+    }
+    console.log("no search params, restoring from cookie");
+    this.restoreFromCookie();
   }
-  switchToState(state, info = "") {
+  switchToState(state, specifics = "") {
     console.log("switch SongListToolbar to state", state);
     switch (state) {
       case this.states.AllSongs:
         this.showAllSongs();
         break;
       case this.states.Search:
-        this.showSearchForm(info);
+        if (specifics.startsWith("admin:")) {
+          this.showSearchForm("");
+        } else {
+          this.showSearchForm(specifics);
+        }
         break;
       case this.states.ArtistList:
-        this.showArtistList(info);
+        this.showArtistList(specifics);
+        break;
+      case this.states.PlayedSongs:
+        this.showPlayedSongs(specifics);
         break;
       case this.states.SlotMachine:
-        this.showSlotMachine(info);
+        this.showSlotMachine(specifics);
         break;
       case this.states.SevenRandomSongs:
-        this.selectSevenRandomSongs(info);
+        this.selectSevenRandomSongs(specifics);
         break;
       default:
+        console.log("unknown state ", state);
+        this.showAllSongs();
         return;
     }
+  }
+  saveState(state, info = 1) {
+    console.log("SongListToolbar.saveState", state, info);
+    Cookies.setValue("state", JSON.stringify({ [state]: info }));
+  }
+  restoreFromCookie() {
+    let state = Cookies.getValue("state");
+    if (!state) return;
+    console.log("SongListToolbar.restoreFromCookie", state);
+    state = JSON.parse(state);
+    let key = Object.keys(state)[0];
+    this.switchToState(key, state[key]);
   }
   showAllSongs() {
     this.current_state = this.states.AllSongs;
@@ -514,7 +733,7 @@ class SongListToolbar extends Toolbar {
     this.onlyActivateToolButton("all_songs");
     Alpine.store("songlist").allSongs();
     Header.showTitle("Alle Songs");
-    history.replaceState({}, "unused");
+    this.saveState(this.states.AllSongs);
   }
   hideSearchForm() {
     let footer = document.getElementById("footer");
@@ -547,7 +766,7 @@ class SongListToolbar extends Toolbar {
       window.location.href = "/admin?passkey=" + passkey;
     }
     Alpine.store("songlist").setTextFilter(original_term);
-    history.replaceState({ search: original_term }, "unused", "/songs");
+    this.saveState(this.states.Search, original_term);
     console.log(history.state);
   }
 
@@ -561,10 +780,9 @@ class SongListToolbar extends Toolbar {
     Alpine.store("songlist").selectSevenRandomSongs(() => {
       Overlay.hide();
       this.onlyActivateToolButton("select_seven_random_songs");
-      history.replaceState(
-        { random_songs: Alpine.store("songlist").visibleSongIds() },
-        "unused",
-        "/songs",
+      this.saveState(
+        this.states.randomSongs,
+        Alpine.store("songlist").visibleSongIds(),
       );
     }, prepicked_songs);
   }
@@ -588,6 +806,14 @@ class SongListToolbar extends Toolbar {
     this.onlyActivateToolButton("toggle_show_artists");
     document.getElementById("root_of_all_evil").classList.add("show_artists");
     ArtistList.filterByArtist(preloaded_artist);
+  }
+  showPlayedSongs(preloaded_played = "") {
+    this.hideSearchForm();
+    this.hideCategoryFilter();
+    this.onlyActivateToolButton("filter_played_songs");
+    Alpine.store("songlist").filterPlayedSongs(preloaded_played);
+    this.saveState(this.states.PlayedSongs);
+    Header.showWhichCategory("gespielten");
   }
 }
 
@@ -653,8 +879,22 @@ class SingleSongToolbar extends Toolbar {
       document.getElementById("toggle_chords").classList.remove("active");
     }
   }
+  backToSongList() {
+    console.log("backToSongList", history.state);
+    let song_list_url = new URL("/songs", window.location.href);
+    for (const key in history.state) {
+      console.log("  key", key, "value", history.state[key]);
+      song_list_url.searchParams.set(key, history.state[key]);
+    }
+    console.log("  song_list_url", song_list_url.toString());
+    window.location.href = song_list_url.toString();
+  }
 }
 
 Toolbar = new Toolbar();
 SongListToolbar = new SongListToolbar();
 SingleSongToolbar = new SingleSongToolbar();
+
+function only_hours_and_minutes(played_at) {
+  return played_at.replace(/.*T(..:..).*/, "$1");
+}

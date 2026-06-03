@@ -7,8 +7,10 @@ diesel::table! {
         location -> Text,
         date_start -> Text,
         date_end -> Text,
-        notes -> Nullable<Text>,
+        notes -> Text,
         admin_secret -> Text,
+        default_gig -> Integer,
+        show_private -> Integer,
     }
 }
 
@@ -49,5 +51,4 @@ diesel::table! {
 
 diesel::joinable!(songs_in_gigs -> gigs (gig_id));
 
-diesel::allow_tables_to_appear_in_same_query!(
-    gigs,songs,songs_in_gigs,tags,tags_on_songs,);
+diesel::allow_tables_to_appear_in_same_query!(gigs, songs, songs_in_gigs, tags, tags_on_songs,);

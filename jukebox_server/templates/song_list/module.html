@@ -15,7 +15,7 @@ content %}
       StickySongList.init();
     });
     window.addEventListener("load", () => {
-       SongListToolbar.parseStateFromUrl();
+       SongListToolbar.parseStateFromUrlOrCookie();
     });
 {{ "</script>" | safe }}
 
@@ -72,7 +72,7 @@ content %}
                     <div class="infos">
                     <span class="artist" x-text='song.artist'></span>
                     <template  x-if="song.played_at">
-                     <span class="played-at" x-text='", gespielt um " + song.played_at'></span>
+                     <span class="played-at" x-text='", gespielt um " + only_hours_and_minutes(song.played_at)'></span>
                     </template>
 
                     </div>

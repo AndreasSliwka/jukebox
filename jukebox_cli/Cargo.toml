@@ -23,11 +23,13 @@ path = "src/cli/create_default_gig.rs"
 name = "run_pending_migrations"
 path = "src/cli/run_pending_migrations.rs"
 
-
 [[bin]]
 name = "update_all_tags_from_tsv"
 path = "src/cli/update_all_tags_from_tsv.rs"
 
+[[bin]]
+name = "print_admin_url"
+path = "src/cli/print_admin_url.rs"
 
 [dependencies]
 jukebox_db = { path = "../jukebox_db" }
@@ -35,3 +37,4 @@ regex = "1.12.3"
 chord_down = { path = "../chord_down" }
 chrono = "0.4.44"
 dotenvy = "0.15.7"
+url = "2.5.8"

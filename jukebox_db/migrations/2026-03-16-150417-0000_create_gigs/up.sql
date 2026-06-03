@@ -5,6 +5,8 @@ CREATE TABLE gigs (
   location VARCHAR NOT NULL,
   date_start VARCHAR NOT NULL,
   date_end VARCHAR NOT NULL,
-  notes TEXT DEFAULT '',
-  admin_secret VARCHAR NOT NULL
+  notes TEXT NOT NULL,
+  admin_secret VARCHAR NOT NULL,
+  show_private INTEGER NOT NULL DEFAULT 0,
+  default_gig INTEGER NOT NULL DEFAULT 0
 )

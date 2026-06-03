@@ -1,0 +1,219 @@
+<div
+    id="admin_panel"
+    class="modal-content hidden"
+    x-on:click.stop.prevent="false"
+    x-data=""
+>
+    <h2 class="header">Gig Verwalten</h2>
+    <template x-if="$store.gigs.selected_gig">
+        <form :class="{errors: $store.gigs.selected_gig.errors}">
+            <button class="back-to-gig-list" @click="$store.gigs.unselectGig()">
+                ✕
+            </button>
+            <template x-if="$store.gigs.can_edit_gig">
+                <div>
+                    <fieldset
+                        :class="{error: $store.gigs.selected_gig.errors.name}"
+                    >
+                        <label for="name">Name:</label>
+                        <input
+                            name="name"
+                            id="gig-name"
+                            placeholder="e.g. Freestyle Lagerfeuer #7"
+                            :value="$store.gigs.selected_gig.name"
+                        ></input>
+                    </fieldset>
+                    <fieldset
+                        :class="{error: $store.gigs.selected_gig.errors.location}"
+                    >
+                        <label for="location">Where:</label>
+                        <input
+                            id="gig-location"
+                            name="location"
+                            placeholder="e.g. Küfer Jupp"
+                            :value="$store.gigs.selected_gig.location"
+                        ></input>
+                    </fieldset>
+                    <fieldset
+                        :class="{error: $store.gigs.selected_gig.errors.notes}"
+                    >
+                        <label for="notes">Notes:</label>
+                        <input
+                            id="gig-notes"
+                            name="notes"
+                            placeholder="e.g. Bitte im Affenkostüm"
+                            :value="$store.gigs.selected_gig.notes"
+                        ></input>
+                    </fieldset>
+                    <fieldset
+                        :class="{error: $store.gigs.selected_gig.errors.notes}"
+                    >
+                        <label for="notes">Secret:</label>
+                        <button
+                            type="button"
+                            @click="Overlay.showAdminQR($store.gigs.selected_gig.id)"
+                            class="call-to-action"
+                            x-text="$store.gigs.selected_gig.admin_secret"
+                        >
+                            Jetzt starten!
+                        </button>
+                    </fieldset>
+                </div>
+            </template>
+            <template x-if="!$store.gigs.can_edit_gig">
+                <div>
+                    <fieldset>
+                        <label for="name">Name:</label>
+                        <div
+                            class="gig-info"
+                            name="name"
+                            id="gig-name"
+                            readonly="readonly"
+                            :x-text="$store.gigs.selected_gig.name"
+                        ></div>
+                    </fieldset>
+                    <fieldset>
+                        <label for="location">Where:</label>
+                        <div
+                            class="gig-info"
+                            id="gig-location"
+                            name="location"
+                            readonly="readonly"
+                            x-text="$store.gigs.selected_gig.location"
+                        ></div>
+                    </fieldset>
+                    <fieldset>
+                        <label for="notes">Notes:</label>
+                        <div
+                            class="gig-info"
+                            id="gig-notes"
+                            name="notes"
+                            readonly="readonly"
+                            x-text="$store.gigs.selected_gig.notes"
+                        ></div>
+                    </fieldset>
+                </div>
+            </template>
+
+            <fieldset>
+                <label>Von:</label>
+                <input
+                    type="datetime"
+                    readonly="readonly"
+                    :value="$store.gigs.selected_gig.date_start"
+                />
+            </fieldset>
+            <fieldset>
+                <label>Bis:</label>
+                <input
+                    type="datetime"
+                    readonly="readonly"
+                    :value="$store.gigs.selected_gig.date_end"
+                />
+            </fieldset>
+            <template x-if="! $store.gigs.selected_gig.date_start">
+                <fieldset>
+                    <label></label>
+                    <button
+                        type="button"
+                        @click="$store.gigs.startSelectedGig()"
+                        class="call-to-action"
+                    >
+                        Jetzt starten!
+                    </button>
+                </fieldset>
+            </template>
+            <template
+                x-if="$store.gigs.can_edit_gig &&
+                       $store.gigs.selected_gig.date_start && !$store.gigs.selected_gig.date_end"
+            >
+                <fieldset>
+                    <label></label>
+                    <button
+                        type="button"
+                        @click="$store.gigs.stopSelectedGig()"
+                        class="call-to-action"
+                    >
+                        Jetzt aufhören!
+                    </button>
+                </fieldset>
+            </template>
+            <template
+                x-if="$store.gigs.can_edit_gig && $store.gigs.selected_gig.date_start && $store.gigs.selected_gig.date_end"
+            >
+                <fieldset>
+                    <label></label>
+                    <button
+                        type="button"
+                        @click="$store.gigs.unstopSelectedGig()"
+                        class="call-to-action"
+                    >
+                        Weitermachen!
+                    </button>
+                </fieldset>
+            </template>
+            <template x-if="$store.gigs.selected_gig.default_gig">
+                <p>Dieser Gig kann nicht geändert werden</p>
+            </template>
+            <h2>Gespielte Songs:</h2>
+            <ul
+                class="played-songs"
+                x-data="{songs: $store.gigs.songsPlayedInSelectedGig()}"
+            >
+                <template x-for="song in songs">
+                    <li>
+                        <span class="title" x-text="song.title"></span> -
+                        <span class="artist" x-text="song.artist"></span>
+                    </li>
+                </template>
+            </ul>
+        </form>
+    </template>
+    <template x-if="!$store.gigs.selected_gig">
+        <div>
+            <template x-if="!$store.gigs.last_gig_not_finished">
+                <div>
+                    <p>Grade läuft kein Gig. Kann nicht sein!</p>
+                    <button
+                        @click="$store.gigs.createNewGig()"
+                        class="call-to-action"
+                    >
+                        Neuen Gig starten
+                    </button>
+                </div>
+            </template>
+            <template x-if="$store.gigs.last_gig_not_finished">
+                <div>
+                    <p>Grade läuft ein Gig!</p>
+                    <button
+                        @click="$store.gigs.selectGig($store.gigs.all_gigs[0].id)"
+                        class="call-to-action"
+                    >
+                        Gig bearbeiten
+                    </button>
+                </div>
+            </template>
+
+            <ul x-data="" id="all-gigs">
+                <template x-for="gig in $store.gigs.all_gigs">
+                    <li
+                        @click.prevent="$store.gigs.selectGig(gig.id)"
+                        :id="'gig-' + gig.id"
+                        :class="{default: gig.default_gig}"
+                    >
+                        <h3
+                            class="name"
+                            x-text="gig.name + ' (' + gig.played_song_ids.length + ' Lied)'"
+                        />
+                        <h4 class="location" x-text="gig.location" />
+                        <h4 class="when" x-text="gig.date_start" />
+                    </li>
+                </template>
+            </ul>
+        </div>
+    </template>
+    <div id="admin_qr_code" class="hidden modal-content">
+        <h3>Admins only!</h3>
+        <div class="svg-container" x-html="$store.gigs.qr_code.svg" @click="Overlay.hideAdminQR()"></div>
+    </div>
+</div>

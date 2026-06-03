@@ -31,11 +31,12 @@
         :class="{active: Chords.showInline()}"
         >C7</a
     >
+    {% if is_admin %}
     <a
         id="being_admin"
-        href="javascript:SingleSongToolbar.becomeAdmin()"
+        href="javascript:SingleSongToolbar.showAdminPanel()"
         class="toolbar-button at-6-1"
-        >🪛</a
+        >📅</a
     >
-    {% include "zoom/form.html" %}
+    {% endif %} {% include "zoom/form.html" %}
 </footer>

@@ -1308,6 +1308,7 @@ dependencies = [
  "dotenvy",
  "jukebox_db",
  "regex",
+ "url",
 ]
 
 [[package]]
@@ -1336,6 +1337,7 @@ dependencies = [
  "askama",
  "base64 0.22.1",
  "chord_down",
+ "chrono",
  "dashmap",
  "diesel",
  "dotenvy",

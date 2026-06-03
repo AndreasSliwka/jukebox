@@ -1,5 +1,6 @@
 <div id="overlay" class="hidden" x-data="" x-on:click="Overlay.hide()">
     <div id="shadow"></div>
+    {% include "overlays/_admin_panel.html" %}
     <div id="modal" class="hidden" x-on:click.stop.prevent="true;">
         <div id="qr_code" data="{{qr_code_url}}" class="hidden modal-content">
             {{ qr_code_svg | safe }}
