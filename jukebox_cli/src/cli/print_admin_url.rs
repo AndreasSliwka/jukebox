@@ -5,13 +5,9 @@ fn main() {
     dotenv().ok();
 
     let mut connection = jukebox_db::establish_single_connection();
-    let Some(gig) = jukebox_db::current_gig_from_db(&mut connection) else {
-        println!("No current gig found");
-        return;
-    };
+    let gig = jukebox_db::current_gig_from_db_or_default(&mut connection);
     if gig.default_gig == 1 {
-        println!("Only gig found");
-        return;
+        println!("Danger, Will Robinson: this is the default gig");
     }
     let base_url_string = env::var("BASE_URL").expect("BASE_URL must be set");
     let mut base_url =

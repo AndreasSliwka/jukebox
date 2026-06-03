@@ -26,7 +26,7 @@
                     <fieldset
                         :class="{error: $store.gigs.selected_gig.errors.location}"
                     >
-                        <label for="location">Where:</label>
+                        <label for="location">Ort:</label>
                         <input
                             id="gig-location"
                             name="location"
@@ -37,7 +37,7 @@
                     <fieldset
                         :class="{error: $store.gigs.selected_gig.errors.notes}"
                     >
-                        <label for="notes">Notes:</label>
+                        <label for="notes">Was:</label>
                         <input
                             id="gig-notes"
                             name="notes"
@@ -46,17 +46,26 @@
                         ></input>
                     </fieldset>
                     <fieldset
-                        :class="{error: $store.gigs.selected_gig.errors.notes}"
+                        :class="{error: $store.gigs.selected_gig.errors.admin_secret}"
                     >
-                        <label for="notes">Secret:</label>
-                        <button
-                            type="button"
-                            @click="Overlay.showAdminQR($store.gigs.selected_gig.id)"
-                            class="call-to-action"
-                            x-text="$store.gigs.selected_gig.admin_secret"
-                        >
-                            Jetzt starten!
-                        </button>
+                        <label for="notes">Passwort:</label>
+                        <template x-if="!$store.gigs.selected_gig.date_start">
+                            <input
+                                id="gig-secret"
+                                name="admin_secret"
+                                :value="$store.gigs.selected_gig.admin_secret"
+                            ></input>
+                        </template>
+                        <template x-if="$store.gigs.selected_gig.date_start">
+                            <button
+                                type="button"
+                                @click="Overlay.showAdminQR($store.gigs.selected_gig.id)"
+                                class="call-to-action"
+                                x-text="$store.gigs.selected_gig.admin_secret"
+                            >
+                                Jetzt starten!
+                            </button>
+                        </template>
                     </fieldset>
                 </div>
             </template>
@@ -73,7 +82,7 @@
                         ></div>
                     </fieldset>
                     <fieldset>
-                        <label for="location">Where:</label>
+                        <label for="location">Ort:</label>
                         <div
                             class="gig-info"
                             id="gig-location"
@@ -83,7 +92,7 @@
                         ></div>
                     </fieldset>
                     <fieldset>
-                        <label for="notes">Notes:</label>
+                        <label for="notes">Was:</label>
                         <div
                             class="gig-info"
                             id="gig-notes"

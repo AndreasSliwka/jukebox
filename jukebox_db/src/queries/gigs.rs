@@ -34,16 +34,20 @@ pub fn current_gig_from_db(connection: &mut SqliteConnection) -> Option<Gig> {
     }
 }
 
-pub fn current_gig_from_db_or_default(connection: &mut SqliteConnection) -> Gig {
+pub fn default_gig(connection: &mut SqliteConnection) -> Gig {
     use crate::schema::gigs::dsl::*;
 
-    if let Some(gig) = current_gig_from_db(connection) {
-        return gig;
-    }
     Gig::query()
         .filter(default_gig.eq(1))
         .first::<Gig>(connection)
         .expect("No default Gig found")
+}
+
+pub fn current_gig_from_db_or_default(connection: &mut SqliteConnection) -> Gig {
+    if let Some(gig) = current_gig_from_db(connection) {
+        return gig;
+    }
+    default_gig(connection)
 }
 
 pub fn add_song_to_gig(song_id: i32, gig_id: i32, connection: &mut SqliteConnection) -> () {

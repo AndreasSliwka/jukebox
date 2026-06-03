@@ -83,3 +83,7 @@ pub fn gig_id_from_session_or_db(session: &mut Session, connection: &mut SqliteC
     session.insert(ZOOM, 3).unwrap();
     gig.id
 }
+
+pub fn set_id_in_session(session: &mut Session, gig_id: i32) {
+    session.insert(GIG_ID, gig_id).unwrap();
+}

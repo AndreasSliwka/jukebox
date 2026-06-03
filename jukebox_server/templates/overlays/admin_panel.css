@@ -93,7 +93,7 @@
         text-shadow:
             2px 2px 0px white,
             -2px -2px 0px white;
-        width: 32vh;
+        right: 6vh;
         background-image: url("/static/rainbow.gif");
         background-size: contain;
         @apply text-4xl;

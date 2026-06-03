@@ -1173,7 +1173,7 @@ main.show_artists {
     text-align: center;
     color: black;
     text-shadow: 2px 2px 0px white, -2px -2px 0px white;
-    width: 32vh;
+    right: 6vh;
     background-image: url("/static/rainbow.gif");
     background-size: contain;
     font-size: var(--text-4xl);

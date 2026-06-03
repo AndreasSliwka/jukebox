@@ -4,7 +4,6 @@ class Song {
 
   part_clicked(event) {
     let element = event.target.closest(".chordpro");
-    console.log(event.target);
     let clicked_when = Date.now();
     if (
       element &&
@@ -28,7 +27,6 @@ class Song {
     }
   }
   async markAsPlayed(button, value) {
-    console.log(button);
     button.disabled = true;
     let url = document.location.href + "?add_to_setlist=" + value;
     await fetch(url);
@@ -224,7 +222,6 @@ class Overlay {
   async showAdminQR(gig_id) {
     const response = await fetch(`/gigs/${gig_id}/admin_qr`);
     const qr_code = await response.json();
-    console.log("qr_code ", qr_code);
     Alpine.store("gigs").qr_code = qr_code;
     const modal = document.getElementById("admin_qr_code");
     modal.classList.remove("hidden");
@@ -309,7 +306,6 @@ class SongListStore {
     this.visible = newCurrentSongs.slice();
   }
   allSongs() {
-    console.log("$store.songlist.allSongs()");
     this.update(AllSongs.all_songs);
   }
   setTextFilter(original_term) {
@@ -334,7 +330,6 @@ class SongListStore {
     return this.visible.map((song) => song.id);
   }
   filterByArtist(artist) {
-    console.log("$store.songlist.filterByArtist()", artist);
     let filtered_songs = AllSongs.all_songs.filter(
       (song) => song.artist == artist,
     );
@@ -344,10 +339,7 @@ class SongListStore {
     let filtered_songs = AllSongs.all_songs
       .filter((song) => song.played_at != "")
       .toSorted((a, b) => a.played_at.localeCompare(b.played_at));
-    console.log(
-      filtered_songs.map((song) => [song.id, song.title, song.played_at]),
-    );
-    this.update(filtered_songs);
+    console.this.update(filtered_songs);
   }
   selectSevenRandomSongs(andThen = () => {}, prepicked_songs = "") {
     this.update([]);
@@ -458,11 +450,10 @@ class GigsStore {
       errors: {},
     };
     this.can_edit_gig = true;
-    console.log("create new gig", this.selected_gig);
   }
   async parseResponse(response) {
     const json = await response.json();
-    console.log("reponse JSON = ", json);
+
     this.all_gigs = json.all_gigs;
     if (json.updated_gig) {
       this.selected_gig = json.updated_gig;
@@ -471,33 +462,43 @@ class GigsStore {
       this.selected_gig = json.current_gig;
       this.selected_gig.errors = {};
     }
-    console.log("updated_gig = ", this.selected_gig);
 
     this.last_gig_not_finished = this.all_gigs[0].date_end === "";
     this.can_edit_gig =
       this.selected_gig &&
       this.selected_gig.id === this.all_gigs[0].id &&
       !this.selected_gig.default_gig;
-    console.log("can_edit_gig = ", this.can_edit_gig);
   }
   async loadGigs() {
     const response = await fetch("/gigs");
-    console.log("loadGigs received response", response);
+
     await this.parseResponse(response);
   }
   gig_has_errors() {
     this.selected_gig.name = document.getElementById("gig-name").value;
     this.selected_gig.location = document.getElementById("gig-location").value;
     this.selected_gig.notes = document.getElementById("gig-notes").value;
+
+    const editable_secret = document.getElementById("gig-secret");
+    if (editable_secret) {
+      this.selected_gig.admin_secret = editable_secret.value;
+    }
+
     this.selected_gig.errors = {};
     if (this.selected_gig.name == "") {
       this.selected_gig.errors.name = "Name darf nicht leer sein";
     }
+    if (this.selected_gig.location == "") {
+      this.selected_gig.errors.location = "Ort darf nicht leer sein";
+    }
+    if (this.selected_gig.notes == "") {
+      this.selected_gig.errors.notes = "Notizen dürfen nicht leer sein";
+    }
+    if (this.selected_gig.admin_secret == "") {
+      this.selected_gig.errors.admin_secret = "Passwort darf nicht leer sein";
+    }
+
     if (Object.keys(this.selected_gig.errors).length) {
-      console.log(
-        "gig_has_errors: errors = ",
-        Object.keys(this.selected_gig.errors),
-      );
       return true;
     }
     return false;
@@ -544,10 +545,11 @@ class GigsStore {
     await this.transmitGig();
   }
   async songsPlayedInSelectedGig() {
+    if (this.selected_gig.id === "none") {
+      return [];
+    }
     const response = await fetch(`/gig/${this.selected_gig.id}/songs`);
-    console.log(response);
     const json = await response.json();
-    console.log("songsPlayedInSelectedGig = ", json);
     this.selected_gig.songs = json;
     return json;
   }
@@ -572,7 +574,6 @@ class ArtistList {
       .filter(function (el) {
         return el.textContent === artist_name;
       })[0];
-    console.log("li_element", li_element);
     li_element?.classList.add("selected");
     li_element?.scrollIntoView({ behavior: "instant" });
     Alpine.store("songlist").filterByArtist(artist_name);
@@ -671,7 +672,6 @@ class SongListToolbar extends Toolbar {
     document.getElementById("which_category").classList.add("hidden");
   }
   parseStateFromUrlOrCookie() {
-    console.log("SongListToolbar.parseStateFromUrlOrCookie");
     const url = new URL(window.location.href);
     if (url.searchParams.size != 0) {
       let state = url.searchParams.keys().next().value;
@@ -679,11 +679,9 @@ class SongListToolbar extends Toolbar {
 
       return this.switchToState(state, specifics);
     }
-    console.log("no search params, restoring from cookie");
     this.restoreFromCookie();
   }
   switchToState(state, specifics = "") {
-    console.log("switch SongListToolbar to state", state);
     switch (state) {
       case this.states.AllSongs:
         this.showAllSongs();
@@ -708,19 +706,17 @@ class SongListToolbar extends Toolbar {
         this.selectSevenRandomSongs(specifics);
         break;
       default:
-        console.log("unknown state ", state);
         this.showAllSongs();
         return;
     }
   }
   saveState(state, info = 1) {
-    console.log("SongListToolbar.saveState", state, info);
     Cookies.setValue("state", JSON.stringify({ [state]: info }));
   }
   restoreFromCookie() {
     let state = Cookies.getValue("state");
     if (!state) return;
-    console.log("SongListToolbar.restoreFromCookie", state);
+
     state = JSON.parse(state);
     let key = Object.keys(state)[0];
     this.switchToState(key, state[key]);
@@ -767,7 +763,6 @@ class SongListToolbar extends Toolbar {
     }
     Alpine.store("songlist").setTextFilter(original_term);
     this.saveState(this.states.Search, original_term);
-    console.log(history.state);
   }
 
   selectSevenRandomSongs(prepicked_songs) {
@@ -880,13 +875,10 @@ class SingleSongToolbar extends Toolbar {
     }
   }
   backToSongList() {
-    console.log("backToSongList", history.state);
     let song_list_url = new URL("/songs", window.location.href);
     for (const key in history.state) {
-      console.log("  key", key, "value", history.state[key]);
       song_list_url.searchParams.set(key, history.state[key]);
     }
-    console.log("  song_list_url", song_list_url.toString());
     window.location.href = song_list_url.toString();
   }
 }

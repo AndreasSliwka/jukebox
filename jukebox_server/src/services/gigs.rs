@@ -1,4 +1,5 @@
 use crate::types::AppState;
+use actix_session::SessionExt;
 use actix_web::http::Method;
 use actix_web::{HttpRequest, Responder, get, route, web};
 use chrono::Local;
@@ -109,7 +110,6 @@ fn create_gig(app_state: &AppState, payload: web::Bytes) -> AllGigsAndCurrent {
     let mut new_gig: NewGig = serde_json::from_slice(&payload).unwrap();
     new_gig.date_start = now();
 
-    debug!("new_gig: {:?}", new_gig);
     let new_gig: Gig = diesel::insert_into(crate::jukebox_db::schema::gigs::dsl::gigs)
         .values(&new_gig)
         .get_result::<Gig>(&mut connection)
@@ -127,6 +127,8 @@ pub async fn service(
         return Err(actix_web::error::ErrorUnauthorized("Unauthorized"));
     }
     let method = request.method().clone();
+    let connection_pool = &app_state.pool;
+    let mut connection = connection_pool.get().expect("could not get connection");
 
     let response = web::block(move || match method {
         Method::GET => all_gigs_and_the_current(&app_state, None),
@@ -136,6 +138,14 @@ pub async fn service(
     })
     .await
     .expect("Error reading/writing gig");
+    if let Some(ref new_gig) = response.updated_gig {
+        let mut current_gig_id = new_gig.id;
+        if new_gig.date_end != "" {
+            current_gig_id = jukebox_db::default_gig(&mut connection).id;
+        }
+        crate::services::session::set_id_in_session(&mut request.get_session(), current_gig_id);
+    }
+
     Ok(web::Json(response))
 }
 #[get("/gig/{id}/songs")]
