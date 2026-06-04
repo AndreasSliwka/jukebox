@@ -122,7 +122,7 @@ fn main() {
     let filename = get_file_from_command_line();
 
     let (tags, tagged_songs) = load_tags_and_songs_from_tsv(filename);
-    println!("Found these tags: {:?}", tags.names);
+    println!("Found these tags: \"{}\"", tags.names.join(" "));
 
     let songs_dir = get_songs_directory_from_environment();
     let song_files = get_songs_files_from_directory(songs_dir);

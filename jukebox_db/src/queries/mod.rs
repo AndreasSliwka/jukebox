@@ -13,5 +13,5 @@ pub use songs::{
 };
 pub use tags::{
     all_private_tag_ids, all_tags_by_id, all_tags_by_name, ensure_seed_data_for_tags,
-    set_tags_on_song, tags_by_song, update_or_create_tag,
+    required_tags, set_tags_on_song, tags_by_song, update_or_create_tag,
 };

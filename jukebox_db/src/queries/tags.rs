@@ -73,7 +73,7 @@ pub fn update_or_create_tag(
     }
 }
 
-fn required_tags() -> Vec<(&'static str, &'static str, bool, bool)> {
+pub fn required_tags() -> Vec<(&'static str, &'static str, bool, bool)> {
     vec![
         ("Private", "😎", true, false),
         ("Checked", "✅", false, true),
@@ -84,14 +84,17 @@ fn required_tags() -> Vec<(&'static str, &'static str, bool, bool)> {
         ("episch", "🛢", false, false),
         ("party", "🍹", false, false),
         ("Liebe", "💋", false, false),
+        ("Herzschmerz", "💔", false, false),
+        ("depri", "🌧", false, false),
         ("Soft", "🍦", false, false),
         ("XMas", "🎄", false, false),
         ("Children", "👶", false, false),
-        ("Essen+Trinken", "🍽", false, false),
+        ("Essen", "🍽", false, false),
+        ("trinken", "🍹", false, false),
         ("Beatles", "🐞", false, false),
         ("Ärzte", "🚑", false, false),
         ("Farben", "🎨", false, false),
-        ("Lagerfeuer", "🔥", false, false),
+        ("Nacht", "🌃", false, false),
         ("50er", "50s", false, false),
         ("60er", "60s", false, false),
         ("70er", "70s", false, false),
@@ -101,6 +104,17 @@ fn required_tags() -> Vec<(&'static str, &'static str, bool, bool)> {
         ("10er", "10s", false, false),
         ("20er", "20s", false, false),
         ("rickrolling", "🏹", false, true),
+        ("schuh", "👟", false, false),
+        ("water", "🌊", false, false),
+        ("zeit", "🕑", false, false),
+        ("tiere", "🐄", false, false),
+        ("america", "🤠", false, false),
+        ("Sommer", "🔆", false, false),
+        ("choreo", "🙌", false, false),
+        ("langsam", "🐌", false, false),
+        ("frauenpower", "♀", false, false),
+        ("x-mas", "🎄", false, false),
+        ("frankreich", "🥖", false, false),
     ]
 }
 
