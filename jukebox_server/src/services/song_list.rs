@@ -44,12 +44,13 @@ pub async fn service(
     } else {
         (*app_state.private_tag_ids).clone()
     };
-    let (songs_without_links, songs_played, tags_by_song) = web::block(move || {
+    let (songs_without_links, songs_played, tags_by_song, current_gig) = web::block(move || {
         let mut connection = connection_pool.get().expect("could not get connection");
         (
             jukebox_db::all_songs(&mut connection, private_tag_ids),
             jukebox_db::songs_played_in_gig(gig_id, &mut connection),
             jukebox_db::tags_by_song(&mut connection),
+            jukebox_db::current_gig_from_db_or_default(&mut connection),
         )
     })
     .await
@@ -73,6 +74,7 @@ pub async fn service(
         qr_code_url: page_url.to_string(),
         is_dev_mode: app_state.is_dev_mode(),
         is_admin: is_admin,
+        current_gig,
     };
 
     let html = template.render().unwrap();

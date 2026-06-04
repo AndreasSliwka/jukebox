@@ -6,11 +6,10 @@
         @apply block min-w-full;
         @apply bg-amber-100 shadow-amber-800/50 shadow-lg;
         @apply my-2 p-2 rounded-md;
-        @apply md:whitespace-nowrap md:mx-3 md:min-w-fit;
+        /* @apply md:whitespace-nowrap md:mx-3 md:min-w-fit; */
         .text {
             @apply block;
-            margin-right: 5.75em;
-            border-right: 2px groove #fef3c6;
+            margin-right: 6.75em;
             padding-right: 0.5em;
             .title {
                 @apply font-bold text-lg;
@@ -100,4 +99,8 @@ main.show_artists {
             display: none;
         }
     }
+}
+#footer #all_songs.randomized span {
+    display: block;
+    transform: scale(1, -1);
 }

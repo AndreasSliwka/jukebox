@@ -103,3 +103,13 @@
         margin-top: 4vh;
     }
 }
+
+#info_panel {
+    dl.current_gig {
+        dt {
+            float: left;
+        }
+        dd {
+        }
+    }
+}

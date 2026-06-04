@@ -69,9 +69,11 @@ footer {
             @apply bg-amber-600  text-amber-800;
         }
     }
-    #search_form,
-    #zoom_form {
+    #search_form {
         @apply col-start-1 col-span-6 row-start-2 p-1 bg-amber-600;
+    }
+    #zoom_form {
+        @apply col-start-1 col-span-7 row-start-2 p-1 bg-amber-600;
     }
     #search_form {
         input {
@@ -107,10 +109,10 @@ footer {
         }
     }
 }
-.single-song #footer {
+.single-song footer {
     @apply grid grid-cols-5 grid-rows-2;
 }
-.admin .single-song #footer {
+.admin .single-song footer {
     @apply grid grid-cols-6 grid-rows-2;
 }
 

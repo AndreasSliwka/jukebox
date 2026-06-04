@@ -34,85 +34,19 @@
   * add CLI to tag Songs from TSV
 * create special page that shows QR codes for participants and admins
 * add zoom so people can adapt the font size to their device
-
------->&-------------------------------------
 * make header bar scroll out of screen
   * upper left button always visible
 
-# Bugs:
-* Feeling Lucky -> Song -> back sollte wieder auf die lucky seven gehen
+* set "last db changes" timestamp in app_state
+* set "last known db changes" in session
+* refresh session when timestamp in app_state is newer than timestamp in session
 
 
-
-# Functionality: 
-+------------------------------|----------|------------|------|
-| WHAT                         | HOW      | AREA       | PAGE |
-+------------------------------|----------|------------|------|
-| App Name                     | text     | header     | list |
-| list songs                   | boxes    | main       | list |
-| artist list                  | slide in | main       | list |
-| toggle search song list      | button   | toolbar    | list |
-| show artists list            | button   | toolbar    | list |
-| show songlist qr             | button   | toolbar    | list |
-| show category slot machine   | button   | toolbar    | list |
-| random three songs  (admin)  | button   | toolbar    | list |
-| category slot machine        | form     | above tb   | list |
-| search song form             | form     | above tb   | list |
-| QR to song list              | modal    | main       | list |
-| single songs title           | text     | header     | song |
-| single songs lyrics          | text     | main       | song |
-| back to song list            | button   | toolbar    | song |
-| show this song qr            | button   | toolbar    | song |
-| toggle zoom selector         | button   | toolbar    | song |
-| toggle chord visibility      | button   | toolbar    | song |
-| toggle song bookmark         | button   | toolbar    | song |
-| zoom selector                | modal    | above tb   | song |
-| songs categories             | boxes    | main above | song |
-| mark song as played (admin)  | button   | main below | song |
-| link to music.youtube (adm)  | button   | main below | song |
-| QR to specific song          | modal    | main       | song |
-| Admin QR                     | ?        | ?          | ?    |
-| toggle played song display   | xxxxxxxxxxxxxxxxxxxxxxxxxxxx |
-+------------------------------|----------|------------|------|
-
-##### Bottom Toolbar
-### song list
-# song list standard
-|----|----|----|----|----|----|
-| 🔍 | 👻 | QR | ᴬA | C⁷ | 🎲 |
-|----|----|----|----|----|----|
-
-# song list search
-|----|========================||
-| 🔍 | find my love ...       ||
-|----|========================||
-
-# song list played songs checked
-|----||===‖----|----|----|----|
-| 🔍 ‖ 👻 ‖ QR | ᴬA | C⁷ | 🎲 |
-|----||===‖----|----|----|----|
-
-# song list zoom
-|----|----|----|----|----|----|
-|  1...2..(3)..4...5...6...7  |
-|----|----|----|----|----|----|
-
-# song list chords checked
-|----|----|----|----#====#----|
-| 🔍 | 👻 | QR | ᴬA | C⁷ | 🎲 |
-|----|----|----|----#====#----|
-
-# song list categories
-#=========================#
-‖ {🇩🇪 German} {🍹 Party}  ‖
-‖ {🪨 Rock} {💋 Love}    ^‖                        
-‖ {🔨 metal} {🍦 Soft}   #‖
-‖ {🎄 Weihnachten}       v‖----|
-‖ {👶 Kinder}             ‖ 🎲 |
-‖=========================‖----|
-
-### single song
-# nothing checked
-|----|----|----|----|----|----|
-| ↩  | 👻 | QR | ᴬA | C⁷ | 🎲 |
-|----|----|----|----|----|----|
+----
+* info panel
+* zoom drag broken
+* explanation text on slot machine
+* artist list header set explicitly
+* refactor song list data to explicit json request
+  * refresh data if older than 30s
+  * cache song list on server side?

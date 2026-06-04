@@ -12,12 +12,12 @@ class Song {
     ) {
       let highlighted = document.getElementsByClassName("scrollHighlight");
       for (const part of highlighted) {
-        song.classList.remove("scrollHighlight");
+        part.classList.remove("scrollHighlight");
       }
-      target_y = element.getBoundingClientRect().y;
+      let target_y = element.getBoundingClientRect().y;
       target_y -= document.querySelector("header").clientHeight;
       target_y -= 30;
-      window.scrollTo(0, target_y);
+      document.documentElement.scrollTop += target_y;
       element.classList.add("scrollHighlight");
 
       this.last_clicked_id = null;
@@ -36,7 +36,7 @@ class Song {
       } else {
         button.parentElement.classList.remove("played");
       }
-    }, 1000);
+    }, 0);
   }
 }
 Song = new Song();
@@ -49,6 +49,9 @@ class AllSongs {
   initialize(songs) {
     this.all_songs = songs.map((song) => {
       song.id = "song-" + song.id;
+      song.tags = song.tags || [];
+      song.tags.sort(() => 0.5 - Math.random());
+      song.tags = song.tags.slice(0, 6);
       return song;
     });
     let intermediate = songs.reduce(function (acc, song) {
@@ -180,6 +183,7 @@ class StickySongList {
     }
   }
   init() {
+    return;
     document.addEventListener("scrollend", () => {
       this.storeCurrentScrollPosition();
     });
@@ -229,6 +233,21 @@ class Overlay {
   hideAdminQR() {
     const modal = document.getElementById("admin_qr_code");
     modal.classList.add("hidden");
+  }
+  registerQrCodeSharing() {
+    const shareData = {
+      title: "Jukebox",
+      text: "Finde Lieder, Singe Kräftig!",
+      url: "{{qr_code_url}}",
+    };
+    document.getElementById("qr_code").addEventListener("click", async () => {
+      console.log("qr_code clicked");
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.log(err);
+      }
+    });
   }
 }
 Overlay = new Overlay();
@@ -303,10 +322,19 @@ class ReelsStore {
 class SongListStore {
   visible = [];
   update(newCurrentSongs) {
+    console.log("newCurrentSongs");
     this.visible = newCurrentSongs.slice();
   }
   allSongs() {
     this.update(AllSongs.all_songs);
+  }
+  allSongsButRandomized() {
+    let randomizedSongs = AllSongs.all_songs
+      .slice()
+      .toSorted(() => Math.random() - 0.5)
+      .toSorted(() => Math.random() - 0.5)
+      .toSorted(() => Math.random() - 0.5);
+    this.update(randomizedSongs);
   }
   setTextFilter(original_term) {
     let term = original_term.toLowerCase();
@@ -339,7 +367,7 @@ class SongListStore {
     let filtered_songs = AllSongs.all_songs
       .filter((song) => song.played_at != "")
       .toSorted((a, b) => a.played_at.localeCompare(b.played_at));
-    console.this.update(filtered_songs);
+    this.update(filtered_songs);
   }
   selectSevenRandomSongs(andThen = () => {}, prepicked_songs = "") {
     this.update([]);
@@ -374,40 +402,25 @@ class SongListStore {
   }
 }
 class Secret {
-  static zahlen = [
-    "zwei",
-    "drei",
-    "vier",
-    "fuenf",
-    "sechs",
-    "sieben",
-    "acht",
-    "neun",
-    "zehn",
-    "elf",
-  ];
-  static farben = [
-    "rote",
-    "gruene",
-    "blaue",
-    "gelbe",
-    "violette",
-    "braune",
-    "schwarze",
-    "weisse",
-    "graue",
-    "orange",
-  ];
-  static tiere = [
-    "enten",
-    "schweine",
-    "hunde",
-    "katzen",
-    "maeuse",
-    "fische",
-    "alpacas",
-  ];
+  static zahlen =
+    "anderthalb|zwei|drei|vier|fümpf|sechs|sieben|acht|neun|zehn|elf|" +
+    "zwölf|drölf|dreizehn|vierzehn|fümpfzehn|sechzehn|siebzehn|" +
+    "achtzehn|neunzehn|zwanzig|dreissig|vierzig|sechzig|siebzig|" +
+    "siebenundsiebzig|achtzig|hundert|dreitausendsiebenhundertundelf";
+  static farben =
+    "rote|grüene|blaue|gelbe|violette|braune|schwarze|weisse|graue|" +
+    "orange|graue|pinke|blasse|schwartige|rauhe|milde|pelzige|sanfte|" +
+    "sempfige|angebratene|holzige|geräucherte|mildgesäuerte";
+  static tiere =
+    "enten|schweine|hunde|katzen|mäuse|fische|alpacas|camenberts|" +
+    "taschenbücher|hamster|goldfische|fußhupen|ikea-regale|eierkartons|" +
+    "bassgitarren|cd-player|handyhüllen|fußballspieler|oekotrophologen";
   static random_secret() {
+    if (typeof Secret.zahlen == "string") {
+      Secret.zahlen = Secret.zahlen.split("|");
+      Secret.farben = Secret.farben.split("|");
+      Secret.tiere = Secret.tiere.split("|");
+    }
     return (
       Secret.zahlen[Math.floor(Math.random() * Secret.zahlen.length)] +
       "-" +
@@ -577,7 +590,7 @@ class ArtistList {
     li_element?.classList.add("selected");
     li_element?.scrollIntoView({ behavior: "instant" });
     Alpine.store("songlist").filterByArtist(artist_name);
-    Header.showWhichCategory(artist_name);
+    Header.showRichHeaderWith(artist_name);
   }
 }
 ArtistList = new ArtistList();
@@ -615,7 +628,8 @@ class Slotmachine {
   selectTag(unicode) {
     if (unicode == "?") return;
     Overlay.hide();
-    Header.showWhichCategory(unicode);
+    Header.showRichHeaderWith(unicode);
+    SongListToolbar.hideSearchForm();
     SongListToolbar.onlyActivateToolButton("show_slot_machine");
     Alpine.store("songlist").setCategoryFilter(unicode);
   }
@@ -623,7 +637,7 @@ class Slotmachine {
 Slotmachine = new Slotmachine();
 
 class Header {
-  showWhichCategory(unicode) {
+  showRichHeaderWith(unicode) {
     if (!unicode) return;
     let category_info = document.getElementById("which_category");
 
@@ -639,7 +653,7 @@ Header = new Header();
 
 class Toolbar {
   onlyActivateToolButton(button_id) {
-    let buttons = document.querySelectorAll("#footer a.toolbar-button");
+    let buttons = document.querySelectorAll("footer a.toolbar-button");
 
     for (let tool_button of buttons) {
       if (tool_button.id == button_id) {
@@ -666,6 +680,7 @@ class SongListToolbar extends Toolbar {
     PlayedSongs: "playedSongs",
     SlotMachine: "slotMachine",
     SevenRandomSongs: "randomSongs",
+    Info: "info",
   };
   current_state = this.states.AllSongs;
   hideCategoryFilter() {
@@ -705,6 +720,9 @@ class SongListToolbar extends Toolbar {
       case this.states.SevenRandomSongs:
         this.selectSevenRandomSongs(specifics);
         break;
+      case this.states.Info:
+        this.showInfoPanel(specifics);
+        break;
       default:
         this.showAllSongs();
         return;
@@ -727,7 +745,7 @@ class SongListToolbar extends Toolbar {
     this.hideArtistList();
     this.hideCategoryFilter();
     this.onlyActivateToolButton("all_songs");
-    Alpine.store("songlist").allSongs();
+    Alpine.store("songlist").allSongsButRandomized();
     Header.showTitle("Alle Songs");
     this.saveState(this.states.AllSongs);
   }
@@ -739,6 +757,9 @@ class SongListToolbar extends Toolbar {
     toggleSearch.classList.remove("active");
     searchForm.classList.add("hidden");
     footer.classList.remove("show_search_form");
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 0);
   }
   showSearchForm(preloaded_search_term = "") {
     let footer = document.getElementById("footer");
@@ -747,6 +768,7 @@ class SongListToolbar extends Toolbar {
     this.hideArtistList();
     this.hideCategoryFilter();
     this.onlyActivateToolButton("toggle_search");
+    Header.showRichHeaderWith("?", "Suchen nach %s");
 
     searchForm.classList.remove("hidden");
     footer.classList.add("show_search_form");
@@ -754,6 +776,9 @@ class SongListToolbar extends Toolbar {
     searchInput.click();
     searchInput.value = preloaded_search_term;
     this.setSearchFilter(preloaded_search_term);
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 0);
   }
   setSearchFilter(original_term) {
     // called by changes from the search input
@@ -761,6 +786,10 @@ class SongListToolbar extends Toolbar {
       let passkey = original_term.replace(/^admin:/, "").replace(/!$/, "");
       window.location.href = "/admin?passkey=" + passkey;
     }
+    let header_term =
+      original_term.length > 5 ? original_term.substring(0, 5) : original_term;
+    Header.showRichHeaderWith(header_term, "Suchen nach %");
+
     Alpine.store("songlist").setTextFilter(original_term);
     this.saveState(this.states.Search, original_term);
   }
@@ -785,7 +814,8 @@ class SongListToolbar extends Toolbar {
     this.hideSearchForm();
     this.hideArtistList();
     this.hideCategoryFilter();
-    // this.onlyActivateToolButton("show_slot_machine");
+    Header.showTitle("Kategorie wählen");
+
     Slotmachine.initialize();
     Slotmachine.show();
   }
@@ -799,6 +829,8 @@ class SongListToolbar extends Toolbar {
     this.hideSearchForm();
     this.hideCategoryFilter();
     this.onlyActivateToolButton("toggle_show_artists");
+    Header.showTitle("Künstler wählen");
+
     document.getElementById("root_of_all_evil").classList.add("show_artists");
     ArtistList.filterByArtist(preloaded_artist);
   }
@@ -808,7 +840,12 @@ class SongListToolbar extends Toolbar {
     this.onlyActivateToolButton("filter_played_songs");
     Alpine.store("songlist").filterPlayedSongs(preloaded_played);
     this.saveState(this.states.PlayedSongs);
-    Header.showWhichCategory("gespielten");
+    Header.showRichHeaderWith("gespielten");
+  }
+  showInfoPanel() {
+    this.hideSearchForm();
+    this.hideCategoryFilter();
+    Overlay.show("info_panel");
   }
 }
 

@@ -77,10 +77,14 @@ pub async fn service(
         &mut connection_pool.get().unwrap(),
     );
     let app_url = app_state.base_url.clone();
-    let mut connection = app_state.pool.get().expect("could not get connection");
 
-    let song_from_db = web::block(move || {
-        jukebox_db::song_by_handle_with_gig_info(&mut connection, song_handle, gig_id)
+    let (song_from_db, current_gig) = web::block(move || {
+        let mut connection = connection_pool.get().expect("could not get connection");
+
+        (
+            jukebox_db::song_by_handle_with_gig_info(&mut connection, song_handle, gig_id),
+            jukebox_db::current_gig_from_db_or_default(&mut connection),
+        )
     })
     .await?;
     let mut connection = app_state.pool.get().expect("could not get connection");
@@ -112,6 +116,7 @@ pub async fn service(
                 qr_code_svg: crate::services::qrcode::qr_code_as_svg(&page_url, &app_state.cache),
                 qr_code_url: page_url.to_string(),
                 is_dev_mode: app_state.is_dev_mode(),
+                current_gig,
             };
             let html = template.render().unwrap();
             Ok(HttpResponse::Ok()

@@ -467,8 +467,15 @@ footer {
       color: var(--color-amber-800);
     }
   }
-  #search_form, #zoom_form {
+  #search_form {
     grid-column: span 6 / span 6;
+    grid-column-start: 1;
+    grid-row-start: 2;
+    background-color: var(--color-amber-600);
+    padding: calc(var(--spacing) * 1);
+  }
+  #zoom_form {
+    grid-column: span 7 / span 7;
     grid-column-start: 1;
     grid-row-start: 2;
     background-color: var(--color-amber-600);
@@ -529,12 +536,12 @@ footer {
     }
   }
 }
-.single-song #footer {
+.single-song footer {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   grid-template-rows: repeat(2, minmax(0, 1fr));
 }
-.admin .single-song #footer {
+.admin .single-song footer {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   grid-template-rows: repeat(2, minmax(0, 1fr));
@@ -694,19 +701,9 @@ main {
     margin-block: calc(var(--spacing) * 2);
     border-radius: var(--radius-md);
     padding: calc(var(--spacing) * 2);
-    @media (width >= 48rem) {
-      margin-inline: calc(var(--spacing) * 3);
-    }
-    @media (width >= 48rem) {
-      min-width: fit-content;
-    }
-    @media (width >= 48rem) {
-      white-space: nowrap;
-    }
     .text {
       display: block;
-      margin-right: 5.75em;
-      border-right: 2px groove #fef3c6;
+      margin-right: 6.75em;
       padding-right: 0.5em;
       .title {
         font-size: var(--text-lg);
@@ -827,6 +824,10 @@ main.show_artists {
     }
   }
 }
+#footer #all_songs.randomized span {
+  display: block;
+  transform: scale(1, -1);
+}
 #overlay {
   position: fixed;
   top: calc(var(--spacing) * 0);
@@ -899,6 +900,9 @@ main.show_artists {
     text-shadow: 0px 1px 2px var(--tw-text-shadow-color, rgb(0 0 0 / 0.1)), 0px 3px 2px var(--tw-text-shadow-color, rgb(0 0 0 / 0.1)), 0px 4px 8px var(--tw-text-shadow-color, rgb(0 0 0 / 0.1));
   }
 }
+#info_panel {
+  overflow: scroll;
+}
 @keyframes down-and-up {
   0%, 100% {
     top: 26vmin;
@@ -920,7 +924,7 @@ main.show_artists {
 #slot_machine {
   position: relative;
   aspect-ratio: 1/1;
-  top: 20vh;
+  top: 10vh;
   margin: 5vmin;
   .lever {
     .axle {
@@ -1056,6 +1060,23 @@ main.show_artists {
       }
     }
   }
+  .info {
+    border-style: var(--tw-border-style);
+    border-width: 2px;
+    border-color: var(--color-amber-400);
+    background-color: var(--color-amber-100);
+    border-style: outset;
+    position: absolute;
+    top: 80vmin;
+    background-color: white;
+    padding: 3vmin;
+    font-size: var(--text-xl);
+    line-height: var(--tw-leading, var(--text-xl--line-height));
+    ol {
+      list-style-type: decimal;
+      padding-left: 5vmin;
+    }
+  }
 }
 #admin_panel {
   position: absolute;
@@ -1187,6 +1208,13 @@ main.show_artists {
   background-color: var(--color-amber-100);
   .svg-container {
     margin-top: 4vh;
+  }
+}
+#info_panel {
+  dl.current_gig {
+    dt {
+      float: left;
+    }
   }
 }
 @property --tw-rotate-x {

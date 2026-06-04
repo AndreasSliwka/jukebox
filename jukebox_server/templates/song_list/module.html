@@ -6,13 +6,13 @@ content %}
     window.addEventListener("alpine:init", () => {
       all_tags_by_name = {{ all_tags_by_name  | json | safe }};
       AllSongs.initialize({{ songs | json | safe }});
-      Alpine.store('songlist').allSongs();
+      // Alpine.store('songlist').allSongsButRandomized();
       Alpine.store('reels').all_tags = [
       {% for tag in all_tags_by_name %}
         "{{ tag.1 }}",
       {% endfor %}
       ];
-      StickySongList.init();
+      // StickySongList.init();
     });
     window.addEventListener("load", () => {
        SongListToolbar.parseStateFromUrlOrCookie();
@@ -85,4 +85,5 @@ content %}
 
 {% include "_footer.html" %}
 {% include "../overlays/module.html" %}
+
 {% endblock content %}

@@ -104,4 +104,9 @@ played_at %}
     </a>
 </div>
 {% endif %}{% include "_footer.html" %} {% include "../overlays/module.html" %}
+{{ "<scr" | safe }}{{ "ipt>" | safe}}
+      window.addEventListener("load", () => {
+    Overlay.registerQrCodeSharing();
+    });
+{{ "</script>" | safe }}
 {% endblock content %}

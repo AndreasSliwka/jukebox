@@ -1,9 +1,15 @@
 <footer id="footer" class="" x-data="{search: ''}">
     <a
+        id="show-info"
+        class="toolbar-button"
+        href="javascript:SongListToolbar.switchToState(SongListToolbar.states.Info)"
+        >❓</a
+    >
+    <a
         id="all_songs"
         class="toolbar-button active"
         href="javascript:SongListToolbar.switchToState(SongListToolbar.states.AllSongs)"
-        >🌍</a
+        ><span>🌍</span></a
     >
     <a
         id="toggle_search"
@@ -37,12 +43,12 @@
         href="javascript:SongListToolbar.switchToState(SongListToolbar.states.SlotMachine)"
         >🌞</a
     >
-    <a
+    <!--   <a
         id="select_seven_random_songs"
         class="toolbar-button"
         href="javascript:SongListToolbar.switchToState(SongListToolbar.states.SevenRandomSongs)"
         >🍀</a
-    >
+    >-->
     <div id="search_form" class="hidden bg-amber-400">
         <input
             id="search_input"

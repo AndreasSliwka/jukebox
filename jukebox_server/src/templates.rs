@@ -1,9 +1,8 @@
-use std::collections::HashMap;
-
 use crate::filters;
 use askama::Template;
 use chord_down::{Block, Song};
-use jukebox_db::models::SongWithLinkAndTags;
+use jukebox_db::models::{Gig, SongWithLinkAndTags};
+use std::collections::HashMap;
 
 #[derive(Template)]
 #[template(path = "song_list/module.html")]
@@ -16,6 +15,7 @@ pub struct SongListIndexTemplate {
     pub qr_code_url: String,
     pub is_dev_mode: bool,
     pub is_admin: bool,
+    pub current_gig: Gig,
 }
 
 #[derive(Template)]
@@ -30,6 +30,7 @@ pub struct SongsTemplate {
     pub qr_code_svg: String,
     pub qr_code_url: String,
     pub is_dev_mode: bool,
+    pub current_gig: Gig,
 }
 
 #[derive(Template)]

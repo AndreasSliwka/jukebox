@@ -30,5 +30,8 @@
         @apply pt-20 block text-amber-200 text-center text-shadow-lg text-shadow-amber-800 align-middle text-6xl font-bold top-0 bottom-0 h-full;
     }
 }
+#info_panel {
+    overflow: scroll;
+}
 @import "./slotmachine.css";
 @import "./admin_panel.css";

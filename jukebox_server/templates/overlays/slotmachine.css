@@ -22,7 +22,7 @@
 #slot_machine {
     position: relative;
     aspect-ratio: 1/1;
-    top: 20vh;
+    top: 10vh;
     margin: 5vmin;
     .lever {
         .axle {
@@ -161,6 +161,19 @@
                         3px 3px 0px #e0e000;
                 }
             }
+        }
+    }
+    .info {
+        @apply bg-amber-100 border-2 border-amber-400;
+        border-style: outset;
+        position: absolute;
+        top: 80vmin;
+        background-color: white;
+        padding: 3vmin;
+        @apply text-xl;
+        ol {
+            list-style-type: decimal;
+            padding-left: 5vmin;
         }
     }
 }

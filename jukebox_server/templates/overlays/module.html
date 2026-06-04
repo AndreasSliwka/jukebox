@@ -1,33 +1,48 @@
 <div id="overlay" class="hidden" x-data="" x-on:click="Overlay.hide()">
     <div id="shadow"></div>
     {% include "overlays/_admin_panel.html" %}
+
     <div id="modal" class="hidden" x-on:click.stop.prevent="true;">
         <div id="qr_code" data="{{qr_code_url}}" class="hidden modal-content">
             {{ qr_code_svg | safe }}
         </div>
-    </div>
-    <script>
-        (() => {
-            const shareData = {
-                title: "Jukebox",
-                text: "Finde Lieder, Singe Kräftig!",
-                url: "{{qr_code_url}}",
-            };
-            document
-                .getElementById("qr_code")
-                .addEventListener("click", async () => {
-                    try {
-                        await navigator.share(shareData);
-                    } catch (err) {
-                        console.log(err);
-                    }
-                });
-        })();
 
-        // Share must be triggered by "user activation"
-    </script>
+        <div id="info_panel" class="hidden modal-content">
+            <h2>Willkommen in unserer Jukebox App!</h2>
+            <p>
+                Suchen, stöbern, finden: hier findest du alle möglichen Lieder,
+                die du den Künstlern vorne zurufen kannst, damit sie die endlich
+                spielen. Aber immer dran denken: Wer sich ein Lied aussucht,
+                muss es auch singen, ne?
+            </p>
+            <h3>Funktionen der Liederliste</h3>
+            <h4>Im Toolbar:</h4>
+            <ul class="toolbar-explanation">
+                <li>🌍&nbsp;Zeigt alle Lieder an.</li>
+                <li>🔍&nbsp;Sucht nach Titel und Künstlern</li>
+                <li>🏁&nbsp;Gespielte Lieder anzeigen</li>
+                <li>🎺&nbsp;Listet alle Künstler</li>
+                <li>🌞&nbsp;Gewinne Gewinne Gewinne!</li>
+                <li>🍀&nbsp;7 zufällige Lieder</li>
+            <ul/>
+            <h3>Funktionen der Liedanzeige</h3>
+            <h4>Im Toolbar:</h4>
+            <ul class="toolbar-explanation">
+                <li>↩&nbsp;Zurück zur Liederliste</li>
+                <li>ᴬA&nbsp;Liedtext zoomen</li>
+                <li>QR&nbsp;Liedtext mit Freunden teilen</li>
+                <li>💾&nbsp;Speichern für später</li>
+                <li>C7&nbsp;Akkorde zum Mitsingen anzeigen</li>
+            </ul>
+            <ul class="current_gi">
+                <li>Heutiger Gig:&nbsp;<tt>{{ current_gig.name }}</tt></li>
+                <li>In:&nbsp;<tt>{{current_gig.location }}</tt></li>
+                <li>Obacht:&nbsp;<tt>{{current_gig.notes}}</tt></li>
+            </ul>
+        </div>
+    </div>
     <div id="feeling_lucky" class="hidden modal-content">
         <h2>Feeling Lucky?</h2>
-    </div>
+        </div>
     {% include "overlays/_slotmachine.html" %}
 </div>
