@@ -1,5 +1,6 @@
 use chord_down;
 use dotenvy::dotenv;
+use std::collections::HashMap;
 use std::env;
 use std::fs;
 use std::io::{self, BufRead};
@@ -121,35 +122,44 @@ fn find_tagged_song(
 fn main() {
     let filename = get_file_from_command_line();
 
-    let (tags, tagged_songs) = load_tags_and_songs_from_tsv(filename);
+    let (tags, tsv_songs) = load_tags_and_songs_from_tsv(filename);
     println!("Found these tags: \"{}\"", tags.names.join(" "));
 
     let songs_dir = get_songs_directory_from_environment();
-    let song_files = get_songs_files_from_directory(songs_dir);
-
+    let song_in_git = get_songs_files_from_directory(songs_dir);
+    let mut tag_usage: HashMap<String, u16> = HashMap::new();
     let mut found_tagged_songs: Vec<u16> = vec![];
     println!("Songs missing in TSV:");
-    for song_file in song_files {
-        let maybe_content = fs::read_to_string(song_file.clone());
-        if let Ok(content) = maybe_content {
-            let mut song_in_file = chord_down::Song::parse(&content, false);
-            if let Some(tagged_song) = find_tagged_song(&tagged_songs, &song_in_file) {
-                song_in_file.tags = tagged_song.tags;
-                found_tagged_songs.push(tagged_song.line);
-                song_in_file
-                    .write_to_file(song_file)
+    for git_song in song_in_git {
+        let maybe_git_content = fs::read_to_string(git_song.clone());
+        if let Ok(git_content) = maybe_git_content {
+            let mut parsed_git_content = chord_down::Song::parse(&git_content, false);
+            if let Some(tsv_song) = find_tagged_song(&tsv_songs, &parsed_git_content) {
+                for tag in &tsv_song.tags {
+                    *tag_usage.entry(tag.clone()).or_default() += 1;
+                }
+                parsed_git_content.tags = tsv_song.tags;
+                found_tagged_songs.push(tsv_song.line);
+                parsed_git_content
+                    .write_to_file(git_song)
                     .expect("Could not dump song");
             } else {
                 println!(
                     "{}\t{}",
-                    song_in_file.title.to_lowercase(),
-                    song_in_file.artist.to_lowercase()
+                    parsed_git_content.title.to_lowercase(),
+                    parsed_git_content.artist.to_lowercase()
                 );
             };
         }
     }
+    println!("Tag usage:");
+    let mut tag_usage_by_count: Vec<(&String, &u16)> = tag_usage.iter().collect();
+    tag_usage_by_count.sort_by(|a, b| b.1.cmp(a.1));
+    for (tag, count) in tag_usage_by_count {
+        println!("  {}: {}", tag, count);
+    }
     println!("Songs missing in GIT:");
-    for tagged_song in tagged_songs {
+    for tagged_song in tsv_songs {
         if !found_tagged_songs.contains(&tagged_song.line) {
             println!("{} -- {}", tagged_song.title, tagged_song.artist);
         }
