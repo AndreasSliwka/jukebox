@@ -256,11 +256,11 @@ class Overlay {
       url: "{{qr_code_url}}",
     };
     document.getElementById("qr_code").addEventListener("click", async () => {
-      console.log("qr_code clicked");
+      // console.log("qr_code clicked");
       try {
         await navigator.share(shareData);
       } catch (err) {
-        console.log(err);
+        // console.log(err);
       }
     });
   }
@@ -773,11 +773,13 @@ class SongListToolbar extends Toolbar {
   }
   restoreFromCookie() {
     let state = Cookies.getValue("state");
-    if (!state) return;
-
-    state = JSON.parse(state);
-    let key = Object.keys(state)[0];
-    this.switchToState(key, state[key]);
+    if (state) {
+      state = JSON.parse(state);
+      let key = Object.keys(state)[0];
+      this.switchToState(key, state[key]);
+      return;
+    }
+    this.switchToState(this.states.AllSongs, "sumthin");
   }
   showAllSongs() {
     this.current_state = this.states.AllSongs;
