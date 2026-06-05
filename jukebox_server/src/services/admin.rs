@@ -2,6 +2,7 @@ use crate::services::session;
 use crate::types::AppState;
 use actix_session::{Session, SessionExt};
 use actix_web::{HttpRequest, HttpResponse, Responder, get, web};
+use chrono::Utc;
 use log::debug;
 use querystring;
 
@@ -10,6 +11,9 @@ fn validate_passkey(passkey: &str, session: &Session) -> bool {
         log::info!("isAdmin = false, no admin_secret in session");
         return false;
     };
+    session
+        .insert(String::from("TIMESTAMP"), Utc::now().to_string())
+        .unwrap();
     if admin_secret == passkey {
         log::info!("isAdmin = true");
         println!("  isAdmin = true");
@@ -42,6 +46,15 @@ async fn service(
             is_admin = validate_passkey(value, &session);
         }
     }
+
+    debug!(
+        "Session keys = {:?}",
+        request.get_session().entries().keys()
+    );
+    debug!(
+        "Timestamp: {:#?} ",
+        request.get_session().get::<String>("TIMESTAMP").unwrap()
+    );
 
     Ok(HttpResponse::SeeOther()
         .append_header(("Location", "/songs"))

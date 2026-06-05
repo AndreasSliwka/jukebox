@@ -41,6 +41,12 @@ pub async fn service_json(
         &mut request.get_session(),
         &mut connection_pool.get().unwrap(),
     );
+    debug!("is_admin: {}", is_admin);
+    debug!(
+        "Timestamp: {:#?} ",
+        request.get_session().get::<String>("TIMESTAMP").unwrap()
+    );
+
     let cache_key = format!("json/songs/admin={}", is_admin);
     let cache = &app_state.cache;
     if let Some(cache_entry) = cache.get(&cache_key) {
