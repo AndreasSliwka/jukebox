@@ -825,6 +825,12 @@ main.show_artists {
   display: block;
   transform: scale(1, -1);
 }
+#loading___ {
+  margin-top: calc(var(--spacing) * 20);
+  text-align: center;
+  font-size: var(--text-3xl);
+  line-height: var(--tw-leading, var(--text-3xl--line-height));
+}
 #overlay {
   position: fixed;
   top: calc(var(--spacing) * 0);

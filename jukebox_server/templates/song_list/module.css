@@ -104,3 +104,7 @@ main.show_artists {
     display: block;
     transform: scale(1, -1);
 }
+
+#loading___ {
+    @apply text-center text-3xl mt-20;
+}

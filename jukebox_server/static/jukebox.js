@@ -727,6 +727,7 @@ class SongListToolbar extends Toolbar {
   }
   parseStateFromUrlOrCookie() {
     const url = new URL(window.location.href);
+    document.getElementById("loading___").remove();
     if (url.searchParams.size != 0) {
       let state = url.searchParams.keys().next().value;
       let specifics = url.searchParams.get(state);
