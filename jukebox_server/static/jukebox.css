@@ -1068,7 +1068,6 @@ main.show_artists {
     border-style: outset;
     position: absolute;
     top: 80vmin;
-    background-color: white;
     padding: 3vmin;
     font-size: var(--text-xl);
     line-height: var(--tw-leading, var(--text-xl--line-height));

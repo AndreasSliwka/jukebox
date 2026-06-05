@@ -168,7 +168,6 @@
         border-style: outset;
         position: absolute;
         top: 80vmin;
-        background-color: white;
         padding: 3vmin;
         @apply text-xl;
         ol {

@@ -30,6 +30,7 @@ async fn main() -> Result<(), std::io::Error> {
             .service(services::no_shoes_no_shirt::service)
             .service(services::song::service)
             .service(services::song_list::service)
+            .service(services::song_list::service_json)
             .service(services::gigs::service)
             .service(services::gigs::songs_service)
             .service(services::gigs::admin_qr_service)

@@ -3,19 +3,10 @@
 {% block title %} Alle Songs {% endblock %} {% block
 content %}
 {{ "<scr" | safe }}{{ "ipt>" | safe}}
-    window.addEventListener("alpine:init", () => {
-      all_tags_by_name = {{ all_tags_by_name  | json | safe }};
-      AllSongs.initialize({{ songs | json | safe }});
-      // Alpine.store('songlist').allSongsButRandomized();
-      Alpine.store('reels').all_tags = [
-      {% for tag in all_tags_by_name %}
-        "{{ tag.1 }}",
-      {% endfor %}
-      ];
-      // StickySongList.init();
-    });
-    window.addEventListener("load", () => {
-       SongListToolbar.parseStateFromUrlOrCookie();
+    window.addEventListener("alpine:init", async () => {
+
+        await AllSongs.initializeFromServer();
+        SongListToolbar.parseStateFromUrlOrCookie();
     });
 {{ "</script>" | safe }}
 
@@ -45,7 +36,7 @@ content %}
 <div id="songlist_container" x-data="">
     <div id="artist_list">
         <ul>
-            <template x-for="artist in AllSongs.all_artists">
+            <template x-for="artist in $store.songlist.all_artists">
                 <li x-text="artist" @click="ArtistList.filterByArtist($event.target.innerText)">
                 </li>
             </template>

@@ -1,15 +1,12 @@
 use crate::filters;
 use askama::Template;
 use chord_down::{Block, Song};
-use jukebox_db::models::{Gig, SongWithLinkAndTags};
-use std::collections::HashMap;
+use jukebox_db::models::Gig;
 
 #[derive(Template)]
 #[template(path = "song_list/module.html")]
 pub struct SongListIndexTemplate {
-    pub songs: Vec<SongWithLinkAndTags>,
     pub dark_background: bool,
-    pub all_tags_by_name: HashMap<String, String>,
     pub zoom: u16,
     pub qr_code_svg: String,
     pub qr_code_url: String,

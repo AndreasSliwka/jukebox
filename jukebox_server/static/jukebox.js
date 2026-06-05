@@ -44,7 +44,7 @@ Song = new Song();
 class AllSongs {
   all_songs = [];
   all_artists = [];
-
+  last_update_at = Date.now();
   // data stuff
   initialize(songs) {
     this.all_songs = songs.map((song) => {
@@ -60,6 +60,21 @@ class AllSongs {
     }, {});
 
     this.all_artists = Object.keys(intermediate).sort();
+  }
+  async initializeFromServer() {
+    console.log("Fetching songs and tags from server...");
+    let response = await fetch("/songs.json");
+    response = await response.json();
+    this.initialize(response.songs);
+    Alpine.store("reels").all_tags = response.tags;
+    this.last_update_at = Date.now();
+  }
+  async maybePullFreshData() {
+    if (this.last_update_at && Date.now() - this.last_update_at > 30000) {
+      await this.initializeFromServer();
+    } else {
+      console.log("Freshness of data: " + (Date.now() - this.last_update_at));
+    }
   }
   songsByIds(songs_ids) {
     return this.all_songs.filter((song) => songs_ids.includes(song.id));
@@ -321,14 +336,25 @@ class ReelsStore {
 
 class SongListStore {
   visible = [];
+  all_artists = [];
   update(newCurrentSongs) {
-    console.log("newCurrentSongs");
     this.visible = newCurrentSongs.slice();
+    // this is ugly.
+    if (this.all_artists.length == 0) {
+      this.all_artists = AllSongs.all_artists.slice();
+    }
   }
-  allSongs() {
+  async allSongs() {
+    await AllSongs.maybePullFreshData();
     this.update(AllSongs.all_songs);
   }
-  allSongsButRandomized() {
+  async allArtists() {
+    await AllSongs.maybePullFreshData();
+    AllSongs.all_songs.map((song) => song.artist);
+  }
+  async allSongsButRandomized() {
+    await AllSongs.maybePullFreshData();
+
     let randomizedSongs = AllSongs.all_songs
       .slice()
       .toSorted(() => Math.random() - 0.5)
@@ -336,7 +362,9 @@ class SongListStore {
       .toSorted(() => Math.random() - 0.5);
     this.update(randomizedSongs);
   }
-  setTextFilter(original_term) {
+  async setTextFilter(original_term) {
+    await AllSongs.maybePullFreshData();
+
     let term = original_term.toLowerCase();
     let filtered_songs = AllSongs.all_songs.filter(
       (song) =>
@@ -345,7 +373,9 @@ class SongListStore {
     );
     this.update(filtered_songs);
   }
-  setCategoryFilter(tag) {
+  async setCategoryFilter(tag) {
+    await AllSongs.maybePullFreshData();
+
     let filtered_songs = AllSongs.all_songs.filter((song) =>
       song.tag_signs.includes(tag),
     );
@@ -357,19 +387,23 @@ class SongListStore {
   visibleSongIds() {
     return this.visible.map((song) => song.id);
   }
-  filterByArtist(artist) {
+  async filterByArtist(artist) {
+    await AllSongs.maybePullFreshData();
     let filtered_songs = AllSongs.all_songs.filter(
       (song) => song.artist == artist,
     );
     this.update(filtered_songs);
   }
-  filterPlayedSongs(played) {
+  async filterPlayedSongs(played) {
+    await AllSongs.maybePullFreshData();
     let filtered_songs = AllSongs.all_songs
       .filter((song) => song.played_at != "")
       .toSorted((a, b) => a.played_at.localeCompare(b.played_at));
     this.update(filtered_songs);
   }
-  selectSevenRandomSongs(andThen = () => {}, prepicked_songs = "") {
+  async selectSevenRandomSongs(andThen = () => {}, prepicked_songs = "") {
+    await AllSongs.maybePullFreshData();
+
     this.update([]);
     const store = this;
     var selected_ids;
@@ -837,6 +871,7 @@ class SongListToolbar extends Toolbar {
   showPlayedSongs(preloaded_played = "") {
     this.hideSearchForm();
     this.hideCategoryFilter();
+    this.hideArtistList();
     this.onlyActivateToolButton("filter_played_songs");
     Alpine.store("songlist").filterPlayedSongs(preloaded_played);
     this.saveState(this.states.PlayedSongs);

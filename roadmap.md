@@ -36,17 +36,8 @@
 * add zoom so people can adapt the font size to their device
 * make header bar scroll out of screen
   * upper left button always visible
-
-* set "last db changes" timestamp in app_state
-* set "last known db changes" in session
-* refresh session when timestamp in app_state is newer than timestamp in session
-
-
-----
-* info panel
-* zoom drag broken
-* explanation text on slot machine
-* artist list header set explicitly
 * refactor song list data to explicit json request
+----
   * refresh data if older than 30s
   * cache song list on server side?
+* zoom drag broken
