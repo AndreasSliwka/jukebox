@@ -41,6 +41,13 @@ class Song {
 }
 Song = new Song();
 
+function simplify(str) {
+  return str
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
 class AllSongs {
   all_songs = [];
   all_artists = [];
@@ -52,6 +59,7 @@ class AllSongs {
       song.tags = song.tags || [];
       song.tags.sort(() => 0.5 - Math.random());
       song.tags = song.tags.slice(0, 6);
+      song.searchable = simplify(song.title + " " + song.artist);
       return song;
     });
     let intermediate = songs.reduce(function (acc, song) {
@@ -365,11 +373,9 @@ class SongListStore {
   async setTextFilter(original_term) {
     await AllSongs.maybePullFreshData();
 
-    let term = original_term.toLowerCase();
-    let filtered_songs = AllSongs.all_songs.filter(
-      (song) =>
-        song.title.toLowerCase().includes(term) ||
-        song.artist.toLowerCase().includes(term),
+    let term = simplify(original_term);
+    let filtered_songs = AllSongs.all_songs.filter((song) =>
+      song.searchable.includes(term),
     );
     this.update(filtered_songs);
   }
@@ -830,8 +836,9 @@ class SongListToolbar extends Toolbar {
     }
     let header_term =
       original_term.length > 5 ? original_term.substring(0, 5) : original_term;
-    Header.showRichHeaderWith(header_term, "Suchen nach %");
+    Header.showRichHeaderWith(header_term || "?", "Suchen nach %s");
 
+    console.log("original_term", original_term);
     Alpine.store("songlist").setTextFilter(original_term);
     this.saveState(this.states.Search, original_term);
   }
