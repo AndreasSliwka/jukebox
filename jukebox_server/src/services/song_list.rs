@@ -1,6 +1,7 @@
 use crate::services;
 use crate::templates::SongListIndexTemplate;
 use crate::types::AppState;
+use actix_session::SessionExt;
 use actix_web::http::header::ContentType;
 use actix_web::{HttpRequest, HttpResponse, Responder, get, web};
 use askama::Template;
@@ -36,7 +37,10 @@ pub async fn service_json(
 ) -> actix_web::Result<impl Responder> {
     let connection_pool = app_state.pool.clone();
     let is_admin = services::session::is_admin(&request);
-
+    let _gig_id = services::session::gig_id_from_session_or_db(
+        &mut request.get_session(),
+        &mut connection_pool.get().unwrap(),
+    );
     let cache_key = format!("json/songs/admin={}", is_admin);
     let cache = &app_state.cache;
     if let Some(cache_entry) = cache.get(&cache_key) {
@@ -92,9 +96,11 @@ pub async fn service(
     let connection_pool = app_state.pool.clone();
     let app_url = app_state.base_url.clone();
     let cache = &app_state.cache;
-    // debug!("number of cache entries: {}", cache.len());
     let is_admin = services::session::is_admin(&request);
-
+    let _gig_id = services::session::gig_id_from_session_or_db(
+        &mut request.get_session(),
+        &mut connection_pool.get().unwrap(),
+    );
     let current_gig = web::block(move || {
         let mut connection = connection_pool.get().expect("could not get connection");
 
