@@ -108,7 +108,7 @@ pub fn required_tags() -> Vec<(&'static str, &'static str, bool, bool)> {
         ("party", "🎉", false, false),
         ("rockig", "🪨", false, false),
         ("schuh", "👟", false, false),
-        ("Soft", "🍦", false, false),
+        //   ("Soft", "🍦", false, false),
         ("Sommer", "🔆", false, false),
         ("tiere", "🐄", false, false),
         ("trinken", "🍹", false, false),
