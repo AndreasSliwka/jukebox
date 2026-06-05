@@ -26,6 +26,7 @@ fn tags_by_name(
 struct SongListResponse {
     songs: Vec<SongWithLinkAndTags>,
     tags: Vec<String>,
+    admin: bool,
 }
 
 #[get("/songs.json")]
@@ -73,6 +74,7 @@ pub async fn service_json(
     let response = SongListResponse {
         songs: songs_with_links,
         tags: tags_by_name.values().cloned().collect(),
+        admin: is_admin,
     };
 
     let cache_entry = serde_json::to_string(&response).unwrap();

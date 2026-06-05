@@ -32,6 +32,21 @@
 }
 #info_panel {
     overflow: scroll;
+    @apply p-1;
+    h2 {
+        @apply text-xl mb-1;
+    }
+    h3 {
+        @apply text-lg mb-1 mt-1;
+    }
+    ul {
+        @apply pl-2;
+        li .icon {
+            width: 2rem;
+            text-align: center;
+            display: inline-block;
+        }
+    }
 }
 @import "./slotmachine.css";
 @import "./admin_panel.css";

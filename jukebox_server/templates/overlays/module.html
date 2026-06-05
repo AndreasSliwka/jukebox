@@ -16,33 +16,45 @@
                 muss es auch singen, ne?
             </p>
             <h3>Funktionen der Liederliste</h3>
+            <p>
+                Hier werden alle Lieder und ihre Kategorien angezeigt. Schon
+                gespielte Songs sind leicht abgedunkelt, weil die hatten wir ja
+                schon. Für später gespeicherte Songs sind ganz obem.
+            </p>
             <h4>Im Toolbar:</h4>
             <ul class="toolbar-explanation">
-                <li>🌍&nbsp;Zeigt alle Lieder an.</li>
-                <li>🔍&nbsp;Sucht nach Titel und Künstlern</li>
-                <li>🏁&nbsp;Gespielte Lieder anzeigen</li>
-                <li>🎺&nbsp;Listet alle Künstler</li>
-                <li>🌞&nbsp;Gewinne Gewinne Gewinne!</li>
-                <li>🍀&nbsp;7 zufällige Lieder</li>
-            <ul/>
+                <li><span class="icon">🌍</span>Zeigt alle Lieder an.</li>
+                <li>
+                    <span class="icon">🔍</span>Sucht nach Titel und Künstlern
+                </li>
+                <li><span class="icon">🏁</span>Gespielte Lieder anzeigen</li>
+                <li><span class="icon">🎺</span>Listet alle Künstler</li>
+                <li><span class="icon">🌞</span>Gewinne Gewinne Gewinne!</li>
+            </ul>
             <h3>Funktionen der Liedanzeige</h3>
             <h4>Im Toolbar:</h4>
             <ul class="toolbar-explanation">
-                <li>↩&nbsp;Zurück zur Liederliste</li>
-                <li>ᴬA&nbsp;Liedtext zoomen</li>
-                <li>QR&nbsp;Liedtext mit Freunden teilen</li>
-                <li>💾&nbsp;Speichern für später</li>
-                <li>C7&nbsp;Akkorde zum Mitsingen anzeigen</li>
+                <li><span class="icon">🌍</span>Zurück zur Liederliste</li>
+                <li><span class="icon">ᴬA</span>Liedtext zoomen</li>
+                <li>
+                    <span class="icon">QR</span>Liedtext mit Freunden teilen
+                </li>
+                <li><span class="icon">💾</span>Speichern für später</li>
+                <li>
+                    <span class="icon">C7</span>Akkorde zum Mitsingen anzeigen
+                </li>
             </ul>
+            <h3>Heutiger Gig</h3>
+
             <ul class="current_gi">
-                <li>Heutiger Gig:&nbsp;<tt>{{ current_gig.name }}</tt></li>
-                <li>In:&nbsp;<tt>{{current_gig.location }}</tt></li>
+                <li>Name:&nbsp;<tt>{{ current_gig.name }}</tt></li>
+                <li>Ort:&nbsp;<tt>{{current_gig.location }}</tt></li>
                 <li>Obacht:&nbsp;<tt>{{current_gig.notes}}</tt></li>
             </ul>
         </div>
     </div>
     <div id="feeling_lucky" class="hidden modal-content">
         <h2>Feeling Lucky?</h2>
-        </div>
+    </div>
     {% include "overlays/_slotmachine.html" %}
 </div>

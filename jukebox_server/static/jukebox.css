@@ -902,6 +902,26 @@ main.show_artists {
 }
 #info_panel {
   overflow: scroll;
+  padding: calc(var(--spacing) * 1);
+  h2 {
+    margin-bottom: calc(var(--spacing) * 1);
+    font-size: var(--text-xl);
+    line-height: var(--tw-leading, var(--text-xl--line-height));
+  }
+  h3 {
+    margin-top: calc(var(--spacing) * 1);
+    margin-bottom: calc(var(--spacing) * 1);
+    font-size: var(--text-lg);
+    line-height: var(--tw-leading, var(--text-lg--line-height));
+  }
+  ul {
+    padding-left: calc(var(--spacing) * 2);
+    li .icon {
+      width: 2rem;
+      text-align: center;
+      display: inline-block;
+    }
+  }
 }
 @keyframes down-and-up {
   0%, 100% {
