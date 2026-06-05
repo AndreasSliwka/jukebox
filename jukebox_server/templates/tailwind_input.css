@@ -14,16 +14,15 @@ header {
     @apply text-[1.7em] sticky align-middle bg-amber-900 text-amber-100 top-0 left-0 w-full min-h-10;
     z-index: 3;
     div {
-        @apply text-center bg-amber-900 left-0 right-0;
+        @apply text-center bg-amber-900;
         @apply shadow-amber-800/50 shadow-lg;
         @apply px-6;
-        position: absolute;
     }
-    #header_line {
+    #plain_header {
         #title {
         }
     }
-    #which_category {
+    #detailed_header {
         .category {
             @apply bg-amber-600 border-amber-600 rounded-md px-2;
             border-style: outset;

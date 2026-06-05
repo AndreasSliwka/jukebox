@@ -388,8 +388,6 @@ header {
   color: var(--color-amber-100);
   z-index: 3;
   div {
-    right: calc(var(--spacing) * 0);
-    left: calc(var(--spacing) * 0);
     background-color: var(--color-amber-900);
     text-align: center;
     --tw-shadow: 0 10px 15px -3px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 4px 6px -4px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
@@ -399,9 +397,8 @@ header {
       --tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-amber-800) 50%, transparent) var(--tw-shadow-alpha), transparent);
     }
     padding-inline: calc(var(--spacing) * 6);
-    position: absolute;
   }
-  #which_category {
+  #detailed_header {
     .category {
       border-radius: var(--radius-md);
       border-color: var(--color-amber-600);

@@ -15,7 +15,7 @@ class Song {
         part.classList.remove("scrollHighlight");
       }
       let target_y = element.getBoundingClientRect().y;
-      target_y -= document.querySelector("header").clientHeight;
+      target_y -= document.getElementById("plain_header").clientHeight;
       target_y -= 30;
       document.documentElement.scrollTop += target_y;
       element.classList.add("scrollHighlight");
@@ -673,13 +673,18 @@ Slotmachine = new Slotmachine();
 class Header {
   showRichHeaderWith(unicode) {
     if (!unicode) return;
-    let category_info = document.getElementById("which_category");
+    let plain_header = document.getElementById("plain_header");
+    let detailed_header = document.getElementById("detailed_header");
 
-    category_info.classList.remove("hidden");
-    category_info.getElementsByClassName("category")[0].textContent = unicode;
+    plain_header.classList.add("hidden");
+    detailed_header.classList.remove("hidden");
+
+    detailed_header.getElementsByClassName("category")[0].textContent = unicode;
   }
   showTitle(text) {
-    document.getElementById("which_category").classList.add("hidden");
+    document.getElementById("detailed_header").classList.add("hidden");
+    document.getElementById("plain_header").classList.remove("hidden");
+
     document.getElementById("title").textContent = text;
   }
 }
@@ -718,7 +723,7 @@ class SongListToolbar extends Toolbar {
   };
   current_state = this.states.AllSongs;
   hideCategoryFilter() {
-    document.getElementById("which_category").classList.add("hidden");
+    document.getElementById("detailed_header").classList.add("hidden");
   }
   parseStateFromUrlOrCookie() {
     const url = new URL(window.location.href);
