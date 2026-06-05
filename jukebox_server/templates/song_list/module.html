@@ -6,7 +6,10 @@ content %}
     window.addEventListener("alpine:init", async () => {
 
         await AllSongs.initializeFromServer();
-        SongListToolbar.parseStateFromUrlOrCookie();
+        setTimeout(() => {
+            console.log("now parseing state from url or cookie");
+            SongListToolbar.parseStateFromUrlOrCookie();
+        }, 0);
     });
 {{ "</script>" | safe }}
 

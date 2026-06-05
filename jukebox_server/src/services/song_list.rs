@@ -5,8 +5,8 @@ use actix_web::http::header::ContentType;
 use actix_web::{HttpRequest, HttpResponse, Responder, get, web};
 use askama::Template;
 use jukebox_db::{self, models::SongWithLinkAndTags};
-use serde::Serialize;
-// use log::debug;
+use log::debug;
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 fn tags_by_name(
@@ -22,7 +22,7 @@ fn tags_by_name(
     tags
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 struct SongListResponse {
     songs: Vec<SongWithLinkAndTags>,
     tags: Vec<String>,
@@ -35,6 +35,16 @@ pub async fn service_json(
 ) -> actix_web::Result<impl Responder> {
     let connection_pool = app_state.pool.clone();
     let is_admin = services::session::is_admin(&request);
+
+    let cache_key = format!("json/songs/admin={}", is_admin);
+    let cache = &app_state.cache;
+    if let Some(cache_entry) = cache.get(&cache_key) {
+        debug!("cache hit: {}", cache_key);
+        let cached_value = cache_entry.value().clone();
+        let response = serde_json::from_str(&cached_value).unwrap();
+        return Ok(web::Json(response));
+    }
+
     let private_tag_ids = if is_admin {
         vec![]
     } else {
@@ -64,6 +74,11 @@ pub async fn service_json(
         songs: songs_with_links,
         tags: tags_by_name.values().cloned().collect(),
     };
+
+    let cache_entry = serde_json::to_string(&response).unwrap();
+    debug!("cache entry under {}", cache_key);
+    cache.insert(cache_key, cache_entry);
+
     Ok(web::Json(response))
 }
 
