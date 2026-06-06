@@ -15,7 +15,7 @@
         top: 0px;
     }
     to {
-        top: -580vmin;
+        top: -600vmin;
     }
 }
 
@@ -133,7 +133,7 @@
                     &.wheelin {
                         animation-fill-mode: forwards;
                         animation: 4s 1 normal wheelin;
-                        top: -580vmin;
+                        top: -600vmin;
                     }
                 }
                 &#reel-1 ul.wheelin {

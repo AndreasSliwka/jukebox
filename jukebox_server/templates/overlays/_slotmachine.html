@@ -3,8 +3,8 @@
         id="slot_machine_lever"
         class="lever"
         x-data="{}"
-        x-on:click.stop.prevent="Slotmachine.reroll()"
-        x-on:touchmove.stop.prevent="Slotmachine.reroll()"
+        x-on:click.stop.prevent="Slotmachine.spin_the_reels()"
+        x-on:touchmove.stop.prevent="Slotmachine.spin_the_reels()"
     >
         <div class="axle"></div>
         <div id="slotmachine-lever-stick" class="stick">
@@ -16,30 +16,21 @@
             <div id="reel-1" class="reel">
                 <ul x-data>
                     <template x-for="tag in  $store.reels.first">
-                        <li
-                            x-text="tag"
-                            x-on:click.stop.prevent="Slotmachine.selectTag(tag)"
-                        ></li>
+                        <li x-text="tag"></li>
                     </template>
                 </ul>
             </div>
             <div id="reel-2" class="reel">
                 <ul x-data>
                     <template x-for="tag in $store.reels.second">
-                        <li
-                            x-text="tag"
-                            x-on:click.stop.prevent="Slotmachine.selectTag(tag)"
-                        ></li>
+                        <li x-text="tag"></li>
                     </template>
                 </ul>
             </div>
             <div id="reel-3" class="reel">
                 <ul x-data>
                     <template x-for="tag in $store.reels.third">
-                        <li
-                            x-text="tag"
-                            x-on:click.stop.prevent="Slotmachine.selectTag(tag)"
-                        ></li>
+                        <li x-text="tag"></li>
                     </template>
                 </ul>
             </div>
@@ -51,12 +42,5 @@
             <div class="sun n3">🌞</div>
             <div class="sun n4">🌞</div>
         </div>
-    </div>
-    <div class="info">
-        <ol>
-            <li>Zieh am Hebel</li>
-            <li>Wähle eine der drei Kategorien aus</li>
-            <li>Laß dich überraschen!</li>
-        </ol>
     </div>
 </div>

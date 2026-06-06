@@ -68,20 +68,22 @@ class AllSongs {
     }, {});
 
     this.all_artists = Object.keys(intermediate).sort();
+    this.tag_tuples = [];
   }
   async initializeFromServer() {
-    console.log("Fetching songs and tags from server...");
+    // console.log("Fetching songs and tags from server...");
     let response = await fetch("/songs.json");
     response = await response.json();
     this.initialize(response.songs);
     Alpine.store("reels").all_tags = response.tags;
+
     this.last_update_at = Date.now();
   }
   async maybePullFreshData() {
     if (this.last_update_at && Date.now() - this.last_update_at > 30000) {
       await this.initializeFromServer();
     } else {
-      console.log("Freshness of data: " + (Date.now() - this.last_update_at));
+      // console.log("Freshness of data: " + (Date.now() - this.last_update_at));
     }
   }
   songsByIds(songs_ids) {
@@ -89,6 +91,33 @@ class AllSongs {
   }
   songById(song_id) {
     return this.songsByIds([song_id])[0];
+  }
+  random_tag_tuples() {
+    if (this.tag_tuples.length === 0) {
+      let accumulator = {};
+      let tuples = (list) => {
+        if (list.length > 1) {
+          return list
+            .slice(1)
+            .map((e) => [list[0], e].toSorted().join("|"))
+            .concat(tuples(list.slice(1)));
+        } else {
+          return [];
+        }
+      };
+      this.all_songs.forEach((song) => {
+        tuples(song.tag_signs).forEach((tuple) => {
+          accumulator[tuple] = 1;
+        });
+      });
+      this.tag_tuples = Object.keys(accumulator).map((tuple) =>
+        tuple.split("|"),
+      );
+      this.tag_tuples.sort(() => 0.5 - Math.random());
+    }
+    let return_value = this.tag_tuples[0];
+    this.tag_tuples = this.tag_tuples.slice(1).concat([return_value]);
+    return return_value;
   }
 }
 AllSongs = new AllSongs();
@@ -264,12 +293,9 @@ class Overlay {
       url: "{{qr_code_url}}",
     };
     document.getElementById("qr_code").addEventListener("click", async () => {
-      // console.log("qr_code clicked");
       try {
         await navigator.share(shareData);
-      } catch (err) {
-        // console.log(err);
-      }
+      } catch (err) {}
     });
   }
 }
@@ -319,26 +345,34 @@ class ReelsStore {
     return this.all_tags.slice();
   }
   set_up_for_wheelin() {
-    this.first = this.first
-      .slice(0, 1)
+    let known_tag_tuples = AllSongs.random_tag_tuples();
+    this.first = [known_tag_tuples[0]]
       .concat(this.randomized_tags())
       .concat(this.randomized_tags())
       .slice(0, 30);
-    this.second = this.second
-      .slice(0, 1)
+    this.second = [known_tag_tuples[1]]
       .concat(this.randomized_tags())
       .concat(this.randomized_tags())
       .slice(0, 30);
-    this.third = this.third
-      .slice(0, 1)
+    this.third = []
       .concat(this.randomized_tags())
       .concat(this.randomized_tags())
       .slice(0, 30);
+    while (this.second[0] == this.first[0]) {
+      this.second = this.second.slice(1).concat(this.second[0]);
+    }
+    while (this.third[0] == this.first[0] || this.third[0] == this.second[0]) {
+      this.third = this.third.slice(1).concat(this.third[0]);
+    }
+    this.first = this.first.slice(1).concat(this.first.shift());
+    this.first.unshift("?");
+    this.second = this.second.slice(1).concat(this.second.shift());
+    this.second.unshift("?");
+    this.third = this.third.slice(1).concat(this.third.shift());
+    this.third.unshift("?");
   }
-  copy_last_to_first() {
-    this.first[0] = this.first.at(-1);
-    this.second[0] = this.second.at(-1);
-    this.third[0] = this.third.at(-1);
+  three_categories() {
+    return [this.first.at(-1), this.second.at(-1), this.third.at(-1)];
   }
 }
 
@@ -407,6 +441,53 @@ class SongListStore {
       .toSorted((a, b) => a.played_at.localeCompare(b.played_at));
     this.update(filtered_songs);
   }
+  async showSelectedSongsIncrementally(selected_ids, andThen = () => {}) {
+    if (typeof selected_ids === "string") {
+      selected_ids = selected_ids.split(",");
+    }
+    let store = this; // make 'this' accessible inside the recursive function
+    this.visible = [];
+    let accumulator = {};
+    AllSongs.all_songs.forEach((song) => {
+      accumulator[song.id] = song;
+    });
+    function maybe_show_select_song() {
+      if (selected_ids.length > 0) {
+        let song_id = selected_ids.shift();
+        let song = accumulator[song_id];
+        store.visible.push(song);
+        setTimeout(maybe_show_select_song, 100);
+      } else {
+        andThen();
+      }
+    }
+    maybe_show_select_song();
+  }
+  num_intersections(a, b) {
+    return a.filter((tag) => b.includes(tag)).length;
+  }
+  async setThreeCategoriesFilter(categories, andThen = () => {}) {
+    await AllSongs.maybePullFreshData();
+
+    const randomized_songs = AllSongs.all_songs
+      .toSorted(() => 0.5 - Math.random())
+      .sort(() => 0.5 - Math.random());
+
+    let songs_with_num_of_intersections = randomized_songs.map((song) => [
+      this.num_intersections(song.tag_signs, categories),
+      song,
+    ]);
+
+    let songs_matching_categories = songs_with_num_of_intersections
+      .filter(([num_intersections]) => num_intersections > 0)
+      .toSorted((a, b) => b[0] - a[0]);
+
+    let song_ids_matching_categories = songs_matching_categories.map(
+      ([_, song]) => song.id,
+    );
+
+    this.showSelectedSongsIncrementally(song_ids_matching_categories, andThen);
+  }
   async selectSevenRandomSongs(andThen = () => {}, prepicked_songs = "") {
     await AllSongs.maybePullFreshData();
 
@@ -417,28 +498,12 @@ class SongListStore {
       .toSorted(() => 0.5 - Math.random())
       .sort(() => 0.5 - Math.random());
 
-    if (prepicked_songs) {
-      selected_ids = prepicked_songs.split(",");
-    } else {
-      selected_ids = randomized_songs
-        .map((song) => song.id)
-        .toSorted(() => 0.5 - Math.random())
-        .slice(0, 7);
-    }
+    let randomly_selected_song_ids = randomized_songs
+      .map((song) => song.id)
+      .toSorted(() => 0.5 - Math.random())
+      .slice(0, 7);
 
-    function maybe_show_select_song() {
-      if (randomized_songs.length > 0) {
-        let song = randomized_songs.pop();
-        if (selected_ids.includes(song.id)) {
-          store.pushSong(song);
-        }
-        setTimeout(maybe_show_select_song, 6);
-      } else {
-        andThen();
-      }
-    }
-
-    maybe_show_select_song();
+    showSelectedSongsIncrementally(randomly_selected_song_ids, andThen);
   }
 }
 class Secret {
@@ -642,7 +707,7 @@ class Slotmachine {
   initialize() {
     Alpine.store("reels").set_up_for_wheelin();
   }
-  reroll() {
+  async spin_the_reels() {
     let stick = document.getElementById("slotmachine-lever-stick");
     if (stick.classList.contains("working")) return;
     let [reel1, reel2, reel3] = document
@@ -650,14 +715,20 @@ class Slotmachine {
       .querySelectorAll("ul");
     // we use reel 2 for animation-end, as its the
     // last animation to be running.
-    let callback = () => {
+    let callback = async () => {
       reel2.removeEventListener("animationend", callback);
-      Alpine.store("reels").copy_last_to_first();
       stick.classList.remove("working");
       reel1.classList.remove("wheelin");
       reel2.classList.remove("wheelin");
       reel3.classList.remove("wheelin");
-      Alpine.store("reels").set_up_for_wheelin();
+      let three_categories = Alpine.store("reels").three_categories();
+      Overlay.hide();
+      Header.showRichHeaderWith(three_categories.join(" "));
+
+      await Alpine.store("songlist").setThreeCategoriesFilter(
+        three_categories,
+        () => {},
+      );
     };
     reel2.addEventListener("animationend", callback);
     stick.classList.add("working");
@@ -666,9 +737,7 @@ class Slotmachine {
     reel3.classList.add("wheelin");
   }
   selectTag(unicode) {
-    if (unicode == "?") return;
-    Overlay.hide();
-    Header.showRichHeaderWith(unicode);
+    Header.showRichHeaderWith(unicode, "Alle % Lieder");
     SongListToolbar.hideSearchForm();
     SongListToolbar.onlyActivateToolButton("show_slot_machine");
     Alpine.store("songlist").setCategoryFilter(unicode);
@@ -677,10 +746,16 @@ class Slotmachine {
 Slotmachine = new Slotmachine();
 
 class Header {
-  showRichHeaderWith(unicode) {
+  showRichHeaderWith(unicode, title = "Alle % Lieder") {
     if (!unicode) return;
     let plain_header = document.getElementById("plain_header");
     let detailed_header = document.getElementById("detailed_header");
+
+    let before_element = detailed_header.querySelector(".before");
+    let after_element = detailed_header.querySelector(".after");
+    let [before, after] = title.split("%");
+    before_element.textContent = before;
+    after_element.textContent = after;
 
     plain_header.classList.add("hidden");
     detailed_header.classList.remove("hidden");
@@ -794,7 +869,7 @@ class SongListToolbar extends Toolbar {
     this.hideCategoryFilter();
     this.onlyActivateToolButton("all_songs");
     Alpine.store("songlist").allSongsButRandomized();
-    Header.showTitle("Alle Songs");
+    Header.showTitle("Alle Lieder");
     this.saveState(this.states.AllSongs);
   }
   hideSearchForm() {
@@ -838,7 +913,6 @@ class SongListToolbar extends Toolbar {
       original_term.length > 5 ? original_term.substring(0, 5) : original_term;
     Header.showRichHeaderWith(header_term || "?", "Suchen nach %s");
 
-    console.log("original_term", original_term);
     Alpine.store("songlist").setTextFilter(original_term);
     this.saveState(this.states.Search, original_term);
   }

@@ -37,7 +37,14 @@
 * make header bar scroll out of screen
   * upper left button always visible
 * refactor song list data to explicit json request
-----
   * refresh data if older than 30s
   * cache song list on server side?
 * zoom drag broken
+* slot machine:
+  * automatic switch back to list of matching songs
+  * sort songs by triple/double/single hits
+
+----
+
+* slot machine:
+  * Ensure no doubles or triplicates

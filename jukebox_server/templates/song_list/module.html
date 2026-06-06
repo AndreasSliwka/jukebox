@@ -1,13 +1,12 @@
 {% extends "../base.html" %}
 {% block mainClass %} song-list {% endblock %}
-{% block title %} Alle Songs {% endblock %} {% block
+{% block title %} Alle Lieder {% endblock %} {% block
 content %}
 {{ "<scr" | safe }}{{ "ipt>" | safe}}
     window.addEventListener("alpine:init", async () => {
 
         await AllSongs.initializeFromServer();
         setTimeout(() => {
-            console.log("now parseing state from url or cookie");
             SongListToolbar.parseStateFromUrlOrCookie();
         }, 500);
     });
