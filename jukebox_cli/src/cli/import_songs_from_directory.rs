@@ -78,13 +78,14 @@ fn main() {
     println!("#######\nall_tags = {:?}", all_tags);
     let source_dir = get_directory_from_environment();
     let song_files = get_songs_files_from_directory(source_dir);
-    if song_files.len() == 0 {
+    let num_of_songs = song_files.len();
+    if num_of_songs == 0 {
         return;
     }
     let mut known_songs: Vec<i32> = vec![];
-    for song_file in song_files {
+    for (index, song_file) in song_files.iter().enumerate() {
         let mut song_loaded: bool = false;
-        // println!("File: {}", song_file);
+        println!("File {} of {}: {}", index + 1, num_of_songs, song_file);
         let maybe_content = fs::read_to_string(song_file.clone());
         if let Ok(content) = maybe_content {
             let title: &str = get_title(song_file.as_str(), &content);
