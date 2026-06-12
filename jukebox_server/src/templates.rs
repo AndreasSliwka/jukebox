@@ -31,17 +31,6 @@ pub struct SongsTemplate {
 }
 
 #[derive(Template)]
-#[template(path = "qrcode.html")]
-pub struct QrCodesTemplate {
-    pub public_url_svg: String,
-    pub admin_url_svg: String,
-    pub is_admin: bool,
-    pub dark_background: bool,
-    pub zoom: u16,
-    pub is_dev_mode: bool,
-}
-
-#[derive(Template)]
 #[template(path = "welcome.html")]
 pub struct WelcomeTemplate {
     pub dark_background: bool,

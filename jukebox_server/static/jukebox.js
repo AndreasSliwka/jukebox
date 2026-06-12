@@ -89,9 +89,6 @@ class AllSongs {
   songsByIds(songs_ids) {
     return this.all_songs.filter((song) => songs_ids.includes(song.id));
   }
-  songById(song_id) {
-    return this.songsByIds([song_id])[0];
-  }
   random_tag_tuples() {
     if (this.tag_tuples.length === 0) {
       let accumulator = {};
@@ -167,16 +164,6 @@ class Chords {
 }
 Chords = new Chords();
 
-function deselect_category_wof_entries() {
-  Array.from(
-    document
-      .getElementById("wheel_of_fortune")
-      .getElementsByClassName("category selected"),
-  ).forEach((category) => {
-    category.classList.remove("selected");
-  });
-}
-
 class Zoom {
   currentZoomFromMainElement() {
     let main = document.getElementById("root_of_all_evil");
@@ -203,50 +190,8 @@ class Zoom {
       document.cookie = "zoom=" + new_zoom_level + ";SameSite=lax";
     }
   }
-  changeBy(offset) {
-    let zoom_level = this.currentZoomFromMainElement();
-    let new_zoom_level = zoom_level + offset;
-    this.changeTo(new_zoom_level);
-  }
 }
 Zoom = new Zoom();
-
-class StickySongList {
-  currentWindowDimension() {
-    return "{" + window.innerWidth + "x" + window.innerHeight + "}";
-  }
-  getCurrentScrollPosition() {
-    let scrollTop =
-      document.documentElement.scrollTop || document.body.scrollTop;
-    return this.currentWindowDimension() + "@" + scrollTop;
-  }
-  storeCurrentScrollPosition() {
-    let position = this.getCurrentScrollPosition();
-    window.location.hash = position;
-  }
-  maybeScrollToPositionInLocationHash() {
-    const positionFromHash = window.location.hash;
-    if (positionFromHash) {
-      var [storedDimension, storedPosition] = positionFromHash.split("@");
-      if (storedDimension == this.currentWindowDimension()) {
-        document.documentElement.scrollTop = document.body.scrollTop =
-          parseInt(storedPosition);
-      }
-    }
-  }
-  init() {
-    return;
-    document.addEventListener("scrollend", () => {
-      this.storeCurrentScrollPosition();
-    });
-
-    screen.orientation.addEventListener("change", () => {
-      this.storeCurrentScrollPosition();
-    });
-    this.maybeScrollToPositionInLocationHash();
-  }
-}
-StickySongList = new StickySongList();
 
 class Overlay {
   show(modal_content_id, hide_others = true) {
@@ -336,9 +281,6 @@ class ReelsStore {
   first = ["?"];
   second = ["?"];
   third = ["?"];
-  setAllTags(allTags) {
-    this.all_tags = allTags;
-  }
   randomized_tags() {
     // randomizing the all_tags array every time makes it a bit more random every time
     this.all_tags.sort(() => 0.5 - Math.random());
@@ -386,14 +328,6 @@ class SongListStore {
       this.all_artists = AllSongs.all_artists.slice();
     }
   }
-  async allSongs() {
-    await AllSongs.maybePullFreshData();
-    this.update(AllSongs.all_songs);
-  }
-  async allArtists() {
-    await AllSongs.maybePullFreshData();
-    AllSongs.all_songs.map((song) => song.artist);
-  }
   async allSongsButRandomized() {
     await AllSongs.maybePullFreshData();
 
@@ -420,9 +354,6 @@ class SongListStore {
       song.tag_signs.includes(tag),
     );
     this.update(filtered_songs);
-  }
-  pushSong(song) {
-    this.visible.push(song);
   }
   visibleSongIds() {
     return this.visible.map((song) => song.id);
@@ -503,7 +434,7 @@ class SongListStore {
       .toSorted(() => 0.5 - Math.random())
       .slice(0, 7);
 
-    showSelectedSongsIncrementally(randomly_selected_song_ids, andThen);
+    this.showSelectedSongsIncrementally(randomly_selected_song_ids, andThen);
   }
 }
 class Secret {
@@ -1034,13 +965,6 @@ class SingleSongToolbar extends Toolbar {
     } else {
       document.getElementById("toggle_chords").classList.remove("active");
     }
-  }
-  backToSongList() {
-    let song_list_url = new URL("/songs", window.location.href);
-    for (const key in history.state) {
-      song_list_url.searchParams.set(key, history.state[key]);
-    }
-    window.location.href = song_list_url.toString();
   }
 }
 

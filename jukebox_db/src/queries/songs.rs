@@ -156,12 +156,6 @@ pub fn delete_all_other_songs(known_song_ids: Vec<i32>, connection: &mut SqliteC
         .unwrap();
 }
 
-pub fn delete_all_songs(conn: &mut SqliteConnection) -> () {
-    use crate::schema::songs::dsl::*;
-
-    let _ = diesel::delete(songs).execute(conn);
-}
-
 pub fn all_listed_songs(connection: &mut SqliteConnection, ids: Vec<i32>) -> Vec<SimplifiedSong> {
     use crate::schema::songs::dsl::*;
     SimplifiedSong::query()

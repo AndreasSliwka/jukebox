@@ -73,7 +73,7 @@ pub fn update_or_create_tag(
     }
 }
 
-pub fn required_tags() -> Vec<(&'static str, &'static str, bool, bool)> {
+fn required_tags() -> Vec<(&'static str, &'static str, bool, bool)> {
     vec![
         // private
         ("Private", "😎", true, false),

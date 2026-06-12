@@ -97,16 +97,6 @@ pub struct SongWithLinkAndTags {
     pub played_at: String,
 }
 
-fn _only_hours_and_minutes(played_at: String) -> String {
-    // 2026-06-01T13:15:22.328178
-    static HOURS_AND_MINUTES: LazyLock<Regex> =
-        LazyLock::new(|| Regex::new(r".*T(..:..).*").unwrap());
-    if let Some(captures) = HOURS_AND_MINUTES.captures(played_at.as_str()) {
-        return captures[1].to_string();
-    }
-    played_at
-}
-
 impl SongWithLinkAndTags {
     pub fn from(
         simplified: &SimplifiedSong,
